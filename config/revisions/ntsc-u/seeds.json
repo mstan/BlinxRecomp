@@ -1,0 +1,20 @@
+[
+  {
+    "start": "0x00181320",
+    "section": "PSGSFD_I",
+    "references": [
+      "0x001CF49C"
+    ],
+    "already_discovered": false,
+    "note": "Title-owned Sofdec section entry, recovered from this image; no imported revision address"
+  },
+  {
+    "start": "0x00181FE0",
+    "section": "PSGSFD_P",
+    "references": [
+      "0x001CF4A0"
+    ],
+    "already_discovered": false,
+    "note": "Title-owned Sofdec section entry, recovered from this image; no imported revision address"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "sha256": "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249",
+  "extents": [
+    {
+      "start": 953392,
+      "original_end": 953421,
+      "end": 953449,
+      "sha256": "201040b08d9aaa9c440a9cb3accf8d13fa92a68fc5bfc62aecf1b76983179578",
+      "reason": "Reached initializer jumps across padding into its own nested loop and restoring epilogue; original discovery truncated at the forward jump."
+    },
+    {
+      "start": 1585221,
+      "original_end": 1585221,
+      "end": 1585325,
+      "sha256": "822bfd42801918e808e4e8e3ec31a8f59cc17a1fb061ea6472361dd94bbda8b3",
+      "reason": "Measured original XInitDevices indirect callback in input-device-fresh-lle-20261008; complete original initializer through RET 4, adjacent to next known function.",
+      "new_entry": true
+    }
+  ]
+}

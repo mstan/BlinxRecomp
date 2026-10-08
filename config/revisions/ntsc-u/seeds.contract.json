@@ -1,0 +1,26 @@
+{
+  "xbe_sha256": "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249",
+  "seed_sha256": "f4412e31f36439d457bf1e372ff941440ae7ff09c94a3794e3a0041e4718ba55",
+  "source": "Phobos bcccf8c config/seeds/4D530013.json and 53450036.json, algorithmic reference",
+  "policy": "Original compiled Sofdec/ADX decoder; no XMV substitution, skipped frames or synthetic audio completion",
+  "roots": [
+    {
+      "start": "0x00181320",
+      "section": "PSGSFD_I",
+      "references": [
+        "0x001CF49C"
+      ],
+      "already_discovered": false,
+      "note": "Title-owned Sofdec section entry, recovered from this image; no imported revision address"
+    },
+    {
+      "start": "0x00181FE0",
+      "section": "PSGSFD_P",
+      "references": [
+        "0x001CF4A0"
+      ],
+      "already_discovered": false,
+      "note": "Title-owned Sofdec section entry, recovered from this image; no imported revision address"
+    }
+  ]
+}

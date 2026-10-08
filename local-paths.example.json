@@ -1,0 +1,16 @@
+{
+  "xbe": "local/owned/default.xbe",
+  "eeprom": "local/owned/eeprom.bin",
+  "media_root": "local/owned/media",
+  "state_dir": "local/state",
+  "cpu_donor": "../refs/xboxrecomp-phobos665-review-20261006",
+  "xdk_symbols": "local/owned/default_xdk_symbols.json",
+  "d3d_source": "local/dependencies/phobos-d3d",
+  "dsp_source": "local/dependencies/dsp-donor",
+  "dsp_library": "local/dependencies/dsp56300/release/dsp56300_emu_ffi.lib",
+  "adpcm_source": "local/dependencies/phobos-adpcm",
+  "calendar_kernel": "local/owned/kernel-live.bin",
+  "unicorn": "local/dependencies/reference-python/unicorn",
+  "unicorn_notices": "local/dependencies/unicorn-2.1.4-notices",
+  "io_snapshot": "local/owned/io-boot-18m.ram.bin"
+}

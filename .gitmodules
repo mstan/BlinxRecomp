@@ -1,0 +1,3 @@
+[submodule "xboxlle"]
+	path = xboxlle
+	url = git@github.com:mstan/xboxlle.git

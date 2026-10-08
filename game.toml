@@ -1,0 +1,40 @@
+[game]
+name = "Blinx: The Time Sweeper"
+region = "NTSC-U"
+title_id = "4D530013"
+xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
+
+[framework]
+repository = "https://github.com/mstan/xboxlle"
+revision = "d056bd5cd77d31434a791c53eaa01dd1ad2c147d"
+directory = "xboxlle"
+
+[generation]
+donor_revision = "63f18f0334fbd8c00313c4bb565accf00627a4fd"
+data_sections = "MDL*,MAP[0-9]*"
+bindings = ["media", "cache", "d3d", "jump", "cpu", "input", "audio"]
+
+[build]
+PILOT_MEDIA = "INSTALLED"
+PILOT_CACHE = "NATIVE"
+PILOT_CPU_PROBE = "NATIVE"
+PILOT_RENDERER = "D3D11"
+PILOT_D3D_DONOR = "PHOBOS"
+PILOT_AUDIO = "NATIVE"
+PILOT_AUDIO_BACKEND = "XAUDIO2_DSP"
+PILOT_CALENDAR = "LLE"
+PILOT_IO_DEVICE = "LLE"
+
+[modes.attract]
+PILOT_INPUT = "NATIVE"
+
+[modes.input-lle]
+PILOT_INPUT = "ORIGINAL"
+
+[runtime]
+XLLE_PILOT_GUEST_SCHEDULER = "1"
+XLLE_PILOT_DEFER_STREAM_UPLOAD = "1"
+XLLE_PILOT_TEXTURE_EXPOSURE_CACHE = "1"
+XLLE_PILOT_GPU_EVENTS = "1"
+XLLE_PILOT_EVENT_TRACE = "1"
+XLLE_PILOT_TRACE = "0"
