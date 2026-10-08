@@ -63,6 +63,9 @@ def check_generated(directory):
     manifest = json.loads((directory / 'generation.aot-private.json').read_text(encoding='utf-8'))
     if manifest['sha256'] != PROFILE['game']['xbe_sha256'] or manifest['donor'] != PROFILE['generation']['donor_revision']:
         raise ValueError('Generated identity or CPU donor differs from the reviewed profile')
+    actual = {path.name for path in (directory / 'gen').iterdir() if path.is_file()}
+    if actual != set(manifest['files']):
+        raise ValueError('Generated file inventory differs from its manifest')
     for name, expected in manifest['files'].items():
         if Path(name).name != name or sha(directory / 'gen' / name) != expected:
             raise ValueError(f'Changed generated artifact: {name}')
