@@ -6,7 +6,7 @@ xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
 
 [framework]
 repository = "https://github.com/mstan/xboxlle"
-revision = "50d344e6cc976989817bfc8cbf93608a3a458cab"
+revision = "9c69fe459d1cce6912bf536f27d218d1959c53d4"
 directory = "xboxlle"
 
 [generation]

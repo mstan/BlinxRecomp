@@ -2,7 +2,7 @@
 
 The pre-split working attract milestone is preserved in xboxlle
 `milestone/blinx-attract-20261008`. Runtime qualification uses `d056bd5`.
-The current pin `50d344e` adds only README/contract/burndown documentation;
+The current pin `9c69fe4` adds only README/contract/burndown documentation;
 the source used for the qualified executable is unchanged.
 
 | Area | Current evidence / remaining work |
@@ -15,6 +15,7 @@ the source used for the qualified executable is unchanged.
 | New Game | Known post-save fault, `beads-xbox.1.101`, deferred until the current correctness phase |
 | JSRF | Serial follow-up after Blinx; no game-specific work begun by this split |
 | Dashboard choice and storage | Required architecture, `.22`: original dashboard remains supported and its assets are optional for native launch; provision/import a genuine virtual HDD and retain real persistent saves. Host-directory persistence is working but shared FATX image access and the combined launch selector are unfinished. |
+| Planned launch/save options | Direct game launch remains available; consider an optional permissive open-source dashboard, preserve the supplied retail boot/logo experience, and make the console/save target configurable for eventual sharing across recomps. No dashboard donor selected or shared-profile implementation claimed. |
 
 Detailed source/evidence is maintained with the implementation in
 [INPUT-LLE.md](../xboxlle/pilots/native-title/INPUT-LLE.md),

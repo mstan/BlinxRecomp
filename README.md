@@ -36,6 +36,11 @@ and flushes; HLE can accelerate those services. The current pilot uses persisten
 host directories and does not yet complete that shared disk-image requirement
 or expose the combined dashboard selector. These remain tracked requirements in
 the [console launch/storage contract](xboxlle/docs/CONSOLE-LAUNCH-STORAGE.md).
+That contract also records an optional permissive open-source default dashboard,
+the original retail boot/logo route with supplied compatible software, and a
+configurable console/save profile intended to support one shared drive across
+recomp projects. These are planned capabilities; direct game launch must remain
+available without dashboard interaction.
 
 ## Build and run on this machine
 
