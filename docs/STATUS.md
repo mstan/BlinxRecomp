@@ -1,16 +1,16 @@
 # Original NTSC Blinx
 
 The pre-split working attract milestone is preserved in xboxlle
-`milestone/blinx-attract-20261008`. The current pin `3d04e82` adds original
-interrupt dispatch and the shared OHCI/PIC clock checkpoint. Earlier qualification
+`milestone/blinx-attract-20261008`. The current pin `7e47c6c` adds original
+XID reports, coherent shared DMA backing and report-contract corrections. Earlier qualification
 records below remain historical evidence; the input family is still open.
 
 | Area | Current evidence / remaining work |
 | --- | --- |
-| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.657 seconds with 19 captures and no terminal guard |
+| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.094 seconds with 19 captures and no terminal guard |
 | Cadence | Accepted 28.5–28.8 fps debt is tracked in `beads-xbox.1.100`; no new speed claim from the repository split |
 | Calendar LLE | Original kernel conversion functions execute in title calls; qualified alongside native counterpart |
-| Input LLE | Original page/USB/PIC services now invoke Blinx's original ISR and DPC. Actual startup stops at untranslated `CLI` in the original DPC; interrupt deferral/EOI/eligibility and idle delivery pass fixtures. Controller reports and LLE interruption remain open. |
+| Input LLE | Original initialization, enumeration and XID reports execute through pinned DMA and IRQ/DPC delivery. Quiet framework run: 190.156s, 19 captures, Demo play, Start interruption, title return and reentry. Broader connection/capability/close comparison remains open. |
 | LLE hardening | Nine broad service-family gates remain open in `beads-xbox.1.102`; input `.104` is active; batch related dependency checks to reduce repeated setup/title runs |
 | New Game | Known post-save fault, `beads-xbox.1.101`, deferred until the current correctness phase |
 | JSRF | Serial follow-up after Blinx; no game-specific work begun by this split |
@@ -24,7 +24,7 @@ Detailed source/evidence is maintained with the implementation in
 
 The game repository adopts the existing generation manifest only after checking
 every generated file, the original image, CPU donor, all seven binding records
-and both original-function recovery records. The generated output remains
+and all four original-function recovery records. The generated output remains
 ignored; these files are never pushed. The original framework worktree and its
 qualification captures are retained for comparison.
 
@@ -33,6 +33,18 @@ is not claimed as validated by the initial repository split. Validation uses
 the hash-verified existing output, compiled through this repo's own CMake entry.
 
 ## Game-repository qualification - 2026-10-08
+
+Latest report checkpoint: framework `7e47c6c`, hash-verified refreshed generated
+output and the four game-owned recovery extents. All **40/40 native tests pass
+(17.75s)**. `local/runs/20261008-141612-attract/` records **190.094 seconds**,
+19 captures and no guards. Inspected captures 8/12/17 show Demo play, the title
+movie after Start and Demo play reentry. The harness stopped its own child at
+the requested deadline, not a crash. Executable SHA-256:
+`71f6c027d5be5dc5c9864204c953ca328a9234895dbe40d002dcb454cda1d35a`.
+This preserves native performance behavior after the original report contract
+corrections; it does not add an endurance or cadence measurement.
+
+Initial repository-split evidence follows:
 
 - `py -3 tools/game.py build` produced `build/attract/framework/Release/BlinxRecomp.exe`.
 - `py -3 tools/game.py test`: all 40 tests pass (17.90 seconds).

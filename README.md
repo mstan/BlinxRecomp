@@ -22,10 +22,11 @@ titles get sibling repositories and reuse those shared services.
 
 The working milestone has opening movies, real-time Demo play, Start interruption,
 menu return and attract reentry. Accepted cadence debt is about 28.5–28.8 fps;
-New Game is deferred. Full LLE input remains in progress: original startup now
-uses original page/allocation services, OHCI/PIC and the original interrupt
-handler, then stops at untranslated CLI in its original USB DPC. Neither that progress
-nor this repository split claims complete LLE input or final attract qualification.
+New Game is deferred. The original-input route now executes initialization,
+enumeration and controller reports through original page/allocation services,
+OHCI/PIC and IRQ/DPC delivery. A quiet 190-second run demonstrates Demo play,
+Start interruption, title return and Demo play reentry. The broader input
+family and final attract endurance qualification remain open.
 See [current validation](docs/STATUS.md) and the framework's
 [serial burndown](xboxlle/docs/BLINX-BURNDOWN.md).
 
@@ -59,8 +60,8 @@ py -3 tools/game.py run
 
 The default `attract` mode uses native renderer/audio/input and the qualified
 calendar/device reference implementations. `--mode input-lle` selects original
-XAPI input plus the shared OHCI/DMA floor and currently stops explicitly at
-`KeRaiseIrqlToDpcLevel`; original interrupt/report delivery remains unfinished.
+XAPI input plus the shared OHCI/DMA floor, including original interrupt/report
+delivery and the demonstrated interruption/reentry sequence.
 Selections occur at build time. No runtime HLE/LLE switching is performed.
 
 Owned NTSC inputs and private generated output are required. To reuse the current

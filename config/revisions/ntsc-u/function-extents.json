@@ -15,6 +15,22 @@
       "sha256": "822bfd42801918e808e4e8e3ec31a8f59cc17a1fb061ea6472361dd94bbda8b3",
       "reason": "Measured original XInitDevices indirect callback in input-device-fresh-lle-20261008; complete original initializer through RET 4, adjacent to next known function.",
       "new_entry": true
+    },
+    {
+      "start": 1601108,
+      "original_end": 1601108,
+      "end": 1601448,
+      "sha256": "4c76298bfe12a08738d9f60192d42fe72d59e48dae9acf9f826f5f46f0a6d961",
+      "reason": "Observed original USB enumeration callback after real image-buffer DMA (input-image-dma-probe-20261008); complete original body through ret4, no replacement",
+      "new_entry": true
+    },
+    {
+      "start": 1598809,
+      "original_end": 1598809,
+      "end": 1598891,
+      "sha256": "2213f7e6d22f50a124f91cfd9c2a1e3791cacb2b60d09f4eb80cb01636c0c094",
+      "reason": "Observed original XID report callback in input-pool-probe-20261008; copy and analog threshold logic through RET plus existing tail-call binding, no replaced body",
+      "new_entry": true
     }
   ]
 }
