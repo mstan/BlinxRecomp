@@ -2,7 +2,7 @@
 
 The shared implementation and its complete donor inventory are pinned through
 the [xboxlle submodule](xboxlle/THIRD_PARTY_ATTRIBUTION.md), revision
-`d056bd5cd77d31434a791c53eaa01dd1ad2c147d`.
+`50d344e6cc976989817bfc8cbf93608a3a458cab`.
 
 This includes Phobos's CPU translator and private renderer references, sp00nznet
 input mapping, native audio/DSP/ADPCM donors, Unicorn, and the xemu/Cxbx/Theseus

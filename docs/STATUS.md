@@ -1,7 +1,9 @@
 # Original NTSC Blinx
 
 The pre-split working attract milestone is preserved in xboxlle
-`milestone/blinx-attract-20261008`. This repository pins shared code at `d056bd5`.
+`milestone/blinx-attract-20261008`. Runtime qualification uses `d056bd5`.
+The current pin `50d344e` adds only README/contract/burndown documentation;
+the source used for the qualified executable is unchanged.
 
 | Area | Current evidence / remaining work |
 | --- | --- |
@@ -12,6 +14,7 @@ The pre-split working attract milestone is preserved in xboxlle
 | LLE hardening | Nine broad service-family gates remain open in `beads-xbox.1.102`; input `.104` is active; batch related dependency checks to reduce repeated setup/title runs |
 | New Game | Known post-save fault, `beads-xbox.1.101`, deferred until the current correctness phase |
 | JSRF | Serial follow-up after Blinx; no game-specific work begun by this split |
+| Dashboard choice and storage | Required architecture, `.22`: original dashboard remains supported and its assets are optional for native launch; provision/import a genuine virtual HDD and retain real persistent saves. Host-directory persistence is working but shared FATX image access and the combined launch selector are unfinished. |
 
 Detailed source/evidence is maintained with the implementation in
 [INPUT-LLE.md](../xboxlle/pilots/native-title/INPUT-LLE.md),

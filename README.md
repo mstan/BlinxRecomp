@@ -28,6 +28,15 @@ nor this repository split claims complete LLE input or final attract qualificati
 See [current validation](docs/STATUS.md) and the framework's
 [serial burndown](xboxlle/docs/BLINX-BURNDOWN.md).
 
+Dashboard support is required architecture, with an original dashboard route
+and an accelerated/direct-title choice. Supplied dashboard files should be
+optional. Both routes must use actual persistent console storage, provisioned
+as a real virtual HDD when none is supplied. Saves remain real reads, writes
+and flushes; HLE can accelerate those services. The current pilot uses persistent
+host directories and does not yet complete that shared disk-image requirement
+or expose the combined dashboard selector. These remain tracked requirements in
+the [console launch/storage contract](xboxlle/docs/CONSOLE-LAUNCH-STORAGE.md).
+
 ## Build and run on this machine
 
 Python 3.11+, VS 2022 C++, CMake and Git are required. The framework submodule
