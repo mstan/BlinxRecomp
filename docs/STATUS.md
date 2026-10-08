@@ -1,16 +1,16 @@
 # Original NTSC Blinx
 
 The pre-split working attract milestone is preserved in xboxlle
-`milestone/blinx-attract-20261008`. The current pin `c81a95c` adds the original
-page/allocation and shared OHCI transport checkpoint. Earlier qualification
+`milestone/blinx-attract-20261008`. The current pin `3d04e82` adds original
+interrupt dispatch and the shared OHCI/PIC clock checkpoint. Earlier qualification
 records below remain historical evidence; the input family is still open.
 
 | Area | Current evidence / remaining work |
 | --- | --- |
-| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.125 seconds with 19 captures and no terminal guard |
+| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.657 seconds with 19 captures and no terminal guard |
 | Cadence | Accepted 28.5–28.8 fps debt is tracked in `beads-xbox.1.100`; no new speed claim from the repository split |
 | Calendar LLE | Original kernel conversion functions execute in title calls; qualified alongside native counterpart |
-| Input LLE | Original page/allocation services and shared OHCI register access work. Actual startup stops at `KeRaiseIrqlToDpcLevel`; real descriptor DMA/ownership is fixture-qualified, while interrupt/controller report delivery remains open. |
+| Input LLE | Original page/USB/PIC services now invoke Blinx's original ISR and DPC. Actual startup stops at untranslated `CLI` in the original DPC; interrupt deferral/EOI/eligibility and idle delivery pass fixtures. Controller reports and LLE interruption remain open. |
 | LLE hardening | Nine broad service-family gates remain open in `beads-xbox.1.102`; input `.104` is active; batch related dependency checks to reduce repeated setup/title runs |
 | New Game | Known post-save fault, `beads-xbox.1.101`, deferred until the current correctness phase |
 | JSRF | Serial follow-up after Blinx; no game-specific work begun by this split |
@@ -76,3 +76,36 @@ The harness stopped its own process at the deadline (exit 1), not a crash.
 
 This preserves the playable HLE milestone and advances its maintained input
 floor. It does not close the input family or add a speed/endurance qualification.
+
+## Original interrupt/clock checkpoint - 2026-10-08
+
+Framework `3d04e82675fd7123d499f092ad652d8b4da26bee` reuses the maintained
+OHCI/PIC models and original kernel interrupt gates. The original-input probe
+now executes Blinx's original ISR at IRQL25 and enters its original USB DPC,
+then stops explicitly at untranslated `CLI` (`0x00188a9a`). It previously stopped
+at ordinal129 before interrupt setup. No instruction was discarded and no
+interrupt success was fabricated.
+
+The original-input framework build passes **45/45 tests (17.46s)**, including
+real IRQ assertion, high-IRQL deferral/lowering, specific EOI, original ISR ABI,
+nested original service calls, DPC exclusion/duplicate rejection and idle-CPU
+delivery. The separate original-code oracle qualifies the kernel's behavior.
+The batch fixed DPC dequeue before CPU ownership and incorrect guest-memory
+charging for the host-only bridge. Attribution and remaining scope are in
+[INPUT-LLE.md](../xboxlle/pilots/native-title/INPUT-LLE.md).
+
+This game's default native-input build passes **40/40 tests (17.06s)** on the
+updated framework. No generated title body or revision binding changed.
+
+The game-owned launcher completed **190.657 seconds**, with **19 captures and
+no terminal guards**. Inspected captures 8/12/16 show Demo play, the title screen
+after the replayed Start, and Demo play reentry. The harness terminated its own
+child at the requested deadline (exit1), not a crash. Private evidence is in
+`local/runs/20261008-130831-attract/`, including the run manifest, title log and
+captures. This checks preserved native-input attract behavior after the shared
+DPC ordering fix; it is not an LLE-input attract run.
+
+Next serial dependency: correct interrupt-flag operations and the adjacent
+original USB DPC timer/device reads. USB enumeration/reports, LLE Start/menu
+interruption/reentry and the overall input family remain open. This checkpoint
+does not add a cadence, endurance or full LLE-input sign-off.

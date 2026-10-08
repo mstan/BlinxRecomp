@@ -23,8 +23,8 @@ titles get sibling repositories and reuse those shared services.
 The working milestone has opening movies, real-time Demo play, Start interruption,
 menu return and attract reentry. Accepted cadence debt is about 28.5–28.8 fps;
 New Game is deferred. Full LLE input remains in progress: original startup now
-uses original page/allocation services and reaches OHCI register access, then
-stops at interrupt priority. Neither that progress
+uses original page/allocation services, OHCI/PIC and the original interrupt
+handler, then stops at untranslated CLI in its original USB DPC. Neither that progress
 nor this repository split claims complete LLE input or final attract qualification.
 See [current validation](docs/STATUS.md) and the framework's
 [serial burndown](xboxlle/docs/BLINX-BURNDOWN.md).
