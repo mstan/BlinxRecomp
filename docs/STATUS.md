@@ -1,16 +1,16 @@
 # Original NTSC Blinx
 
 The pre-split working attract milestone is preserved in xboxlle
-`milestone/blinx-attract-20261008`. Runtime qualification uses `d056bd5`.
-The current pin `9c69fe4` adds only README/contract/burndown documentation;
-the source used for the qualified executable is unchanged.
+`milestone/blinx-attract-20261008`. The current pin `c81a95c` adds the original
+page/allocation and shared OHCI transport checkpoint. Earlier qualification
+records below remain historical evidence; the input family is still open.
 
 | Area | Current evidence / remaining work |
 | --- | --- |
-| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; most recent framework run was 190.187 seconds with 19 captures and no terminal guard |
+| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.125 seconds with 19 captures and no terminal guard |
 | Cadence | Accepted 28.5–28.8 fps debt is tracked in `beads-xbox.1.100`; no new speed claim from the repository split |
 | Calendar LLE | Original kernel conversion functions execute in title calls; qualified alongside native counterpart |
-| Input LLE | Original XAPI creates three real kernel device objects and an 8192-byte contiguous buffer, then stops at `MmLockUnlockBufferPages`; USB transfer/input delivery unqualified |
+| Input LLE | Original page/allocation services and shared OHCI register access work. Actual startup stops at `KeRaiseIrqlToDpcLevel`; real descriptor DMA/ownership is fixture-qualified, while interrupt/controller report delivery remains open. |
 | LLE hardening | Nine broad service-family gates remain open in `beads-xbox.1.102`; input `.104` is active; batch related dependency checks to reduce repeated setup/title runs |
 | New Game | Known post-save fault, `beads-xbox.1.101`, deferred until the current correctness phase |
 | JSRF | Serial follow-up after Blinx; no game-specific work begun by this split |
@@ -52,3 +52,27 @@ the hash-verified existing output, compiled through this repo's own CMake entry.
 
 This validates repository/build/launcher integration and preservation of the
 working attract path. It does not close outstanding fidelity or cadence issues.
+
+## Original page/USB checkpoint - 2026-10-08
+
+Framework `c81a95c` passed 43/43 tests in the original-input/USB LLE configuration
+and 40/40 in the native-input/USB-OFF configuration. Actual original-input startup
+uses the shared OHCI model and stops explicitly at ordinal 129 (interrupt
+priority), following original allocation/page services. Descriptor DMA, completed
+TD/done-head writes and storage lifetime are fixture-qualified; controller report
+and CPU interrupt delivery remain open. Details and bounded scope are recorded in
+[INPUT-LLE.md](../xboxlle/pilots/native-title/INPUT-LLE.md).
+
+This repository's default `attract` build was rebuilt and ran **190.125 seconds**
+through its own launcher, with 19 captures and no terminal guard. Inspected
+captures 8/12/16 show Demo play, the title screen after Start, and Demo play reentry.
+The harness stopped its own process at the deadline (exit 1), not a crash.
+
+- Private evidence: `local/runs/20261008-122549-attract/run.json` and `title.log`.
+- Executable SHA-256:
+  `84c4b810495911645e4583ca5547a43584751eea25bd8fdd885099f707cbb674`.
+- `input-lle` selects `PILOT_USB=LLE`; default `attract` keeps USB `OFF`, native
+  input and its existing allocator. This is build selection, not live switching.
+
+This preserves the playable HLE milestone and advances its maintained input
+floor. It does not close the input family or add a speed/endurance qualification.
