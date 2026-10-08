@@ -21,12 +21,13 @@ live in the framework; their selected output fingerprints are owned here. New
 titles get sibling repositories and reuse those shared services.
 
 The working milestone has opening movies, real-time Demo play, Start interruption,
-menu return and attract reentry. Accepted cadence debt is about 28.5–28.8 fps;
+menu return and attract reentry. Accepted cadence debt is about 28.5â€“28.8 fps;
 New Game is deferred. The original-input route now executes initialization,
 enumeration and controller reports through original page/allocation services,
 OHCI/PIC and IRQ/DPC delivery. A quiet 190-second run demonstrates Demo play,
-Start interruption, title return and Demo play reentry. The broader input
-family and final attract endurance qualification remain open.
+Start interruption, title return and Demo play reentry. Input is now qualified for the bounded port-0 automatic-polling contract,
+including original/native hotplug, capabilities and feedback. Final attract
+endurance and the remaining eight LLE families remain open.
 See [current validation](docs/STATUS.md) and the framework's
 [serial burndown](xboxlle/docs/BLINX-BURNDOWN.md).
 

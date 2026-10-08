@@ -1,17 +1,17 @@
 # Original NTSC Blinx
 
 The pre-split working attract milestone is preserved in xboxlle
-`milestone/blinx-attract-20261008`. The current pin `7e47c6c` adds original
-XID reports, coherent shared DMA backing and report-contract corrections. Earlier qualification
-records below remain historical evidence; the input family is still open.
+`milestone/blinx-attract-20261008`. The current pin `39a551b` qualifies the bounded input family: original
+XID reports, hotplug, capabilities and feedback through real USB transfers.
+Earlier qualification records below remain historical evidence.
 
 | Area | Current evidence / remaining work |
 | --- | --- |
 | Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.094 seconds with 19 captures and no terminal guard |
-| Cadence | Accepted 28.5–28.8 fps debt is tracked in `beads-xbox.1.100`; no new speed claim from the repository split |
+| Cadence | Accepted 28.5â€“28.8 fps debt is tracked in `beads-xbox.1.100`; no new speed claim from the repository split |
 | Calendar LLE | Original kernel conversion functions execute in title calls; qualified alongside native counterpart |
-| Input LLE | Original initialization, enumeration and XID reports execute through pinned DMA and IRQ/DPC delivery. Quiet framework run: 190.156s, 19 captures, Demo play, Start interruption, title return and reentry. Broader connection/capability/close comparison remains open. |
-| LLE hardening | Nine broad service-family gates remain open in `beads-xbox.1.102`; input `.104` is active; batch related dependency checks to reduce repeated setup/title runs |
+| Input LLE | Original initialization, enumeration and XID reports execute through pinned DMA and IRQ/DPC delivery. Quiet framework run: 190.156s, 19 captures, Demo play, Start interruption, title return and reentry. Original/native hotplug/reopen/Start and live capabilities/zero-rumble qualification also pass; broader peripheral and exact hardware polling timing remain unqualified. |
+| LLE hardening | Eight service-family gates remain open in `beads-xbox.1.102`; bounded input `.104` is complete; batch related dependency checks to reduce repeated setup/title runs |
 | New Game | Known post-save fault, `beads-xbox.1.101`, deferred until the current correctness phase |
 | JSRF | Serial follow-up after Blinx; no game-specific work begun by this split |
 | Dashboard choice and storage | Required architecture, `.22`: original dashboard remains supported and its assets are optional for native launch; provision/import a genuine virtual HDD and retain real persistent saves. Host-directory persistence is working but shared FATX image access and the combined launch selector are unfinished. |
@@ -24,7 +24,7 @@ Detailed source/evidence is maintained with the implementation in
 
 The game repository adopts the existing generation manifest only after checking
 every generated file, the original image, CPU donor, all seven binding records
-and all four original-function recovery records. The generated output remains
+and all five original-function recovery records. The generated output remains
 ignored; these files are never pushed. The original framework worktree and its
 qualification captures are retained for comparison.
 
@@ -121,3 +121,22 @@ Next serial dependency: correct interrupt-flag operations and the adjacent
 original USB DPC timer/device reads. USB enumeration/reports, LLE Start/menu
 interruption/reentry and the overall input family remain open. This checkpoint
 does not add a cadence, endurance or full LLE-input sign-off.
+
+## Bounded input gate - 2026-10-08
+
+Framework `39a551b` adds the recovered original disconnect callback and
+actual original stack reservation/PFN pinning for USB control transfers.
+Original/native hotplug runs complete 70.094s/150.140s with captured menu return;
+separate live API probes complete 60.093s/60.078s, both before and after reconnect,
+with identical 25-byte capabilities and actual zero-rumble completion.
+Framework qualification: 46/46 LLE tests (19.79s), 40/40 production-native tests
+(17.71s). Production disables the separate API probe. The earlier game-owned
+190s regression remains the visual attract evidence; these framework runs are
+not relabeled as new game-owned attract runs. See the pinned INPUT-LLE.md for
+identities, limits and independent original-software evidence.
+
+`tests/input-hotplug.txt` provides the same disconnect/reconnect replay for either
+build selection. The game profile adds the fifth original recovery extent and
+adopts only hash-verified generated output.
+
+Game integration on this pin: doctor passes; build succeeds; **40/40 tests pass (17.06s)**. No additional long attract replay was run for this pin update.

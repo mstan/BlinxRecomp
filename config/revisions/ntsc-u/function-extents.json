@@ -31,6 +31,14 @@
       "sha256": "2213f7e6d22f50a124f91cfd9c2a1e3791cacb2b60d09f4eb80cb01636c0c094",
       "reason": "Observed original XID report callback in input-pool-probe-20261008; copy and analog threshold logic through RET plus existing tail-call binding, no replaced body",
       "new_entry": true
+    },
+    {
+      "start": 1599590,
+      "original_end": 1599590,
+      "end": 1599649,
+      "sha256": "c83206753d8606b31b19a7c40c2a164ac1c375deb723e9dccadca1a12c9c59fb",
+      "reason": "Observed XID disconnect callback during actual port removal in input-hotplug-original-20261008; reviewed complete original body through RET4 immediately before known1868a1, no replacement",
+      "new_entry": true
     }
   ]
 }
