@@ -79,6 +79,13 @@ movie. Use `--seconds 510 --replay tests/attract-input-display-lle.txt` for the
 observed slower reference; timing can require adjustment on another host. See the
 [display contract and limits](xboxlle/pilots/native-title/DISPLAY-LLE.md).
 
+`--mode memory-lle` selects original general virtual-memory services and the
+existing original pool/contiguous/page bridge, with native input/display. The
+framework run reaches Demo play, Start/title return and reentry. This is the VM
+slice of the ongoing memory-family audit; statistics, residency and the remaining
+resource contracts are still being hardened. See the
+[memory contract and limits](xboxlle/pilots/native-title/MEMORY-LLE.md).
+
 Owned NTSC inputs and private generated output are required. To reuse the current
 hash-verified local output without retranslating it:
 

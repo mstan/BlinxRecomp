@@ -3,17 +3,20 @@
 The pre-split working attract milestone is preserved in xboxlle
 `milestone/blinx-attract-20261008`. The current pin qualifies bounded input and
 display: original XID reports/USB transfers and original display IRQ/DPC/waits,
-real modeled scanout, interval Reset and teardown. HLE remains the performance path.
+real modeled scanout, interval Reset and teardown. Pin `c65629b` also adds the
+original virtual-memory slice; the broader memory family remains open.
+HLE remains the performance path.
 Earlier qualification records below remain historical evidence.
 
 | Area | Current evidence / remaining work |
 | --- | --- |
-| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.656 seconds with 19 captures and no terminal guard |
+| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.125 seconds with 19 captures and no terminal guard |
 | Cadence | Accepted 28.5â€“28.8 fps debt is tracked in `beads-xbox.1.100`; no new speed claim from the repository split |
 | Calendar LLE | Original kernel conversion functions execute in title calls; qualified alongside native counterpart |
 | Input LLE | Original initialization, enumeration and XID reports execute through pinned DMA and IRQ/DPC delivery. Quiet framework run: 190.156s, 19 captures, Demo play, Start interruption, title return and reentry. Original/native hotplug/reopen/Start and live capabilities/zero-rumble qualification also pass; broader peripheral and exact hardware polling timing remain unqualified. |
 | Display LLE | Original driver and maintained NV2A/PIC pass waits, paced/immediate flips, independent scanout pixels and three complete device lifetimes. Combined original input/display reaches Demo, interruption, reentry and the subsequent movie in a 510s framework run. |
-| LLE hardening | Seven service-family gates remain open in `beads-xbox.1.102`; bounded input `.104` and display `.105` are complete; memory/resource lifetime `.106` is next. LLE throughput is not an acceptance requirement. |
+| Memory LLE | Original virtual allocation/protection/query/decommit/release now runs in Blinx; framework 46/46 tests and 190.203s attract regression pass. Partial release and free-range query fixes also apply to HLE. Remaining residency/statistics/resource work stays in `.106`. |
+| LLE hardening | Seven service-family gates remain open in `beads-xbox.1.102`; bounded input `.104` and display `.105` are complete; memory/resource lifetime `.106` is active. LLE throughput is not an acceptance requirement. |
 | New Game | Known post-save fault, `beads-xbox.1.101`, deferred until the current correctness phase |
 | JSRF | Serial follow-up after Blinx; no game-specific work begun by this split |
 | Dashboard choice and storage | Required architecture, `.22`: original dashboard remains supported and its assets are optional for native launch; provision/import a genuine virtual HDD and retain real persistent saves. Host-directory persistence is working but shared FATX image access and the combined launch selector are unfinished. |
@@ -22,6 +25,7 @@ Earlier qualification records below remain historical evidence.
 Detailed source/evidence is maintained with the implementation in
 [INPUT-LLE.md](../xboxlle/pilots/native-title/INPUT-LLE.md),
 [DISPLAY-LLE.md](../xboxlle/pilots/native-title/DISPLAY-LLE.md),
+[MEMORY-LLE.md](../xboxlle/pilots/native-title/MEMORY-LLE.md),
 [CALENDAR-LLE.md](../xboxlle/pilots/native-title/CALENDAR-LLE.md) and
 [BLINX-BURNDOWN.md](../xboxlle/docs/BLINX-BURNDOWN.md).
 
@@ -162,3 +166,22 @@ reaches interruption/reentry and the subsequent movie. Geometry changes and
 hardware field phase remain outside the bounded display claim. Host private
 memory grows during the slow combined run; `.106` retains that observation for
 the memory/resource audit. No new input or display workaround is used.
+
+## Original virtual-memory checkpoint - 2026-10-08
+
+Framework `c65629b` adds the build-selected original VM route and independent
+38-case original-kernel observations. The whole memory family remains open;
+`memory-lle` is an opt-in slice with native input/display. The generated title
+and binding hashes are unchanged and doctor passes.
+
+This game's native build initially passes **39/40 tests (16.00s)**. The graphics
+clock test fails its strict whole-process handle-count equality once; the same
+unchanged graphics ABI test then passes **three consecutive reruns** in
+2.66/2.71/2.61s. The transient cause is not established and is retained in `.106`;
+the assertion was not removed or relaxed.
+
+The actual game-owned native regression completes **190.125s**, 19 captures,
+no guards, deliberate deadline exit 1. Captures 8/12/17 show Demo play,
+Start/title return and reentry. Private evidence:
+`local/runs/20261008-165451-attract/`; executable SHA-256
+`eed97b28dd47960081d495828c2b6a3596e9e7bbcb345f2490501e8ac4d26db1`.
