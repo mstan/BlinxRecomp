@@ -1,17 +1,19 @@
 # Original NTSC Blinx
 
 The pre-split working attract milestone is preserved in xboxlle
-`milestone/blinx-attract-20261008`. The current pin `39a551b` qualifies the bounded input family: original
-XID reports, hotplug, capabilities and feedback through real USB transfers.
+`milestone/blinx-attract-20261008`. The current pin qualifies bounded input and
+display: original XID reports/USB transfers and original display IRQ/DPC/waits,
+real modeled scanout, interval Reset and teardown. HLE remains the performance path.
 Earlier qualification records below remain historical evidence.
 
 | Area | Current evidence / remaining work |
 | --- | --- |
-| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.094 seconds with 19 captures and no terminal guard |
+| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.656 seconds with 19 captures and no terminal guard |
 | Cadence | Accepted 28.5â€“28.8 fps debt is tracked in `beads-xbox.1.100`; no new speed claim from the repository split |
 | Calendar LLE | Original kernel conversion functions execute in title calls; qualified alongside native counterpart |
 | Input LLE | Original initialization, enumeration and XID reports execute through pinned DMA and IRQ/DPC delivery. Quiet framework run: 190.156s, 19 captures, Demo play, Start interruption, title return and reentry. Original/native hotplug/reopen/Start and live capabilities/zero-rumble qualification also pass; broader peripheral and exact hardware polling timing remain unqualified. |
-| LLE hardening | Eight service-family gates remain open in `beads-xbox.1.102`; bounded input `.104` is complete; batch related dependency checks to reduce repeated setup/title runs |
+| Display LLE | Original driver and maintained NV2A/PIC pass waits, paced/immediate flips, independent scanout pixels and three complete device lifetimes. Combined original input/display reaches Demo, interruption, reentry and the subsequent movie in a 510s framework run. |
+| LLE hardening | Seven service-family gates remain open in `beads-xbox.1.102`; bounded input `.104` and display `.105` are complete; memory/resource lifetime `.106` is next. LLE throughput is not an acceptance requirement. |
 | New Game | Known post-save fault, `beads-xbox.1.101`, deferred until the current correctness phase |
 | JSRF | Serial follow-up after Blinx; no game-specific work begun by this split |
 | Dashboard choice and storage | Required architecture, `.22`: original dashboard remains supported and its assets are optional for native launch; provision/import a genuine virtual HDD and retain real persistent saves. Host-directory persistence is working but shared FATX image access and the combined launch selector are unfinished. |
@@ -19,11 +21,12 @@ Earlier qualification records below remain historical evidence.
 
 Detailed source/evidence is maintained with the implementation in
 [INPUT-LLE.md](../xboxlle/pilots/native-title/INPUT-LLE.md),
+[DISPLAY-LLE.md](../xboxlle/pilots/native-title/DISPLAY-LLE.md),
 [CALENDAR-LLE.md](../xboxlle/pilots/native-title/CALENDAR-LLE.md) and
 [BLINX-BURNDOWN.md](../xboxlle/docs/BLINX-BURNDOWN.md).
 
 The game repository adopts the existing generation manifest only after checking
-every generated file, the original image, CPU donor, all seven binding records
+every generated file, the original image, CPU donor, all eight binding records
 and all five original-function recovery records. The generated output remains
 ignored; these files are never pushed. The original framework worktree and its
 qualification captures are retained for comparison.
@@ -140,3 +143,22 @@ build selection. The game profile adds the fifth original recovery extent and
 adopts only hash-verified generated output.
 
 Game integration on this pin: doctor passes; build succeeds; **40/40 tests pass (17.06s)**. No additional long attract replay was run for this pin update.
+
+## Bounded display gate - 2026-10-08
+
+Runtime `8740525` and its display qualification record are integrated together.
+The game-owned native build passes **40/40 tests (20.33s)** and completes
+**190.656s** with 19 captures and no guards. Captures 8/12/17 show Demo play,
+title return after Start and Demo play reentry. The harness ends at its deadline
+(exit 1); this is not a crash or a new cadence/endurance qualification.
+
+Private evidence: `local/runs/20261008-161729-attract/`; executable SHA-256
+`b9ce6dfd59751e9c601177ec8a86f1bbcb1cf09b1436292e7bb62069ea96d0d8`.
+
+`display-lle` selects original display with native input; `input-display-lle`
+selects both original services. The latter's framework qualification uses the
+slower game-owned `tests/attract-input-display-lle.txt`, completes 510.328s and
+reaches interruption/reentry and the subsequent movie. Geometry changes and
+hardware field phase remain outside the bounded display claim. Host private
+memory grows during the slow combined run; `.106` retains that observation for
+the memory/resource audit. No new input or display workaround is used.

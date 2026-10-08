@@ -98,6 +98,9 @@ def configure(local, mode):
                'PILOT_DSP_LIBRARY': 'dsp_library', 'PILOT_ADPCM_SOURCE': 'adpcm_source',
                'PILOT_CALENDAR_KERNEL': 'calendar_kernel', 'PILOT_CALENDAR_UNICORN': 'unicorn',
                'PILOT_CALENDAR_UNICORN_NOTICES': 'unicorn_notices', 'PILOT_IO_DEVICE_SNAPSHOT': 'io_snapshot'}
+    if options.get('PILOT_DISPLAY') == 'LLE':
+        mapping.update(PILOT_DISPLAY_LIBRARY='display_library',
+                       PILOT_DISPLAY_DEPENDENCIES='display_dependencies')
     for key, value in mapping.items():
         if not local[value].exists():
             raise ValueError(f'Missing local {value}: {local[value]}')
@@ -177,7 +180,7 @@ def main():
         shutil.copytree(args.from_dir / 'gen', GENERATED / 'gen')
         for name in ['generation.aot-private.json', 'identity.aot-private.json', 'function-extents.aot-private.json']:
             shutil.copy2(args.from_dir / name, GENERATED / name)
-        for family in PROFILE['generation']['bindings']:
+        for family in PROFILE['generation']['bindings'] + ['display']:
             shutil.copy2(args.from_dir / f'{family}-binding.aot-private.json', GENERATED)
         check_generated(GENERATED)
     elif args.action == 'prepare':

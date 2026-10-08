@@ -6,7 +6,7 @@ xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
 
 [framework]
 repository = "https://github.com/mstan/xboxlle"
-revision = "39a551b1003c9020517ea8548367e6fb6b55f74d"
+revision = "494f318f2f1e4c113a9d62a7badda6ba3b52afa4"
 directory = "xboxlle"
 
 [generation]
@@ -25,6 +25,7 @@ PILOT_AUDIO_BACKEND = "XAUDIO2_DSP"
 PILOT_CALENDAR = "LLE"
 PILOT_IO_DEVICE = "LLE"
 PILOT_USB = "OFF"
+PILOT_DISPLAY = "NATIVE"
 
 [modes.attract]
 PILOT_INPUT = "NATIVE"
@@ -32,6 +33,16 @@ PILOT_INPUT = "NATIVE"
 [modes.input-lle]
 PILOT_INPUT = "ORIGINAL"
 PILOT_USB = "LLE"
+
+[modes.display-lle]
+PILOT_INPUT = "NATIVE"
+PILOT_USB = "LLE"
+PILOT_DISPLAY = "LLE"
+
+[modes.input-display-lle]
+PILOT_INPUT = "ORIGINAL"
+PILOT_USB = "LLE"
+PILOT_DISPLAY = "LLE"
 
 [runtime]
 XLLE_PILOT_GUEST_SCHEDULER = "1"

@@ -65,6 +65,20 @@ XAPI input plus the shared OHCI/DMA floor, including original interrupt/report
 delivery and the demonstrated interruption/reentry sequence.
 Selections occur at build time. No runtime HLE/LLE switching is performed.
 
+`--mode display-lle` keeps native input/rendering/audio and selects the original
+display driver over maintained NV2A/PIC. Its actual scanout, blocking waits,
+paced/immediate flips and interval Reset have reached Demo play, Start/title
+return and reentry. It is a slow correctness route. Build the framework's
+private `xlle_nv2a_reference` target in an existing full-system LLE build and
+set `display_library` and `display_dependencies` in local paths, then use the
+normal build/run commands with that mode. With capture enabled, `scanout-*.ppm`
+comes through the modeled hardware; `present-*.ppm` records the native frame.
+`--mode input-display-lle` selects both original input and display. Its framework
+qualification reaches Demo play, Start/title return, reentry and the subsequent
+movie. Use `--seconds 510 --replay tests/attract-input-display-lle.txt` for the
+observed slower reference; timing can require adjustment on another host. See the
+[display contract and limits](xboxlle/pilots/native-title/DISPLAY-LLE.md).
+
 Owned NTSC inputs and private generated output are required. To reuse the current
 hash-verified local output without retranslating it:
 

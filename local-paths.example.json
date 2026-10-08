@@ -12,5 +12,7 @@
   "calendar_kernel": "local/owned/kernel-live.bin",
   "unicorn": "local/dependencies/reference-python/unicorn",
   "unicorn_notices": "local/dependencies/unicorn-2.1.4-notices",
-  "io_snapshot": "local/owned/io-boot-18m.ram.bin"
+  "io_snapshot": "local/owned/io-boot-18m.ram.bin",
+  "display_library": "local/dependencies/nv2a-reference/libxlle_nv2a_reference.dll",
+  "display_dependencies": "C:/msys64/mingw64/bin"
 }
