@@ -5,20 +5,23 @@ The pre-split working attract milestone is preserved in xboxlle
 display: original XID reports/USB transfers and original display IRQ/DPC/waits,
 real modeled scanout, interval Reset and teardown. Runtime `4a5dd48` also
 qualifies bounded memory allocation/query, residency, page relocation and
-resource lifetime. The pin includes its documentation-only qualification update.
+resource lifetime. Runtime `9f151c6` additionally corrects native asynchronous
+file rejection and notification from original Nt/FATX/IDE execution evidence.
+Its original file route is not yet selected by the title; that family stays open.
 HLE remains the performance path.
 Earlier qualification records below remain historical evidence.
 
 | Area | Current evidence / remaining work |
 | --- | --- |
-| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.125 seconds with 19 captures and no terminal guard |
+| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.094 seconds with 19 captures and no terminal guard |
 | Cadence | Accepted 28.5â€“28.8 fps debt is tracked in `beads-xbox.1.100`; no new speed claim from the repository split |
 | Calendar LLE | Original kernel conversion functions execute in title calls; qualified alongside native counterpart |
 | Input LLE | Original initialization, enumeration and XID reports execute through pinned DMA and IRQ/DPC delivery. Quiet framework run: 190.156s, 19 captures, Demo play, Start interruption, title return and reentry. Original/native hotplug/reopen/Start and live capabilities/zero-rumble qualification also pass; broader peripheral and exact hardware polling timing remain unqualified. |
 | Display LLE | Original driver and maintained NV2A/PIC pass waits, paced/immediate flips, independent scanout pixels and three complete device lifetimes. Combined original input/display reaches Demo, interruption, reentry and the subsequent movie in a 510s framework run. |
 | Memory LLE | Bounded gate `.106` qualified: original virtual/pool/contiguous services, queries/statistics, loaded-page backing and physical relocation. 50 original cases, 46/46 LLE tests and 300.390s actual attract regression. Pool-backed texture headers remove roughly 2 MiB of guest overhead in the 520-texture fixture. |
-| LLE hardening | Six service-family gates remain open in `beads-xbox.1.102`; bounded input `.104`, display `.105` and memory `.106` are complete. Files/cache/installed media is next. LLE throughput is not an acceptance requirement. |
-| Retained validation debt | Native suite 39/40: existing event-timeout assertion `.99` fails; no tolerance was relaxed. Long-run host-memory growth remains `.107`; bounded guest-lifetime checks do not establish an endurance plateau. |
+| LLE hardening | Six service-family gates remain open in `beads-xbox.1.102`; bounded input `.104`, display `.105` and memory `.106` are complete. Files/cache/installed media `.108` is active. LLE throughput is not an acceptance requirement. |
+| File LLE | Maintained original Nt/FATX/cache runner over IDE/PIC matches independent file bytes and executes real writes, flush/reopen/delete, directory and notification cases. Title-selected original files, mounts and remaining lifetime/persistence qualification are still open. |
+| Retained validation debt | Latest native suite 40/40 passes. Combined original-memory suite 45/46 retains existing event-timeout assertion `.99`; no tolerance was relaxed. Long-run host-memory growth remains `.107`; bounded guest-lifetime checks do not establish an endurance plateau. |
 | New Game | Known post-save fault, `beads-xbox.1.101`, deferred until the current correctness phase |
 | JSRF | Serial follow-up after Blinx; no game-specific work begun by this split |
 | Dashboard choice and storage | Required architecture, `.22`: original dashboard remains supported and its assets are optional for native launch; provision/import a genuine virtual HDD and retain real persistent saves. Host-directory persistence is working but shared FATX image access and the combined launch selector are unfinished. |
@@ -28,6 +31,7 @@ Detailed source/evidence is maintained with the implementation in
 [INPUT-LLE.md](../xboxlle/pilots/native-title/INPUT-LLE.md),
 [DISPLAY-LLE.md](../xboxlle/pilots/native-title/DISPLAY-LLE.md),
 [MEMORY-LLE.md](../xboxlle/pilots/native-title/MEMORY-LLE.md),
+[FILES-LLE.md](../xboxlle/pilots/native-title/FILES-LLE.md),
 [CALENDAR-LLE.md](../xboxlle/pilots/native-title/CALENDAR-LLE.md) and
 [BLINX-BURNDOWN.md](../xboxlle/docs/BLINX-BURNDOWN.md).
 
@@ -40,6 +44,23 @@ qualification captures are retained for comparison.
 Fresh full regeneration is available through the shared preparation command but
 is not claimed as validated by the initial repository split. Validation uses
 the hash-verified existing output, compiled through this repo's own CMake entry.
+
+## Original file notification correction - 2026-10-08
+
+Runtime `9f151c6` with its reference-test/documentation follow-up: game doctor
+and build pass; **40/40 native tests pass (16.52s)**. An immediate asynchronous
+file error now preserves IOSB and leaves notification reset; accepted requests
+retain real completion. Explicit-event requests notify that event, while
+requests without an event notify the file. The original kernel/FATX/IDE route
+establishes these observations independently of the native implementation.
+
+`local/runs/20261008-182422-attract/` records **190.094s**, 19 captures and no
+guards. Inspected captures 8/12/17 show Demo play, title return after Start and
+Demo reentry. The harness intentionally stops at the deadline (exit 1).
+Executable SHA-256:
+`e04263c4697cf244cad361b4f86ea28cd8b50f882e4f32a559d3c87f189d9f77`.
+This checks the native correction and preserves attract behavior. It does not
+close the files family or add a cadence/endurance claim.
 
 ## Full memory-family integration - 2026-10-08
 
