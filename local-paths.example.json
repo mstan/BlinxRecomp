@@ -14,5 +14,8 @@
   "unicorn_notices": "local/dependencies/unicorn-2.1.4-notices",
   "io_snapshot": "local/owned/io-boot-18m.ram.bin",
   "display_library": "local/dependencies/nv2a-reference/libxlle_nv2a_reference.dll",
-  "display_dependencies": "C:/msys64/mingw64/bin"
+  "display_dependencies": "C:/msys64/mingw64/bin",
+  "files_library": "local/dependencies/storage-reference/libxlle_storage_reference.dll",
+  "files_dependencies": "C:/msys64/mingw64/bin",
+  "files_hdd": "local/owned/blinx-installed-hdd.img"
 }

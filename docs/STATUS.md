@@ -7,24 +7,33 @@ real modeled scanout, interval Reset and teardown. Runtime `4a5dd48` also
 qualifies bounded memory allocation/query, residency, page relocation and
 resource lifetime. Runtime `9f151c6` additionally corrects native asynchronous
 file rejection and notification from original Nt/FATX/IDE execution evidence.
-Its original file route is not yet selected by the title; that family stays open.
+Runtime `526c68d` now connects original file/cache/namespace/IDE execution to
+the title over a separate installed HDD, with real persistence. The family's
+remaining contract qualification stays open.
 HLE remains the performance path.
 Earlier qualification records below remain historical evidence.
 
+The game-owned `files-lle` mode builds on this pin. Its shared transport test
+reads all 44,724,224 installed XBE bytes through the original kernel and disk
+model, matching the independent extracted file. The full title regression for
+that source/configuration is the framework run described below. Game-owned
+files-LLE validation currently covers compilation and the shared-transport byte
+comparison.
+
 | Area | Current evidence / remaining work |
 | --- | --- |
-| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.094 seconds with 19 captures and no terminal guard |
+| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.078 seconds with 19 captures and no terminal guard |
 | Cadence | Accepted 28.5â€“28.8 fps debt is tracked in `beads-xbox.1.100`; no new speed claim from the repository split |
 | Calendar LLE | Original kernel conversion functions execute in title calls; qualified alongside native counterpart |
 | Input LLE | Original initialization, enumeration and XID reports execute through pinned DMA and IRQ/DPC delivery. Quiet framework run: 190.156s, 19 captures, Demo play, Start interruption, title return and reentry. Original/native hotplug/reopen/Start and live capabilities/zero-rumble qualification also pass; broader peripheral and exact hardware polling timing remain unqualified. |
 | Display LLE | Original driver and maintained NV2A/PIC pass waits, paced/immediate flips, independent scanout pixels and three complete device lifetimes. Combined original input/display reaches Demo, interruption, reentry and the subsequent movie in a 510s framework run. |
 | Memory LLE | Bounded gate `.106` qualified: original virtual/pool/contiguous services, queries/statistics, loaded-page backing and physical relocation. 50 original cases, 46/46 LLE tests and 300.390s actual attract regression. Pool-backed texture headers remove roughly 2 MiB of guest overhead in the 520-texture fixture. |
 | LLE hardening | Six service-family gates remain open in `beads-xbox.1.102`; bounded input `.104`, display `.105` and memory `.106` are complete. Files/cache/installed media `.108` is active. LLE throughput is not an acceptance requirement. |
-| File LLE | Maintained original Nt/FATX/cache runner over IDE/PIC matches independent file bytes and executes real writes, flush/reopen/delete, directory and notification cases. Title-selected original files, mounts and remaining lifetime/persistence qualification are still open. |
-| Retained validation debt | Latest native suite 40/40 passes. Combined original-memory suite 45/46 retains existing event-timeout assertion `.99`; no tolerance was relaxed. Long-run host-memory growth remains `.107`; bounded guest-lifetime checks do not establish an endurance plateau. |
+| File LLE | Original Nt/FATX/cache/IDE title route: final 240.157s framework run, 23 captures, no guards; Demo, Start/title return, Demo reentry and continued gameplay. Complete installed XBE bytes independently match, and separate-process 9,001-byte write/flush/read/delete passes. `files-lle` mode exposes this selection; broader contract/endurance work remains open. |
+| Retained validation debt | Latest native suite 40/40 passes (17.03s). Shared-device suite 46/46 passes (22.44s); the previously intermittent event-timeout assertion `.99` is not considered fixed by one passing run. Long-run host-memory growth remains `.107`; bounded guest-lifetime checks do not establish an endurance plateau. |
 | New Game | Known post-save fault, `beads-xbox.1.101`, deferred until the current correctness phase |
 | JSRF | Serial follow-up after Blinx; no game-specific work begun by this split |
-| Dashboard choice and storage | Required architecture, `.22`: original dashboard remains supported and its assets are optional for native launch; provision/import a genuine virtual HDD and retain real persistent saves. Host-directory persistence is working but shared FATX image access and the combined launch selector are unfinished. |
+| Dashboard choice and storage | Required architecture, `.22`: original dashboard remains supported and its assets are optional for native launch. The private files-LLE route now uses a genuine persistent FATX HDD; the default native backend still uses host directories. General shared-profile provisioning and the combined launch selector remain unfinished. |
 | Planned launch/save options | Direct game launch remains available; consider an optional permissive open-source dashboard, preserve the supplied retail boot/logo experience, and make the console/save target configurable for eventual sharing across recomps. No dashboard donor selected or shared-profile implementation claimed. |
 
 Detailed source/evidence is maintained with the implementation in
@@ -46,6 +55,17 @@ is not claimed as validated by the initial repository split. Validation uses
 the hash-verified existing output, compiled through this repo's own CMake entry.
 
 ## Original file notification correction - 2026-10-08
+
+Updated milestone on framework `526c68d`: game doctor/build and 40/40 native
+tests pass (17.03s). `local/runs/20261008-190843-attract/` runs 190.078s with
+19 captures and no guards; inspected captures 8/12/17 show Demo, title after
+Start and Demo reentry. Exit 1 is the intentional deadline termination.
+Executable SHA-256:
+`caedeacfd916418873dd51be5ac0c8f41320897e9492d69809cd7b84bb58dc0d`.
+This adopts both the original-files route and the native open/EOF IOSB fixes.
+The new mode builds successfully, with its own exact whole-XBE transport test.
+Family `.108` stays open for the remaining metadata/error/directory/mount
+contract pass and completion limits documented by the framework.
 
 Runtime `9f151c6` with its reference-test/documentation follow-up: game doctor
 and build pass; **40/40 native tests pass (16.52s)**. An immediate asynchronous

@@ -36,9 +36,10 @@ Dashboard support is required architecture, with an original dashboard route
 and an accelerated/direct-title choice. Supplied dashboard files should be
 optional. Both routes must use actual persistent console storage, provisioned
 as a real virtual HDD when none is supplied. Saves remain real reads, writes
-and flushes; HLE can accelerate those services. The current pilot uses persistent
-host directories and does not yet complete that shared disk-image requirement
-or expose the combined dashboard selector. These remain tracked requirements in
+and flushes; HLE can accelerate those services. The default native pilot uses
+persistent host directories; the private files-LLE route now uses a real FATX
+HDD image. General shared-profile provisioning and the combined dashboard
+selector remain tracked requirements in
 the [console launch/storage contract](xboxlle/docs/CONSOLE-LAUNCH-STORAGE.md).
 That contract also records an optional permissive open-source default dashboard,
 the original retail boot/logo route with supplied compatible software, and a
@@ -87,6 +88,20 @@ movies. The bounded memory gate includes original queries/statistics, loaded-pag
 residency, physical-page relocation and shared CPU/DMA/resource ownership.
 Long-run host-memory retention remains tracked separately. See the
 [memory contract and limits](xboxlle/pilots/native-title/MEMORY-LLE.md).
+
+`--mode files-lle` selects original Nt/FATX/cache/IDE services and original
+utility-drive code over a separate writable installed-title HDD, plus original
+memory services. Renderer, audio and input remain native. Build the private
+framework `xlle_storage_reference` target and configure `files_library`,
+`files_dependencies` and `files_hdd` in local paths. Provision the complete
+matching title under `E:\Titles\4D530013`; the framework's
+`tools/native_hdd_install.py` records full hash/readback evidence. Its private
+offline FATX dependency and preparation caveat are documented in
+[FILES-LLE.md](xboxlle/pilots/native-title/FILES-LLE.md).
+This mode uses the HDD for actual files, cache and saves; native launch keeps
+its existing host-directory backend. Use `--seconds 240 --capture --replay
+tests/attract-files-lle.txt` for the focused interruption/reentry check. The
+filesystem family's broader contract and endurance qualification remains open.
 
 Owned NTSC inputs and private generated output are required. To reuse the current
 hash-verified local output without retranslating it:

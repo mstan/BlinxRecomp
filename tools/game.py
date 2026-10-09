@@ -101,6 +101,10 @@ def configure(local, mode):
     if options.get('PILOT_DISPLAY') == 'LLE':
         mapping.update(PILOT_DISPLAY_LIBRARY='display_library',
                        PILOT_DISPLAY_DEPENDENCIES='display_dependencies')
+    if options.get('PILOT_FILES') == 'LLE':
+        mapping.update(PILOT_FILES_LIBRARY='files_library',
+                       PILOT_FILES_DEPENDENCIES='files_dependencies',
+                       PILOT_FILES_HDD='files_hdd')
     for key, value in mapping.items():
         if not local[value].exists():
             raise ValueError(f'Missing local {value}: {local[value]}')
@@ -110,11 +114,17 @@ def configure(local, mode):
 
 
 def launch(local, args):
+    if args.replay and not args.replay.is_file():
+        raise ValueError(f'Input replay does not exist: {args.replay}')
     binary = ROOT / 'build' / args.mode / 'framework/Release/BlinxRecomp.exe'
     if not binary.is_file():
         raise ValueError('Build this mode before launching it')
     check_generated(GENERATED)
-    if not local['state_dir'].is_dir() or not local['media_root'].is_dir():
+    original_files = PROFILE['modes'][args.mode].get('PILOT_FILES', PROFILE['build']['PILOT_FILES']) == 'LLE'
+    if original_files:
+        if not local.get('files_hdd', Path()).is_file():
+            raise ValueError('files-lle requires its separately provisioned writable HDD')
+    elif not local['state_dir'].is_dir() or not local['media_root'].is_dir():
         raise ValueError('Existing local state_dir and mounted media_root are required')
     label = time.strftime('%Y%m%d-%H%M%S') + '-' + args.mode
     output = ROOT / 'local/runs' / label
@@ -144,11 +154,14 @@ def launch(local, args):
             child.terminate()
             child.wait()
     text = (output / 'title.log').read_text(encoding='utf-8', errors='replace')
-    guards = [line for line in text.splitlines() if any(marker in line for marker in ['[PILOT STOP]', '[PILOT AUDIO STOP]', '[FAULT]'])]
+    guards = [line for line in text.splitlines()
+              if ('[PILOT' in line and 'STOP]' in line) or '[FAULT]' in line]
     result = dict(mode=args.mode, elapsed=time.monotonic()-start, child_returncode=child.returncode,
                   stopped_at_deadline=deadline, guards=guards, executable_sha256=sha(binary),
                   framework_revision=PROFILE['framework']['revision'], command=command,
                   configuration={key: env[key] for key in env if key.startswith('XLLE_PILOT_')})
+    if original_files:
+        result['original_files_hdd'] = str(local['files_hdd'])
     (output / 'run.json').write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({key: result[key] for key in ['elapsed', 'child_returncode', 'stopped_at_deadline', 'guards']}, indent=2))
     if guards or (not deadline and child.returncode):
