@@ -8,8 +8,10 @@ qualifies bounded memory allocation/query, residency, page relocation and
 resource lifetime. Runtime `9f151c6` additionally corrects native asynchronous
 file rejection and notification from original Nt/FATX/IDE execution evidence.
 Runtime `526c68d` now connects original file/cache/namespace/IDE execution to
-the title over a separate installed HDD, with real persistence. The family's
-remaining contract qualification stays open.
+the title over a separate installed HDD, with real persistence. Runtime
+`52bdfed` completes the bounded filesystem family: independent original
+metadata/directory/error/namespace cases, matching native corrections and
+actual native title regression. Five of nine family gates remain open.
 HLE remains the performance path.
 Earlier qualification records below remain historical evidence.
 
@@ -22,15 +24,15 @@ comparison.
 
 | Area | Current evidence / remaining work |
 | --- | --- |
-| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.078 seconds with 19 captures and no terminal guard |
+| Native attract | Movies, Demo play, Start interruption, title return and reentry observed; latest game-owned regression ran 190.109 seconds with 19 captures and no terminal guard |
 | Cadence | Accepted 28.5â€“28.8 fps debt is tracked in `beads-xbox.1.100`; no new speed claim from the repository split |
 | Calendar LLE | Original kernel conversion functions execute in title calls; qualified alongside native counterpart |
 | Input LLE | Original initialization, enumeration and XID reports execute through pinned DMA and IRQ/DPC delivery. Quiet framework run: 190.156s, 19 captures, Demo play, Start interruption, title return and reentry. Original/native hotplug/reopen/Start and live capabilities/zero-rumble qualification also pass; broader peripheral and exact hardware polling timing remain unqualified. |
 | Display LLE | Original driver and maintained NV2A/PIC pass waits, paced/immediate flips, independent scanout pixels and three complete device lifetimes. Combined original input/display reaches Demo, interruption, reentry and the subsequent movie in a 510s framework run. |
 | Memory LLE | Bounded gate `.106` qualified: original virtual/pool/contiguous services, queries/statistics, loaded-page backing and physical relocation. 50 original cases, 46/46 LLE tests and 300.390s actual attract regression. Pool-backed texture headers remove roughly 2 MiB of guest overhead in the 520-texture fixture. |
-| LLE hardening | Six service-family gates remain open in `beads-xbox.1.102`; bounded input `.104`, display `.105` and memory `.106` are complete. Files/cache/installed media `.108` is active. LLE throughput is not an acceptance requirement. |
-| File LLE | Original Nt/FATX/cache/IDE title route: final 240.157s framework run, 23 captures, no guards; Demo, Start/title return, Demo reentry and continued gameplay. Complete installed XBE bytes independently match, and separate-process 9,001-byte write/flush/read/delete passes. `files-lle` mode exposes this selection; broader contract/endurance work remains open. |
-| Retained validation debt | Latest native suite 40/40 passes (17.03s). Shared-device suite 46/46 passes (22.44s); the previously intermittent event-timeout assertion `.99` is not considered fixed by one passing run. Long-run host-memory growth remains `.107`; bounded guest-lifetime checks do not establish an endurance plateau. |
+| LLE hardening | Five service-family gates remain open in `beads-xbox.1.102`; bounded input `.104`, display `.105`, memory `.106` and files/cache/installed media `.108` are complete. Next is GPU completion/callbacks/visibility. LLE throughput is not an acceptance requirement. |
+| File LLE | Original Nt/FATX/cache/IDE title route: final 240.157s framework run, 23 captures, no guards; Demo, Start/title return and reentry. Exact whole-XBE bytes and separate-process persistence pass. 84 original contract cases plus 64 real lifetimes qualify metadata/directory/error/namespace effects; native corrections pass the final game replay. `files-lle` selects the maintained floor; broader filesystem modes/endurance remain explicit. |
+| Retained validation debt | Latest game-owned suite 40/40 passes (17.84s). Framework native suite 37/38 passes (17.61s); the sole failure is the previously tracked event-timeout assertion `.99`. Long-run host-memory growth remains `.107`; bounded guest-lifetime checks do not establish an endurance plateau. |
 | New Game | Known post-save fault, `beads-xbox.1.101`, deferred until the current correctness phase |
 | JSRF | Serial follow-up after Blinx; no game-specific work begun by this split |
 | Dashboard choice and storage | Required architecture, `.22`: original dashboard remains supported and its assets are optional for native launch. The private files-LLE route now uses a genuine persistent FATX HDD; the default native backend still uses host directories. General shared-profile provisioning and the combined launch selector remain unfinished. |
@@ -54,7 +56,27 @@ Fresh full regeneration is available through the shared preparation command but
 is not claimed as validated by the initial repository split. Validation uses
 the hash-verified existing output, compiled through this repo's own CMake entry.
 
-## Original file notification correction - 2026-10-08
+## Bounded filesystem family qualification - 2026-10-08
+
+Runtime `52bdfed` passes game doctor/build and **40/40 tests (17.84s)**.
+`local/runs/20261008-192931-attract/` runs **190.109s**, with 19 captures and no
+guards. Inspected captures 8/12/17/19 show Demo play, title return after Start,
+Demo reentry and continued gameplay. Exit 1 is intentional deadline termination.
+Executable SHA-256:
+`7649af349ff879e8d2e899654b353f421d94d85c78da68262a4a15cdc63b08b8`.
+The final pin includes the subsequent evidence-only documentation update;
+runtime source and the validated build are unchanged by that update.
+
+Original execution exposed desktop assumptions in native metadata, directory
+and symbolic-link effects. Shared corrections preserve rejected IOSBs, report
+FATX lengths, reproduce supported query layouts/rejections and truncated link
+copies, and retain real directory cursor/ownership work. Together with the
+original title route and persistence results, this closes bounded `.108`.
+Malformed sub-header directory overflow, internal cache costs and metadata-set
+completion counts have explicit tolerances; no general disk-fault/cancellation
+or full-console scheduling qualification is claimed. See FILES-LLE.md.
+
+## Original file notification correction - 2026-10-08 (historical)
 
 Updated milestone on framework `526c68d`: game doctor/build and 40/40 native
 tests pass (17.03s). `local/runs/20261008-190843-attract/` runs 190.078s with

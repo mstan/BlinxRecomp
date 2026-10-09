@@ -101,7 +101,8 @@ offline FATX dependency and preparation caveat are documented in
 This mode uses the HDD for actual files, cache and saves; native launch keeps
 its existing host-directory backend. Use `--seconds 240 --capture --replay
 tests/attract-files-lle.txt` for the focused interruption/reentry check. The
-filesystem family's broader contract and endurance qualification remains open.
+bounded filesystem family is qualified against the native replacement;
+unexercised filesystem modes and long-run endurance remain explicitly scoped.
 
 Owned NTSC inputs and private generated output are required. To reuse the current
 hash-verified local output without retranslating it:
