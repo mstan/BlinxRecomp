@@ -3,8 +3,9 @@
 The pre-split working attract milestone is preserved in xboxlle
 `milestone/blinx-attract-20261008`. The current pin qualifies bounded input and
 display: original XID reports/USB transfers and original display IRQ/DPC/waits,
-real modeled scanout, interval Reset and teardown. Pin `c65629b` also adds the
-original virtual-memory slice; the broader memory family remains open.
+real modeled scanout, interval Reset and teardown. Runtime `4a5dd48` also
+qualifies bounded memory allocation/query, residency, page relocation and
+resource lifetime. The pin includes its documentation-only qualification update.
 HLE remains the performance path.
 Earlier qualification records below remain historical evidence.
 
@@ -15,8 +16,9 @@ Earlier qualification records below remain historical evidence.
 | Calendar LLE | Original kernel conversion functions execute in title calls; qualified alongside native counterpart |
 | Input LLE | Original initialization, enumeration and XID reports execute through pinned DMA and IRQ/DPC delivery. Quiet framework run: 190.156s, 19 captures, Demo play, Start interruption, title return and reentry. Original/native hotplug/reopen/Start and live capabilities/zero-rumble qualification also pass; broader peripheral and exact hardware polling timing remain unqualified. |
 | Display LLE | Original driver and maintained NV2A/PIC pass waits, paced/immediate flips, independent scanout pixels and three complete device lifetimes. Combined original input/display reaches Demo, interruption, reentry and the subsequent movie in a 510s framework run. |
-| Memory LLE | Original virtual allocation/protection/query/decommit/release now runs in Blinx; framework 46/46 tests and 190.203s attract regression pass. Partial release and free-range query fixes also apply to HLE. Remaining residency/statistics/resource work stays in `.106`. |
-| LLE hardening | Seven service-family gates remain open in `beads-xbox.1.102`; bounded input `.104` and display `.105` are complete; memory/resource lifetime `.106` is active. LLE throughput is not an acceptance requirement. |
+| Memory LLE | Bounded gate `.106` qualified: original virtual/pool/contiguous services, queries/statistics, loaded-page backing and physical relocation. 50 original cases, 46/46 LLE tests and 300.390s actual attract regression. Pool-backed texture headers remove roughly 2 MiB of guest overhead in the 520-texture fixture. |
+| LLE hardening | Six service-family gates remain open in `beads-xbox.1.102`; bounded input `.104`, display `.105` and memory `.106` are complete. Files/cache/installed media is next. LLE throughput is not an acceptance requirement. |
+| Retained validation debt | Native suite 39/40: existing event-timeout assertion `.99` fails; no tolerance was relaxed. Long-run host-memory growth remains `.107`; bounded guest-lifetime checks do not establish an endurance plateau. |
 | New Game | Known post-save fault, `beads-xbox.1.101`, deferred until the current correctness phase |
 | JSRF | Serial follow-up after Blinx; no game-specific work begun by this split |
 | Dashboard choice and storage | Required architecture, `.22`: original dashboard remains supported and its assets are optional for native launch; provision/import a genuine virtual HDD and retain real persistent saves. Host-directory persistence is working but shared FATX image access and the combined launch selector are unfinished. |
@@ -38,6 +40,23 @@ qualification captures are retained for comparison.
 Fresh full regeneration is available through the shared preparation command but
 is not claimed as validated by the initial repository split. Validation uses
 the hash-verified existing output, compiled through this repo's own CMake entry.
+
+## Full memory-family integration - 2026-10-08
+
+Runtime `4a5dd48` with its documentation-only follow-up: game doctor and build
+pass. Native tests pass **39/40 (16.19s)**; the unchanged event wait minimum-duration
+assertion fails, retained in `.99` for the scheduling/time family. Memory and
+graphics ownership tests pass, including two complete texture release/reuse
+cycles and 2,150,400 committed bytes for 520 live native textures.
+
+`local/runs/20261008-174209-attract/` records **190.125s**, 19 captures and no
+guards. Inspected captures 8/12/17 show Demo play, title return after Start and
+Demo reentry. The harness intentionally stops its own child at the deadline
+(exit 1). Executable SHA-256:
+`aadec0a35ea9d9e488bd2addad5a4cba579a0498f006e6133da3999ac359d0d9`.
+This is a bounded regression, not a new speed or endurance claim. The separate
+framework original-memory run records 300.390s through Demo/interruption/reentry
+and subsequent movies; its identities and explicit limits are in MEMORY-LLE.md.
 
 ## Game-repository qualification - 2026-10-08
 

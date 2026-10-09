@@ -27,7 +27,8 @@ enumeration and controller reports through original page/allocation services,
 OHCI/PIC and IRQ/DPC delivery. A quiet 190-second run demonstrates Demo play,
 Start interruption, title return and Demo play reentry. Input is now qualified for the bounded port-0 automatic-polling contract,
 including original/native hotplug, capabilities and feedback. Final attract
-endurance and the remaining eight LLE families remain open.
+endurance remains open. Bounded input, display and memory are qualified; six
+LLE service-family gates remain open.
 See [current validation](docs/STATUS.md) and the framework's
 [serial burndown](xboxlle/docs/BLINX-BURNDOWN.md).
 
@@ -81,9 +82,10 @@ observed slower reference; timing can require adjustment on another host. See th
 
 `--mode memory-lle` selects original general virtual-memory services and the
 existing original pool/contiguous/page bridge, with native input/display. The
-framework run reaches Demo play, Start/title return and reentry. This is the VM
-slice of the ongoing memory-family audit; statistics, residency and the remaining
-resource contracts are still being hardened. See the
+framework run reaches Demo play, Start/title return, reentry and subsequent
+movies. The bounded memory gate includes original queries/statistics, loaded-page
+residency, physical-page relocation and shared CPU/DMA/resource ownership.
+Long-run host-memory retention remains tracked separately. See the
 [memory contract and limits](xboxlle/pilots/native-title/MEMORY-LLE.md).
 
 Owned NTSC inputs and private generated output are required. To reuse the current
