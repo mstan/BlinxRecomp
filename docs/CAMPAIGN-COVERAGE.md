@@ -22,7 +22,7 @@ QA is muted; never close or manipulate the owner's running game to collect QA.
 | Further normal stages | Not yet exercised. | Continue clearing verified enemies and teleporting to original goal gates. |
 | Later boss stages | Not yet exercised. | Identify actual boss HP/update contracts before cheating damage; Round 1 assistance must not be blindly applied to different kinds. |
 | Time abilities | Attract reference contracts are scoped elsewhere. | Exercise each playable ability, including rewind and fast-forward, with real gameplay state and authorized inventory cheats if needed. |
-| Shop | Entered and rendered its original item/price UI. | Purchases and persistence remain open. `player+5C` is carried stage currency, not the persistent bank; funding must pass through the original Results exchange. |
+| Shop | Original Retry order/cancellation and checkout; balance 10,005G to 9,805G, Retry count to three. Original signed save changed; fresh process authenticated it, showed three Retries in gameplay and 9,805G in the shop selector. | Currency assistance used only carried stage coins; original Results transferred them to the bank. Over-budget checkout left the bank unchanged. Other item/upgrade types remain untested. Fresh reload evidence includes `campaign-014` capture 14 and `shop-reloaded`. |
 | Widescreen gameplay | Same Stage 1 scene at 16:9, 21:9 and 32:9; original Results/save and Stage 2 unlock at 21:9. | Later HUD/effect producers and fringe visibility remain open enhancement questions. |
 
 Private evidence is retained under the framework worktree's ignored

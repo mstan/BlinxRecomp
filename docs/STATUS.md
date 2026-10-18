@@ -11,6 +11,7 @@
 | Round 2 | All three normal stages and its boss reached original Results/save, unlocking Round 3. `43D90` recovery through `441B0` preserves `44000`; boss assistance uses source-reviewed death-AI state. |
 | Round 3 | All three normal stages and its boss reached original Results/save, unlocking Round 4. Fixed-function TEMP routing exposed a real HLE renderer gap, now corrected and GPU-tested on both prepared backends. Boss death-AI/position assistance retains the original portal and completion route. |
 | Round 4 | Stages 1/2 reached original Results/save and Stage 3 unlock. Stage 3 entered gameplay; its position assist ended in Game Over and is not counted as a clear. |
+| Shop | Retry checkout deducts 200G and raises stock to three; original signed save authenticates in a fresh process with the purchased stock and 9,805G retained. Cancellation and unchanged bank on an over-budget checkout also observed. Other item/upgrade types remain untested. |
 | Widescreen | Default-off static mod, configurable/adaptive 4:3 through 32:9. Actual same-scene 16:9/21:9/32:9 captures; original Stage 1 Results/save and Stage 2 unlock at 21:9. HUD anchors proportionally; menus/results retain 4:3. Internal resolution remains 640x480. |
 | Campaign QA | Track every reachable stage/boss, all time controls and shop behavior in beads-xbox.1.7.7; use explicit HP/position/currency/item cheats, original transitions and separate muted QA state. |
 | Enhancement deferrals | Higher internal resolution/FPS, later-scene fringe culling/effect producers and shared recomp-ui provider integration remain separate; see WIDESCREEN.md. |
@@ -28,7 +29,7 @@ Framework `c993798` additionally passes CURRENT/TEMP GPU checks on PHOBOS and
 SPOON across three device lifetimes, plus the existing PHOBOS backend/FVF/blend
 checks. Doctor verifies the adopted framework pin, generated hashes and bindings.
 Eleven normal stages and three bosses now have assisted original Results/save proof;
-shop purchases, playable time abilities and all later stages remain open.
+playable time abilities, other shop item types and all later stages remain open.
 
 ## Historical repository-split snapshot ? 2026-10-08
 
