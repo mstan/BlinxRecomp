@@ -25,8 +25,8 @@ campaign coverage is separate. New Game, tutorials, movement, combat and the
 original Stage 1 exit/Results/save transition now run. All three Round 1 stages
 and its first boss subsequently reached original Results/save. Round 2's three
 stages/boss and all of Round 3 also reached original Results/save with explicit
-HP/position/AI-state cheats. Round 4 Stages 1/2 also saved; Stage 3 and later
-content remain open. These assists do not prove
+HP/position/AI-state cheats. All three Round 4 normal stages and its boss also
+saved; later content remains open. These assists do not prove
 every route or natural damage producer. Progress also authenticated on a fresh
 load. The fast HLE profile uses ahead-of-time compiled
 original CPU code and native services; missing native paths stop rather than
