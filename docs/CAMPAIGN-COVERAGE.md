@@ -28,11 +28,10 @@ QA is muted; never close or manipulate the owner's running game to collect QA.
 | Round 7, Boss | Original lethal-HP death route enabled portal, then original Results/save and Round 8 unlock. | Kind `188`, HP 40, draw `7F470`; HP/wounded-AI data assistance follows `822D0/81C80`, retaining hit direction. Original `7F230/81DA0/7E1A0/81F90` owns death and portal. Goal teleport Y -36; no completion/save/unlock fields written. Original stage index 31, signed-save hash and visually inspected Round 8 selector retained. |
 | Round 8, Stages 1-3 (Forge of Hours) | All three reached original Results/save and boss unlock in one batch after reached native CPU/renderer fixes. | Eleven/thirteen/eleven ordinary HP assists plus two/one/zero Tom-Toms; original stage indices 32/33/34. Two-byte G8B8 layout/sampling and native unsigned BUMPENVMAP now have focused real GPU coverage. Measured original `B95B0/B2930` wrappers are recovered exactly; separately inventoried `B9FD0` is not a live coverage claim. No completion/save/unlock fields written. |
 | Round 8, Boss | Original lethal wound/death opened the portal, then original Results/save and visibly confirmed Round 9 Momentopolis unlock. | Kind `189`, HP 40, draw `8A430`; wait for original multipart introduction to set phase one, then main HP/wounded-AI assistance matching `8A670/87040`. Original `8AC20/89340/87160/835B0` owns lethal death/portal; linked actors remain untouched. The assisted hit produced an invalid vertical destination; body/previous/death-target position assistance aligns it to the original arena portal height. Original timers, portal, completion, save and unlock fields are not written. Player goal teleport Y -36. Stage index 35 and signed save `4dc76c1f...` retained. This does not qualify natural airborne lethal hits. |
-| Round 9, Momentopolis | Original stage 36 introduction reached; no clear yet. | Ordinary skip/confirm reached primitive 7 guard. Native triangle-fan topology/flat colors now have real GPU coverage on both backends plus guest ABI checks; actual title retry remains open. |
-| Further normal stages | Not yet exercised. | Continue clearing verified enemies and teleporting to original goal gates. |
-| Later boss stages | Not yet exercised. | Identify actual boss HP/update contracts before cheating damage; Round 1 assistance must not be blindly applied to different kinds. |
+| Round 9, Momentopolis | Original intro and four rematches, pre-final shop, final-boss death, rescue scene, ending movie/audio decoding, signed save and title return. A fresh process authenticates the completed save and shows Round 9 Boss without the New label. | Cached native fans fix the reached draw guard. Rematches use kinds `185/188/186/189` at original indices `19/31/23/35`; their portal/movie transitions are not intermediate Results/save passes. Pre-positioning the Forge boss body before its wound lets its original death ray complete without writing the death destination. Final kind `18A`, stage 39, uses an explicit lethal-HP/wounded-AI assist matching `8F940/8DF20`; this bypasses the variant-zero/one five-HP floor while leaving variant byte C1 untouched. Original `94140/93170/8BC60` owns death, then stage 37 rescue, `end_a01.sfd/.aix`, screen 8 save and screen 1 title. Natural final-boss forms/phases remain unqualified. |
+| Campaign route total | Twenty-four normal stages, eight pre-final bosses, four rematches and the final boss reach their original downstream transitions; the ending writes a completed save. | This is the assisted main route, not exhaustive puzzle, natural combat, optional content or every title branch coverage. No completion/save/unlock fields are fabricated. |
 | Time abilities | Attract reference contracts are scoped elsewhere. | Exercise each playable ability, including rewind and fast-forward, with real gameplay state and authorized inventory cheats if needed. |
-| Shop | Original Retry order/cancellation and checkout; balance 10,005G to 9,805G, Retry count to three. Original signed save changed; fresh process authenticated it, showed three Retries in gameplay and 9,805G in the shop selector. | Currency assistance used only carried stage coins; original Results transferred them to the bank. Over-budget checkout left the bank unchanged. Other item/upgrade types remain untested. Fresh reload evidence includes `campaign-014` capture 14 and `shop-reloaded`. |
+| Shop | Original Retry order/cancellation, checkout and fresh-process persistence. Pre-final shop also purchases TS-4000 Star Lv.2 for 2,000G through the original PAY flow: 12,202G to 10,202G, quantity one and the new model displayed. | Currency assistance used only carried stage coins earlier; original Results funded the bank. Over-budget checkout leaves the bank unchanged. Weapon purchase is followed by the original ending save; its equipped gameplay model after fresh load still needs inspection. Clothing and other inventory types remain untested. |
 | Widescreen gameplay | Same Stage 1 scene at 16:9, 21:9 and 32:9; original Results/save and Stage 2 unlock at 21:9. | Later HUD/effect producers and fringe visibility remain open enhancement questions. |
 
 Private evidence is retained under the framework worktree's ignored
@@ -52,3 +51,20 @@ cause is not isolated between the assisted setup and translated raycast/result
 handling. Reopen for a natural lethal-hit reproduction, a stuck/vanishing boss
 report or direct evidence of a CPU/raycast contract error. The position-assisted
 clear above proves the original downstream portal/Results/save, not that path.
+
+Final-route evidence: muted `campaign-020`, executable SHA-256
+`9a09d86b23c945c13a1d85f13c21fd5420a16a78c1f9d205c5bff975570bf785`,
+framework runtime `a3accc1` plus evidence-only `6bb5fc0`. Original completed
+6,000-byte save SHA-256:
+`ef9bfdad233b6a4eae751978bcbf4738b5f7a54c31eed2a582c6556923c37b2c`.
+`campaign-021/completed-save-reloaded` authenticates that unchanged save in a
+fresh process with no guest-state writes. Its Stage 1 reentry likewise uses
+original selector input. Initial entry pixels still show loading and cannot
+establish the equipped weapon model.
+
+Deferred natural final-boss mechanics: the explicit lethal assist bypasses
+the original five-HP floor and does not exercise all forms, phase transitions,
+damage producers or ability-dependent combat. Retain those original routines;
+reopen on a natural-play phase/ability softlock, missing or incorrect form,
+damage-floor regression or a report that the encounter cannot be completed.
+Downstream ending/save coverage does not qualify those mechanics.

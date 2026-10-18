@@ -15,9 +15,9 @@
 | Round 6 | All three normal stages and the boss reached original Results/save, unlocking Round 7. Includes reached kind 12 death path and original 210-tick boss death sequence after explicit source-reviewed death-AI setup. Review harness host suspension avoids ignored Start input during intros; no checkpoint restore is implied. |
 | Round 7 | Everwinter stages and boss reached original Results/save and Round 8 unlock; new enemy kinds 9/10 and the boss's original lethal-HP death route execute. Original stage indices 28-31 are explicitly distinguished from UI round order. |
 | Round 8 | All three Forge of Hours stages and its boss reached original Results/save and unlocked Round 9 Momentopolis after G8B8, original callback and BUMPENVMAP repairs. Shared renderer corrections have focused real GPU coverage; exact 19-byte `B95B0/B2930` recoveries avoid common-header/original-body churn. Statically recovered `B9FD0` is not a live coverage claim. Boss assistance includes a death-position correction; natural airborne lethal-hit behavior remains deferred as `.1.7.8`. |
-| Round 9 entry | Momentopolis original stage 36 reaches its introduction. Ordinary confirm exposed triangle-fan draws; framework `a3accc1` adds cached GPU topology with correct rim provoking colors. PHOBOS GPU 4/4, guest graphics ABI 1/1 and SPOON GPU 2/2 pass; actual title retry remains open. |
+| Round 9 and ending | Four original rematches, pre-final shop, final-boss death, rescue scene, ending movie, signed save and title return. Completed save authenticates on fresh launch. Native triangle fans fix the reached draw guard, with PHOBOS GPU 4/4, guest ABI 1/1 and SPOON GPU 2/2. Final HP/wounded-AI assist bypasses its variant-zero/one five-HP floor; natural phases/forms and ability-dependent combat remain unqualified. |
 | Diagnostic checkpoints | Framework `76a7ce4` adds restricted generated native continuation records, with fresh-process nested-call restore passing 9 focused tests. Default fast profile unchanged. This is not a Blinx save state and does not yet shorten campaign load time; thread/device/storage serialization remains open. |
-| Shop | Retry checkout deducts 200G and raises stock to three; original signed save authenticates in a fresh process with the purchased stock and 9,805G retained. Cancellation and unchanged bank on an over-budget checkout also observed. Other item/upgrade types remain untested. |
+| Shop | Retry checkout, cancellation, over-budget rejection and fresh-process persistence pass. Original pre-final shop also buys TS-4000 Star Lv.2 for 2,000G (12,202G to 10,202G), showing its purchased model. The ending saves afterward; fresh gameplay weapon persistence and other item types remain open. |
 | Widescreen | Default-off static mod, configurable/adaptive 4:3 through 32:9. Actual same-scene 16:9/21:9/32:9 captures; original Stage 1 Results/save and Stage 2 unlock at 21:9. HUD anchors proportionally; menus/results retain 4:3. Internal resolution remains 640x480. |
 | Campaign QA | Track every reachable stage/boss, all time controls and shop behavior in beads-xbox.1.7.7; use explicit HP/position/currency/item cheats, original transitions and separate muted QA state. |
 | Enhancement deferrals | Higher internal resolution/FPS, later-scene fringe culling/effect producers and shared recomp-ui provider integration remain separate; see WIDESCREEN.md. |
@@ -34,8 +34,12 @@ support and existing extent guards pass 13 focused checks.
 Framework `c993798` additionally passes CURRENT/TEMP GPU checks on PHOBOS and
 SPOON across three device lifetimes, plus the existing PHOBOS backend/FVF/blend
 checks. Doctor verifies the adopted framework pin, generated hashes and bindings.
-Twenty-four normal stages and eight bosses now have assisted original Results/save proof;
-playable time abilities, other shop item types and all later stages remain open.
+Twenty-four normal stages and eight pre-final bosses have assisted original
+Results/save proof. Four rematches and the final boss additionally reach the
+original ending/save/title route; fresh-process authentication of completed save
+`ef9bfdad233b6a4eae751978bcbf4738b5f7a54c31eed2a582c6556923c37b2c`
+passes. Playable time abilities, populated HUD, other shop item types and natural
+combat mechanics remain separate scope; see the campaign ledger for exact assists.
 
 ## Historical repository-split snapshot ? 2026-10-08
 
