@@ -1,5 +1,29 @@
 # Original NTSC Blinx
 
+## Current gameplay and enhancement milestone ? 2026-10-17
+
+| Area | Current evidence / remaining work |
+| --- | --- |
+| Bounded attract families | 9/9 under the framework's documented qualification scope; historical partial counts below are superseded. This is not full campaign qualification. |
+| CPU and HLE | 8868 native dispatch entries in the current fast profile, with original ahead-of-time CPU bodies and native services. No CPU interpreter fallback in this profile. |
+| New Game and Stage 1 | Original callback/extent repairs and native file metadata updates allow saves, tutorials, movement, combat, doors, retry and original Results/save. Stage 1 exit coverage explicitly uses HP/position cheats. |
+| Stage 2 | Real Stage 1 save loads/authenticates and reaches playable Stage 2 after original 41190 extent recovery. |
+| Widescreen | Default-off static mod, configurable/adaptive 4:3 through 32:9. Actual same-scene 16:9/21:9/32:9 captures; original Stage 1 Results/save and Stage 2 unlock at 21:9. HUD anchors proportionally; menus/results retain 4:3. Internal resolution remains 640x480. |
+| Campaign QA | Track every reachable stage/boss, all time controls and shop behavior in beads-xbox.1.7.7; use explicit HP/position/currency/item cheats, original transitions and separate muted QA state. |
+| Enhancement deferrals | Higher internal resolution/FPS, later-scene fringe culling/effect producers and shared recomp-ui provider integration remain separate; see WIDESCREEN.md. |
+
+Source and retained private evidence: framework branch
+`fix/blinx-new-game-20261017`; runs `stage-003`, `stage-004` and
+`wide-stage-006` under its ignored `build/blinx/gameplay-coverage-20261017`.
+The widescreen suite checks disabled behavior, six aspect/anchor/menu profiles,
+six resolver guards and four native invalid-plan guards. GPU backend, FVF snap
+and float-blend checks pass. All eight recovered original-function extent
+records are retained in the game-owned revision metadata.
+
+## Historical repository-split snapshot ? 2026-10-08
+
+The following earlier counts and New Game deferrals describe that older pin.
+
 The pre-split working attract milestone is preserved in xboxlle
 `milestone/blinx-attract-20261008`. The current pin qualifies bounded input and
 display: original XID reports/USB transfers and original display IRQ/DPC/waits,

@@ -1,0 +1,28 @@
+format_version = 1
+id = "blinx.enhancement.widescreen"
+version = "1.0.0"
+name = "Blinx Widescreen"
+description = "Widen the original camera with proportional, anchored HUD. Fixed or adaptive aspect from 4:3 through 32:9."
+save_compatibility = "shared"
+
+[[target]]
+game_id = "4D530013"
+xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
+
+[[feature]]
+id = "widescreen"
+name = "Widescreen"
+default_enabled = false
+
+[[option]]
+feature = "widescreen"
+id = "aspect"
+type = "aspect"
+default = "adaptive"
+minimum = "4:3"
+maximum = "32:9"
+presets = ["16:9", "21:9", "32:9"]
+
+[[plugin]]
+feature = "widescreen"
+id = "blinx.widescreen"

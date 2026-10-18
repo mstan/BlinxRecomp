@@ -20,17 +20,22 @@ and build/launch entry points. The existing hash-bound binding generators still
 live in the framework; their selected output fingerprints are owned here. New
 titles get sibling repositories and reuse those shared services.
 
-The working milestone has opening movies, real-time Demo play, Start interruption,
-menu return and attract reentry. Accepted cadence debt is about 28.5â€“28.8 fps;
-New Game is deferred. The original-input route now executes initialization,
-enumeration and controller reports through original page/allocation services,
-OHCI/PIC and IRQ/DPC delivery. A quiet 190-second run demonstrates Demo play,
-Start interruption, title return and Demo play reentry. Input is now qualified for the bounded port-0 automatic-polling contract,
-including original/native hotplug, capabilities and feedback. Final attract
-endurance remains open. Bounded input, display and memory are qualified; six
-LLE service-family gates remain open.
+The bounded attract qualification is 9/9 under the documented scope; full
+campaign coverage is separate. New Game, tutorials, movement, combat and the
+original Stage 1 exit/Results/save transition now run. The exit proof uses
+explicit monster-HP/position cheats, with a real authenticated save and playable
+Stage 2 entry after reload. The fast HLE profile uses ahead-of-time compiled
+original CPU code and native services; missing native paths stop rather than
+silently entering an interpreter.
+
+The default-off [widescreen mod](docs/WIDESCREEN.md) supports configurable and
+adaptive aspects through 32:9, with proportional HUD anchoring. The same Stage 1
+scene has actual 16:9, 21:9 and 32:9 captures, followed by original Results/save
+and Stage 2 unlock at 21:9. Gameplay widens; menus retain centered 4:3. Internal
+rendering remains 640x480. Later stages, bosses, time abilities and shop purchases
+are being exercised with authorized QA cheats in a separate muted instance.
 See [current validation](docs/STATUS.md) and the framework's
-[serial burndown](xboxlle/docs/BLINX-BURNDOWN.md).
+[burndown](xboxlle/docs/BLINX-BURNDOWN.md).
 
 Dashboard support is required architecture, with an original dashboard route
 and an accelerated/direct-title choice. Supplied dashboard files should be

@@ -39,6 +39,47 @@
       "sha256": "c83206753d8606b31b19a7c40c2a164ac1c375deb723e9dccadca1a12c9c59fb",
       "reason": "Observed XID disconnect callback during actual port removal in input-hotplug-original-20261008; reviewed complete original body through RET4 immediately before known1868a1, no replacement",
       "new_entry": true
+    },
+    {
+      "start": 1084816,
+      "original_end": 1085000,
+      "end": 1085083,
+      "sha256": "41afe3f8296214d2dfcb659d4c3364e16fea7f5c9394396f5c506128b23df63a",
+      "reason": "Actual New Game story-movie pr_a01 reaches mode1 branch108E4F; original mode0/mode1/default tails through108E9A belong to the same frameless routine. Preserve the independently callable seven-byte108E48 cleanup while extending the original parent; no runtime replacement.",
+      "contained_entries": [
+        {
+          "start": 1085000,
+          "end": 1085007,
+          "sha256": "f01bea5c15a658370f8d933bbad0f55e6d638458835dc1718ebbe5835e7266ee"
+        }
+      ]
+    },
+    {
+      "start": 957904,
+      "original_end": 957904,
+      "end": 958061,
+      "sha256": "d92d015fc013021680a2160f369b6979d84df460cdd3eb339aba9871f9ce37bf",
+      "reason": "Owner first-stage interactive play reached indirect callback E9DD0 registered explicitly by original EA2F0 via E8C70; complete reviewed original state/decay/call/tail-jump body through E9E6C, no replacement.",
+      "new_entry": true
+    },
+    {
+      "start": 266640,
+      "original_end": 267300,
+      "end": 267882,
+      "sha256": "e351e61fa513f58b430c8d344fa021c3da53aa43cbcb889a5324857d11ddf5f3",
+      "reason": "Cheat-assisted Stage 1 completion/save succeeded; Stage 2 entry reached original conditional branches 41396/413A3 to 4143C outside the discovered 41190 extent. Restore complete original body through final return 41669, preserving both discovered shared-tail entries and all game logic.",
+      "contained_entries": [
+        {
+          "start": 267300,
+          "end": 267324,
+          "sha256": "38daf5ab8486ed9a9df3a7088eef714e5c9cf28158f2f2f67d4e523fa63fd2fd"
+        },
+        {
+          "start": 267314,
+          "end": 267324,
+          "sha256": "a453fee4f88950bd33da729e9713af2dd840382f25e2712ad796d57c02fa4334"
+        }
+      ]
     }
   ]
 }

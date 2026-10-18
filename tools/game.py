@@ -129,9 +129,15 @@ def launch(local, args):
     label = time.strftime('%Y%m%d-%H%M%S') + '-' + args.mode
     output = ROOT / 'local/runs' / label
     output.mkdir(parents=True, exist_ok=False)
-    env = {key: value for key, value in os.environ.items() if not key.startswith('XLLE_PILOT_')}
+    env = {key: value for key, value in os.environ.items() if not key.startswith(('XLLE_PILOT_', 'BLINX_MOD_'))}
     env.update(PROFILE['runtime'])
+    mod_plan = None
+    if args.widescreen:
+        from mods import resolve
+        mod_plan = resolve(args.widescreen, output / 'mods.plan')
+        env['BLINX_MOD_PLAN'] = str(output / 'mods.plan')
     env['XLLE_PILOT_VISIBLE'] = '0' if args.headless else '1'
+    env['XLLE_PILOT_AUDIO_OUTPUT_MUTE'] = '1' if args.headless or args.replay else '0'
     if args.replay:
         env['XLLE_PILOT_INPUT'] = 'replay'
         env['XLLE_PILOT_INPUT_REPLAY'] = str(args.replay.resolve())
@@ -159,7 +165,8 @@ def launch(local, args):
     result = dict(mode=args.mode, elapsed=time.monotonic()-start, child_returncode=child.returncode,
                   stopped_at_deadline=deadline, guards=guards, executable_sha256=sha(binary),
                   framework_revision=PROFILE['framework']['revision'], command=command,
-                  configuration={key: env[key] for key in env if key.startswith('XLLE_PILOT_')})
+                  configuration={key: env[key] for key in env if key.startswith(('XLLE_PILOT_', 'BLINX_MOD_'))},
+                  mod_plan=mod_plan)
     if original_files:
         result['original_files_hdd'] = str(local['files_hdd'])
     (output / 'run.json').write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8')
@@ -177,6 +184,7 @@ def main():
     parser.add_argument('--headless', action='store_true')
     parser.add_argument('--capture', action='store_true')
     parser.add_argument('--replay', type=Path)
+    parser.add_argument('--widescreen', metavar='ASPECT', help='Enable the widescreen mod: adaptive or ratio such as 21:9 (through 32:9)')
     args = parser.parse_args()
     if args.seconds is not None and args.seconds <= 0:
         parser.error('--seconds must be positive')

@@ -15,5 +15,13 @@ if(identity_at LESS 0)
   message(FATAL_ERROR "Generated code does not belong to the reviewed original NTSC Blinx")
 endif()
 set(PILOT_GENERATED "${BLINX_GENERATED}" CACHE PATH "Private title output" FORCE)
+set(PILOT_TITLE_MOD_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/mods/widescreen.c" CACHE FILEPATH
+  "Statically linked trusted Blinx plugin registry" FORCE)
 add_subdirectory("${XBOXLLE_ROOT}/pilots/native-title" framework)
 set_target_properties(xlle_native_title PROPERTIES OUTPUT_NAME BlinxRecomp)
+add_executable(blinx_widescreen_contract tests/widescreen_contract.c src/mods/widescreen.c)
+target_include_directories(blinx_widescreen_contract PRIVATE "${XBOXLLE_ROOT}/pilots/native-title")
+add_test(NAME blinx_widescreen_disabled COMMAND blinx_widescreen_contract)
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+add_test(NAME blinx_widescreen_profiles COMMAND "${Python3_EXECUTABLE}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/tests/widescreen_suite.py" --contract "$<TARGET_FILE:blinx_widescreen_contract>")
