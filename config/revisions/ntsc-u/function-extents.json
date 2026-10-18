@@ -103,6 +103,33 @@
           "sha256": "3b1b3ba66aeb3b022c8a6edc6efdb01a1723a20b0cefa67612eaa70171fca35d"
         }
       ]
+    },
+    {
+      "start": 759216,
+      "original_end": 759216,
+      "end": 759235,
+      "sha256": "0afe6d5f3cad4e01eb7cef6953e267669cafe2bdd2e2995bc714d05ffb77e846",
+      "reason": "Actual Forge of Hours UI Round8 Stage1 (original stage32) in campaign-015 reached unresolved indirect callback B95B0. Recover exactly its original19-byte selector/tail-jump wrapper through B95C2 using table1DE61C; exclude padding and independently discovered B95D0. No replacement, invented completion or interpreter fallback.",
+      "terminal": "tail-jump",
+      "new_entry": true
+    },
+    {
+      "start": 731440,
+      "original_end": 731440,
+      "end": 731459,
+      "sha256": "edf8fe98c23539b0435d8fed5b70f9702745983886c7ae62be4ee2881ec3408b",
+      "reason": "Measured Forge of Hours stage32 guard in campaign016; source inventory verifies original registered 19-byte selector/tail wrapper 000B2930 and table0x1dda38, complete decode, aligned non-overlapping executable bytes and13NOP boundary before next independent body. Exact callback-store evidence retained in dispatcher-inventory.aot-private.json; no replacement or invented result.",
+      "terminal": "tail-jump",
+      "new_entry": true
+    },
+    {
+      "start": 761808,
+      "original_end": 761808,
+      "end": 761827,
+      "sha256": "d3b84a4444c99daf9e790cb215722bf6d599d0c1dc537def7080cd57a88b666a",
+      "reason": "Static original callback store atBB769 in already discoveredBB760 (not a live gameplay pass); source inventory verifies original registered 19-byte selector/tail wrapper 000B9FD0 and table0x1de9c8, complete decode, aligned non-overlapping executable bytes and13NOP boundary before next independent body. Exact callback-store evidence retained in dispatcher-inventory.aot-private.json; no replacement or invented result.",
+      "terminal": "tail-jump",
+      "new_entry": true
     }
   ]
 }

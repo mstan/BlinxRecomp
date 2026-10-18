@@ -26,7 +26,8 @@ original Stage 1 exit/Results/save transition now run. All three Round 1 stages
 and its first boss subsequently reached original Results/save. Round 2's three
 stages/boss and all of Round 3 also reached original Results/save with explicit
 HP/position/AI-state cheats. All three Round 4 normal stages and its boss also
-saved, followed by all of Rounds 5-7; later content remains open. These assists do not prove
+saved, followed by all of Rounds 5-8; Round 9 Momentopolis and other unique
+functions remain open. These assists do not prove
 every route or natural damage producer. Progress also authenticated on a fresh
 load. The fast HLE profile uses ahead-of-time compiled
 original CPU code and native services; missing native paths stop rather than
