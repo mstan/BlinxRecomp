@@ -80,6 +80,29 @@
           "sha256": "a453fee4f88950bd33da729e9713af2dd840382f25e2712ad796d57c02fa4334"
         }
       ]
+    },
+    {
+      "start": 729952,
+      "original_end": 729952,
+      "end": 729971,
+      "sha256": "a1558367a0c2f4451651438618bf79c32bef826a8117fd41e83333a0475c26f7",
+      "reason": "Actual Stage 3 entry in campaign-007 reached the original 19-byte object update dispatcher B2360; it loads the byte selector and tail-jumps through original table1DD9C8. Recover only this measured wrapper through the unconditional jump, excluding padding and the independently discovered B2380 body; no replacement or invented result.",
+      "terminal": "tail-jump",
+      "new_entry": true
+    },
+    {
+      "start": 277904,
+      "original_end": 278528,
+      "end": 278960,
+      "sha256": "6fa9d59070b77094093c0c02dcf2c25bf8f946781053492cf564fce2f244cd98",
+      "reason": "Assisted Round 2 Stage 1 enemy-clear route in campaign-010 reached original43D90 branch44031 beyond its discovered end44000. Restore the complete original movement/death/collision body through final return441AF, preserving the independently discovered44000..44031 shared tail. No game logic replacement or invented result.",
+      "contained_entries": [
+        {
+          "start": 278528,
+          "end": 278577,
+          "sha256": "3b1b3ba66aeb3b022c8a6edc6efdb01a1723a20b0cefa67612eaa70171fca35d"
+        }
+      ]
     }
   ]
 }

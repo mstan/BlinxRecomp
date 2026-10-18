@@ -13,8 +13,13 @@ about 0.85 and 0.94 cores respectively. Samples were two and five seconds and
 the interactive scene was uncontrolled: these are not a matched aspect-ratio
 benchmark or a display-cadence measurement. They establish background contention
 and a substantial remaining performance gap. CPU cost is a likely contributor;
-the cost of widescreen has not been isolated. QA stays suspended during this
-playtest rather than competing with the owner's copy.
+the cost of widescreen has not been isolated. QA was suspended during the
+owner's playtest, and resumed after the owner finished and authorized it.
+
+Host topology inspection found the prior logical mask 12/13/14/15 covered only
+two physical cores. Resumed automated QA now uses logical CPUs 8/10/12/15,
+four distinct physical cores, at normal priority; its guest CPU remains 15.
+This allocation correction has not been measured as a matched FPS improvement.
 
 Next bounded comparison: render the same paused gameplay scene in one adaptive
 binary at 4:3 and 21:9, with one game running, and compare frame counts/CPU costs.

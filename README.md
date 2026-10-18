@@ -22,9 +22,13 @@ titles get sibling repositories and reuse those shared services.
 
 The bounded attract qualification is 9/9 under the documented scope; full
 campaign coverage is separate. New Game, tutorials, movement, combat and the
-original Stage 1 exit/Results/save transition now run. The exit proof uses
-explicit monster-HP/position cheats, with a real authenticated save and playable
-Stage 2 entry after reload. The fast HLE profile uses ahead-of-time compiled
+original Stage 1 exit/Results/save transition now run. All three Round 1 stages
+and its first boss subsequently reached original Results/save. Round 2's three
+stages/boss and all of Round 3 also reached original Results/save with explicit
+HP/position/AI-state cheats. Round 4 Stages 1/2 also saved; Stage 3 and later
+content remain open. These assists do not prove
+every route or natural damage producer. Progress also authenticated on a fresh
+load. The fast HLE profile uses ahead-of-time compiled
 original CPU code and native services; missing native paths stop rather than
 silently entering an interpreter.
 
