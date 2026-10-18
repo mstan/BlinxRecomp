@@ -17,5 +17,7 @@
   "display_dependencies": "C:/msys64/mingw64/bin",
   "files_library": "local/dependencies/storage-reference/libxlle_storage_reference.dll",
   "files_dependencies": "C:/msys64/mingw64/bin",
-  "files_hdd": "local/owned/blinx-installed-hdd.img"
+  "files_hdd": "local/owned/blinx-installed-hdd.img",
+  "launcher_ui": "../_wt-recomp-ui-xbox-theme-20261017",
+  "launcher_sdl_sdk": "local/dependencies/SDL2-2.32.10"
 }

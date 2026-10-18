@@ -41,7 +41,10 @@ The default-off [widescreen mod](docs/WIDESCREEN.md) supports configurable and
 adaptive aspects through 32:9, with proportional HUD anchoring. The same Stage 1
 scene has actual 16:9, 21:9 and 32:9 captures, followed by original Results/save
 and Stage 2 unlock at 21:9. Gameplay widens; menus retain centered 4:3. Internal
-rendering remains 640x480. Populated 21:9/32:9 captures additionally verify the
+rendering defaults to 640x480. Optional [visual quality mods](docs/GRAPHICS-MODS.md)
+add native 1080p–2160p rendering, AA, supersampling, texture filtering and
+separate blended presentation interpolation through the shared Xbox launcher.
+Populated 21:9/32:9 captures additionally verify the
 crystal icons and padded slot frames at left and trash inventory at right.
 Campaign and item/ability QA use authorized cheats in a separate muted instance.
 See [current validation](docs/STATUS.md) and the framework's

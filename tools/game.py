@@ -145,8 +145,60 @@ def launch(local, args):
     output.mkdir(parents=True, exist_ok=False)
     env = {key: value for key, value in os.environ.items() if not key.startswith(('XLLE_PILOT_', 'BLINX_MOD_'))}
     env.update(PROFILE['runtime'])
+    launcher_binary = ROOT / 'build/launcher/Release/xlle_launcher.exe'
+    use_preferences = args.launcher or (not args.no_launcher and not args.headless and not args.replay and launcher_binary.is_file())
+    if use_preferences:
+        if args.headless or args.replay:
+            raise ValueError('Interactive launcher requires an owner-facing run')
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('xlle_native_mod_launcher', FRAMEWORK / 'tools/native_mod_launcher.py')
+        ui = importlib.util.module_from_spec(spec);spec.loader.exec_module(ui)
+        manifests = [ROOT / 'mods/preloaded/packages/blinx.enhancement.widescreen/1.0.0/manifest.toml']
+        manifests += [FRAMEWORK / 'mods/preloaded/packages' / pid / '1.0.0/manifest.toml'
+                      for pid in ('xboxlle.enhancement.visuals', 'xboxlle.enhancement.frame-rate')]
+        catalog = ui.Catalog(manifests, ROOT / 'local/mod-selection.json',
+                             visibility=[FRAMEWORK / 'mods/ui-visibility.json', ROOT / 'mods/ui-visibility.json'],
+                             frame_modes=PROFILE['launcher']['frame_modes'])
+        result, image = (0, str(local['xbe']))
+        if args.launcher or not catalog.skip_launcher:
+            result, image = catalog.run(launcher_binary, output, title=PROFILE['game']['name'], region=PROFILE['game']['region'],
+                                       sha=PROFILE['game']['xbe_sha256'], image=local['xbe'])
+        if result != 0:
+            print('Launcher closed; game was not started.', flush=True)
+            return
+        local = dict(local, xbe=Path(image))
+        check_xbe(local)
+        selected = catalog.values()
+        quality = 'xboxlle.enhancement.visuals'
+        args.widescreen = selected.get(('blinx.enhancement.widescreen', 'widescreen', 'aspect'))
+        args.internal_resolution = int(selected.get((quality, 'resolution', 'height'), '0'))
+        args.supersampling = int(selected.get((quality, 'supersampling', 'axis'), '1'))
+        args.antialiasing = selected.get((quality, 'antialiasing', 'method'), 'original')
+        args.anisotropy = int(selected.get((quality, 'filtering', 'anisotropy'), '1'))
+        args.frame_mode = selected.get(('xboxlle.enhancement.frame-rate', 'frame-rate', 'mode'), 'original')
+        args.frame_rate = int(selected.get(('xboxlle.enhancement.frame-rate', 'frame-rate', 'rate'), '60'))
+        env['RECOMP_VOLUME'] = str(catalog.volume)
+    if args.frame_mode != 'original' and args.frame_mode not in PROFILE['launcher']['frame_modes']:
+        raise ValueError('This frame-rate mode is not yet qualified for Blinx; use original timing')
+    if args.headless or args.replay:
+        env['RECOMP_VOLUME'] = '0'
+        env['SDL_AUDIODRIVER'] = 'dummy'
+    else:
+        if env.get('SDL_AUDIODRIVER') == 'dummy':
+            env.pop('SDL_AUDIODRIVER')
+        if not use_preferences:
+            env['RECOMP_VOLUME'] = '100'
     mod_plan = None
-    if args.widescreen:
+    visual_requested = (args.internal_resolution or args.supersampling != 1 or args.antialiasing != 'original'
+                        or args.anisotropy != 1 or args.frame_mode != 'original')
+    if visual_requested:
+        from mods import resolve_visual
+        mod_plan = resolve_visual(output / 'mods.plan', aspect=args.widescreen, height=args.internal_resolution,
+                                  supersample=args.supersampling, antialiasing=args.antialiasing,
+                                  anisotropy=args.anisotropy, frame_mode=args.frame_mode, frame_rate=args.frame_rate,
+                                  framework=FRAMEWORK)
+        env['BLINX_MOD_PLAN'] = str(output / 'mods.plan')
+    elif args.widescreen:
         from mods import resolve
         mod_plan = resolve(args.widescreen, output / 'mods.plan')
         env['BLINX_MOD_PLAN'] = str(output / 'mods.plan')
@@ -189,16 +241,40 @@ def launch(local, args):
         raise SystemExit(child.returncode or 2)
 
 
+def build_launcher(local):
+    source = local['launcher_ui']
+    revision = subprocess.check_output([executable('git'), '-C', str(source), 'rev-parse', 'HEAD'], text=True).strip()
+    if revision != PROFILE['launcher']['ui_revision']:
+        raise ValueError('Launcher UI differs from the reviewed game profile')
+    prepared = ROOT / 'local/dependencies/recomp-ui-native'
+    run([sys.executable, FRAMEWORK / 'tools/native_launcher_ui.py', '--source', source,
+         '--output', prepared, '--git', executable('git')])
+    run([executable('cmake'), '-S', FRAMEWORK / 'pilots/native-launcher', '-B', ROOT / 'build/launcher',
+         '-DXLLE_UI_SOURCE=' + str(prepared), '-DSDL2_DIR=' + str(local['launcher_sdl_sdk'] / 'cmake')])
+    run([executable('cmake'), '--build', ROOT / 'build/launcher', '--config', 'Release', '--parallel', '4'])
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['doctor', 'adopt', 'prepare', 'configure', 'build', 'test', 'run'])
+    parser.add_argument('action', choices=['doctor', 'adopt', 'prepare', 'configure', 'build', 'build-launcher', 'test', 'run'])
     parser.add_argument('--mode', choices=list(PROFILE['modes']), default='attract')
     parser.add_argument('--from-dir', type=Path)
     parser.add_argument('--seconds', type=float)
     parser.add_argument('--headless', action='store_true')
     parser.add_argument('--capture', action='store_true')
     parser.add_argument('--replay', type=Path)
+    ui_group = parser.add_mutually_exclusive_group()
+    ui_group.add_argument('--launcher', action='store_true', help='Open mod settings, even when Skip launcher is selected')
+    ui_group.add_argument('--no-launcher', action='store_true', help='Use explicit CLI mod choices instead of saved launcher preferences')
     parser.add_argument('--widescreen', metavar='ASPECT', help='Enable the widescreen mod: adaptive or ratio such as 21:9 (through 32:9)')
+    parser.add_argument('--internal-resolution', type=int, choices=[0, 1080, 1440, 1800, 2160], default=0,
+                        help='Internal height; 0 preserves original rendering. Independent of the window size.')
+    parser.add_argument('--antialiasing', choices=['original', 'fxaa'], default='original')
+    parser.add_argument('--supersampling', type=int, choices=[1, 2, 3], default=1, help='Per-axis multiplier relative to internal resolution')
+    parser.add_argument('--anisotropy', type=int, choices=[1, 2, 4, 8, 16], default=1)
+    parser.add_argument('--frame-mode', choices=['original'] + PROFILE['launcher']['frame_modes'], default='original',
+                        help='One mutually exclusive frame-rate mod; unsupported title/profile choices are rejected')
+    parser.add_argument('--frame-rate', type=int, choices=[60, 120], default=60)
     args = parser.parse_args()
     if args.seconds is not None and args.seconds <= 0:
         parser.error('--seconds must be positive')
@@ -220,6 +296,8 @@ def main():
         check_generated(GENERATED)
     elif args.action == 'prepare':
         prepare(local)
+    elif args.action == 'build-launcher':
+        build_launcher(local)
     elif args.action in ['configure', 'build']:
         configure(local, args.mode)
         if args.action == 'build':

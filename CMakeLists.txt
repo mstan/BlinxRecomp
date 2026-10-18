@@ -19,9 +19,14 @@ set(PILOT_TITLE_MOD_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/mods/widescreen.c" C
   "Statically linked trusted Blinx plugin registry" FORCE)
 add_subdirectory("${XBOXLLE_ROOT}/pilots/native-title" framework)
 set_target_properties(xlle_native_title PROPERTIES OUTPUT_NAME BlinxRecomp)
-add_executable(blinx_widescreen_contract tests/widescreen_contract.c src/mods/widescreen.c)
+add_executable(blinx_widescreen_contract tests/widescreen_contract.c src/mods/widescreen.c
+  "${XBOXLLE_ROOT}/pilots/native-title/visual_mods.c"
+  "${XBOXLLE_ROOT}/pilots/native-title/visual_mod_plan.c")
 target_include_directories(blinx_widescreen_contract PRIVATE "${XBOXLLE_ROOT}/pilots/native-title")
 add_test(NAME blinx_widescreen_disabled COMMAND blinx_widescreen_contract)
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 add_test(NAME blinx_widescreen_profiles COMMAND "${Python3_EXECUTABLE}"
   "${CMAKE_CURRENT_SOURCE_DIR}/tests/widescreen_suite.py" --contract "$<TARGET_FILE:blinx_widescreen_contract>")
+add_test(NAME blinx_visual_profiles COMMAND "${Python3_EXECUTABLE}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/tests/visual_mods_suite.py" --contract "$<TARGET_FILE:blinx_widescreen_contract>"
+  --framework "${XBOXLLE_ROOT}")

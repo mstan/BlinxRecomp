@@ -1,4 +1,5 @@
 #include "title_mod.h"
+#include "visual_mod_plan.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +8,7 @@
 #define BLINX_SHA "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
 static const struct PilotTitleModHost *host;
 static unsigned numerator,denominator,adaptive,phase,phase_dirty=1,projection_seen,frame_aspect[2];
+static unsigned frame_mode;
 static FILE *trace;
 static unsigned trace_count;
 static unsigned trace_ui_only,trace_ready;
@@ -96,6 +98,12 @@ static void draw(struct PilotTitleModDraw *draw)
 static void present(void)
 {
     phase_dirty=1;
+    if(frame_mode) {
+        unsigned paused=0,stage=0;read_data(0x50a534,&paused,4);read_data(0x50312c,&stage,4);
+        /* Movies, menus, pause and stage changes have independent history.
+         * Synthetic frames never run this callback or any guest operation. */
+        host->frame_scope(mode()==9 && !paused?stage+1:0);
+    }
     if(trace && trace_ui_only==2 && !trace_ready && mode()==9) {
         unsigned player;unsigned char counts[2];read_data(0x4eb6c4,&player,4);
         if(player && player<0x4000000-0x177) {
@@ -113,6 +121,32 @@ const struct PilotTitleMod *pilot_title_mod_open(const struct PilotTitleModHost 
     if(!api || api->abi!=PILOT_TITLE_MOD_ABI || strcmp(api->xbe_sha256,BLINX_SHA))fail("widescreen title identity mismatch");
     host=api;
     FILE *file=fopen(path,"rb");if(!file)fail("resolved mod plan is unavailable");
+    char header[64];if(!fgets(header,sizeof(header),file))fail("empty resolved mod plan");rewind(file);
+    if(!strncmp(header,"xlle-mod-plan 2",15)) {
+        struct PilotVisualPlan plan;
+        if(!pilot_visual_plan_read(file,&plan)){fclose(file);fail("invalid resolved visual mod plan");}
+        fclose(file);
+        if(strcmp(plan.identity,BLINX_SHA) ||
+           ((plan.operations&PILOT_MOD_ASPECT) && strcmp(plan.aspect_plugin,"blinx.widescreen")))
+            fail("visual mod title/plugin identity mismatch");
+        unsigned wide=plan.operations&PILOT_MOD_ASPECT;
+        if(wide) {
+            unsigned literal;read_data(0x2c86b,&literal,4);
+            if(literal!=0xbfaaaaab)fail("Blinx projection call-site guard differs");
+        }
+        if(plan.options.frame_mode && !host->frame_scope)fail("frame-rate scope callback is unavailable");
+        if(!host->visual_mods || !host->visual_mods(&plan.options))fail("visual mod options are unsupported by this build/profile");
+        if(!plan.operations)return NULL;
+        numerator=plan.options.aspect_numerator;denominator=plan.options.aspect_denominator;adaptive=plan.adaptive;
+        frame_mode=plan.options.frame_mode;
+        if(wide && !host->presentation(numerator,denominator,720))fail("unsupported visual mod presentation");
+        fprintf(stderr,"[MOD] visual-plan=2 operations=%u aspect=%u:%u adaptive=%u height=%u ssaa=%u aa=%u aniso=%u frames=%u/%u\n",
+            plan.operations,numerator,denominator,adaptive,plan.options.internal_height,plan.options.supersample,
+            plan.options.antialiasing,plan.options.anisotropy,plan.options.frame_mode,plan.options.frame_rate);
+        static struct PilotTitleMod combined;
+        combined=(struct PilotTitleMod){PILOT_TITLE_MOD_ABI,wide?transform:NULL,wide?draw:NULL,(wide||frame_mode)?present:NULL};
+        return &combined;
+    }
     char package[96],version[32],plugin[96],identity[65],extra;
     int fields=fscanf(file,"xlle-mod-plan 1\npackage %95s %31s\nplugin %95s\nidentity %64s\naspect %u %u\nadaptive %u\n %c",
         package,version,plugin,identity,&numerator,&denominator,&adaptive,&extra);

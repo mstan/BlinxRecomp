@@ -6,11 +6,14 @@
 #define CHECK(c) do{if(!(c)){fprintf(stderr,"failed line %d: %s\n",__LINE__,#c);return 1;}}while(0)
 static float matrix[16]={.75f,0,0,0,0,-1,0,0,0,0,1,1,0,0,-1,0};
 static unsigned phase=0x89,numerator,denominator,shape[2],writes;
+static unsigned paused,stage,scope,frames;
 static int read_data(unsigned address,void *data,unsigned bytes)
 {
     unsigned guard=0xbfaaaaab;
     if(address==0x2c86b && bytes==4)memcpy(data,&guard,4);
     else if(address==0x50a57c && bytes==4)memcpy(data,&phase,4);
+    else if(address==0x50a534 && bytes==4)memcpy(data,&paused,4);
+    else if(address==0x50312c && bytes==4)memcpy(data,&stage,4);
     else if(address==0x39d910 && bytes==64)memcpy(data,matrix,64);
     else return 0;
     return 1;
@@ -25,20 +28,32 @@ static int presentation(unsigned n,unsigned d,unsigned height)
 }
 static int client_size(unsigned size[2]){size[0]=1680;size[1]=720;return 1;}
 static int frame_shape(unsigned n,unsigned d){shape[0]=n;shape[1]=d;return 1;}
+static unsigned quality_calls;
+static int visual_mods(const struct PilotVisualMods *options)
+{++quality_calls;frames=options->frame_mode;return pilot_visual_mods_validate(options);}
+static void frame_scope(unsigned key){scope=key;}
 static int close_to(float a,float b){return fabsf(a-b)<.001f;}
 int main(int argc,char **argv)
 {
     struct PilotTitleModHost host={PILOT_TITLE_MOD_ABI,
         "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249",
-        read_data,write_data,presentation,client_size,frame_shape};
+        read_data,write_data,presentation,client_size,frame_shape,visual_mods,frame_scope};
 #ifdef _WIN32
     _putenv_s("BLINX_MOD_PLAN","");
-    if(argc==2)_putenv_s("BLINX_MOD_PLAN",argv[1]);
+    if(argc>=2)_putenv_s("BLINX_MOD_PLAN",argv[1]);
 #else
     unsetenv("BLINX_MOD_PLAN");
-    if(argc==2)setenv("BLINX_MOD_PLAN",argv[1],1);
+    if(argc>=2)setenv("BLINX_MOD_PLAN",argv[1],1);
 #endif
     const struct PilotTitleMod *mod=pilot_title_mod_open(&host);
+    if(argc==3 && !strcmp(argv[2],"--quality-only")) {
+        CHECK(mod && !mod->transform && !mod->draw && !mod->present && quality_calls==1 && !writes && !numerator);return 0;
+    }
+    if(argc==3 && !strcmp(argv[2],"--frame-only")) {
+        CHECK(mod && !mod->transform && !mod->draw && mod->present && quality_calls==1 && !writes && !numerator);
+        mod->present();CHECK(scope==1);paused=1;mod->present();CHECK(!scope);
+        paused=0;stage=7;mod->present();CHECK(scope==8);return 0;
+    }
     if(argc==1){CHECK(!mod && !writes && !numerator);return 0;}
     CHECK(mod && mod->abi==PILOT_TITLE_MOD_ABI);
     mod->transform(1,0x39d910,0x2c898);
@@ -48,6 +63,7 @@ int main(int argc,char **argv)
     float aspect=(float)numerator/denominator,stretch=aspect/(4.0f/3.0f);
     CHECK(close_to(matrix[0]*aspect,-matrix[5]));
     mod->present();CHECK(shape[0]*denominator==shape[1]*numerator);
+    if(frames){CHECK(scope==1);paused=1;mod->present();CHECK(!scope);paused=0;stage=1;mod->present();CHECK(scope==2);stage=0;}
     float quad[4][4]={{50,30,0,1},{180,30,0,1},{50,80,0,1},{180,80,0,1}};
     struct PilotTitleModDraw draw={0xef2ae,0x144,6,4,1,(const unsigned char*)quad,16,0x42,1,0,0,0};
     mod->draw(&draw);
