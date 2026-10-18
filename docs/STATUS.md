@@ -11,6 +11,7 @@
 | Round 2 | All three normal stages and its boss reached original Results/save, unlocking Round 3. `43D90` recovery through `441B0` preserves `44000`; boss assistance uses source-reviewed death-AI state. |
 | Round 3 | All three normal stages and its boss reached original Results/save, unlocking Round 4. Fixed-function TEMP routing exposed a real HLE renderer gap, now corrected and GPU-tested on both prepared backends. Boss death-AI/position assistance retains the original portal and completion route. |
 | Round 4 | All three normal stages and the boss reached original Results/save. Stage 3 needed an additional Tom-Tom HP assist and time for original death effects before the goal teleport. Boss HP/grounded-wound assistance retained the original death/portal; a negative Y offset placed Blinx above the arena for the exit. |
+| Round 5 | All three normal stages and the boss reached original Results/save, unlocking Round 6. Tom-Tom HP assists and settled death effects are included in the normal-stage batch. Main boss wound assistance leaves its separate appendages untouched; original code owns death and portal. |
 | Diagnostic checkpoints | Framework `76a7ce4` adds restricted generated native continuation records, with fresh-process nested-call restore passing 9 focused tests. Default fast profile unchanged. This is not a Blinx save state and does not yet shorten campaign load time; thread/device/storage serialization remains open. |
 | Shop | Retry checkout deducts 200G and raises stock to three; original signed save authenticates in a fresh process with the purchased stock and 9,805G retained. Cancellation and unchanged bank on an over-budget checkout also observed. Other item/upgrade types remain untested. |
 | Widescreen | Default-off static mod, configurable/adaptive 4:3 through 32:9. Actual same-scene 16:9/21:9/32:9 captures; original Stage 1 Results/save and Stage 2 unlock at 21:9. HUD anchors proportionally; menus/results retain 4:3. Internal resolution remains 640x480. |
@@ -29,7 +30,7 @@ support and existing extent guards pass 13 focused checks.
 Framework `c993798` additionally passes CURRENT/TEMP GPU checks on PHOBOS and
 SPOON across three device lifetimes, plus the existing PHOBOS backend/FVF/blend
 checks. Doctor verifies the adopted framework pin, generated hashes and bindings.
-Twelve normal stages and four bosses now have assisted original Results/save proof;
+Fifteen normal stages and five bosses now have assisted original Results/save proof;
 playable time abilities, other shop item types and all later stages remain open.
 
 ## Historical repository-split snapshot ? 2026-10-08
