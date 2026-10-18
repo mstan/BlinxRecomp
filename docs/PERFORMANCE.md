@@ -6,6 +6,8 @@ preserves the previous unoptimized configuration. `game.toml` selects OPTIMIZED
 explicitly. Build and launch `--mode play` for the fast native scheduling,
 calendar, input, rendering and audio configuration; the existing reference
 modes remain independently selectable. No runtime HLE/LLE switching was added.
+The launcher also disables optional event tracing by default, matching the
+measured configuration. Required GPU completion events remain enabled.
 
 Matched stationary Round1 Stage1 samples use the same authenticated save,
 100-update warmup and 180-update observation, one muted hidden game at a time,
