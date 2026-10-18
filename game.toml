@@ -6,7 +6,7 @@ xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
 
 [framework]
 repository = "https://github.com/mstan/xboxlle"
-revision = "6bb5fc0bc1101e40b12bb8b7a67cb265dc9e0327"
+revision = "8d3bce3aee69b55aa52cad5a6f24f17cadf6f110"
 directory = "xboxlle"
 
 [generation]
@@ -15,6 +15,7 @@ data_sections = "MDL*,MAP[0-9]*"
 bindings = ["media", "cache", "d3d", "jump", "cpu", "input", "audio"]
 
 [build]
+PILOT_NATIVE_OPTIMIZATION = "OPTIMIZED"
 PILOT_MEDIA = "INSTALLED"
 PILOT_CACHE = "NATIVE"
 PILOT_CPU_PROBE = "NATIVE"
@@ -31,6 +32,14 @@ PILOT_FILES = "NATIVE"
 
 [modes.attract]
 PILOT_INPUT = "NATIVE"
+
+# Fast native gameplay, independently selected from the retained LLE modes.
+[modes.play]
+PILOT_INPUT = "NATIVE"
+PILOT_SCHEDULING = "NATIVE"
+PILOT_CALENDAR = "HLE"
+PILOT_IO_DEVICE = "OFF"
+PILOT_USB = "OFF"
 
 [modes.input-lle]
 PILOT_INPUT = "ORIGINAL"

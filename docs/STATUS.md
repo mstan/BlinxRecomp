@@ -1,5 +1,23 @@
 # Original NTSC Blinx
 
+## Optimized gameplay - 2026-10-18
+
+`--mode play` selects the optimized native HLE gameplay configuration. The same
+stationary Stage 1 sample now uses 38.5-39.1 CPU ms/update versus 54.3 previously;
+observed main-loop throughput rises from 18.4 to 26.1-27.1 updates/s. These are short
+samples under changing host load, not display FPS or whole-campaign guarantees.
+The separately retained LLE modes remain available. See
+[performance evidence](PERFORMANCE.md) for scope and identities.
+
+The compact native dispatch index is initialized, and recovery now derives its
+count from the actual 8,872-row inventory rather than retaining the stale 8,863
+bound. Focused CPU/runtime/dispatch checks pass; the optimized title reaches
+original Stage 1 Results/save and authenticates that save in a fresh process.
+The prior assisted campaign route was tested before this compiler change and
+has not been exhaustively rerun on the optimized binary. Deeper CPU flags/FP
+semantics, full native original-kernel execution and complete save states remain
+independent work; this performance batch does not close those scopes.
+
 ## Current gameplay and enhancement milestone ? 2026-10-17
 
 | Area | Current evidence / remaining work |

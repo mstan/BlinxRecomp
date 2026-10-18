@@ -82,6 +82,13 @@ XAPI input plus the shared OHCI/DMA floor, including original interrupt/report
 delivery and the demonstrated interruption/reentry sequence.
 Selections occur at build time. No runtime HLE/LLE switching is performed.
 
+For the optimized native HLE gameplay configuration, use `build --mode play`
+and `run --mode play` (optionally `--widescreen adaptive`). It uses native
+scheduling/calendar services and no original device interpreter. All modes now
+select the framework's `OPTIMIZED` compiler profile explicitly. The separate
+reference modes remain available; see [measured performance](docs/PERFORMANCE.md)
+and the [register/HLE audit](xboxlle/docs/NATIVE-HLE-OPTIMIZATION-2026-10-18.md).
+
 `--mode display-lle` keeps native input/rendering/audio and selects the original
 display driver over maintained NV2A/PIC. Its actual scanout, blocking waits,
 paced/immediate flips and interval Reset have reached Demo play, Start/title
