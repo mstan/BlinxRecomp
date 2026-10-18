@@ -1,7 +1,12 @@
 /build*/
 /local/
 /generated/
-/assets/
+/assets/*
+# Only the separately credited launcher artwork is distributable source here.
+!/assets/launcher/
+/assets/launcher/*
+!/assets/launcher/boxart.png
+!/assets/launcher/NOTICE.md
 /media/
 /roms/
 CMakeUserPresets.json

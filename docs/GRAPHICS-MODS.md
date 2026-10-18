@@ -33,6 +33,16 @@ python tools/game.py run --mode play --no-launcher --widescreen adaptive --inter
 The normal owner-facing run has audio enabled. Automated headless/replay runs
 are muted. Owner preferences live in ignored `local/mod-selection.json`.
 
+The dashboard includes the shared recomp-ui **Player 1** source card and live
+SDL controller detection. Choose Keyboard, None, or a named connected gamepad.
+The selected gamepad GUID persists across launcher/game processes; gameplay
+opens that device through the same SDL2 controller mapping and waits for it to
+reconnect rather than silently substituting another controller. Identical
+models sharing a GUID use the first matching device, as in the shared UI.
+Keyboard retains the existing Xbox host mapping. Binding remaps are not offered.
+The optional SDL SDK setting enables this transport; builds without it retain
+the existing XInput/keyboard path. Explicit SDL selection requires an SDL build.
+
 The internal height is independent of window size. The initial aspect selects
 the internal width; adaptive projection/presentation still follows subsequent
 window resizing. 2160p ultrawide costs more than 4K at 16:9. Supersampling

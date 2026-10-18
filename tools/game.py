@@ -123,6 +123,8 @@ def configure(local, mode):
         if not local[value].exists():
             raise ValueError(f'Missing local {value}: {local[value]}')
         options[key] = str(local[value])
+    if local.get('launcher_sdl_sdk'):
+        options['PILOT_SDL2_DIR'] = str(local['launcher_sdl_sdk'] / 'cmake')
     run([executable('cmake'), '-S', ROOT, '-B', ROOT / 'build' / mode,
          '-G', 'Visual Studio 17 2022', '-A', 'x64', *[f'-D{key}={value}' for key, value in options.items()]])
 
@@ -178,6 +180,12 @@ def launch(local, args):
         args.frame_mode = selected.get(('xboxlle.enhancement.frame-rate', 'frame-rate', 'mode'), 'original')
         args.frame_rate = int(selected.get(('xboxlle.enhancement.frame-rate', 'frame-rate', 'rate'), '60'))
         env['RECOMP_VOLUME'] = str(catalog.volume)
+        player = catalog.player
+        if player['source'] in ('none', 'keyboard'):
+            env['XLLE_PILOT_INPUT'] = player['source']
+        elif player['source'] == 'gamepad':
+            env['XLLE_PILOT_INPUT'] = 'sdl'
+            env['XLLE_PILOT_INPUT_GUID'] = player['guid']
     if args.frame_mode != 'original' and args.frame_mode not in PROFILE['launcher']['frame_modes']:
         raise ValueError('This frame-rate mode is not yet qualified for Blinx; use original timing')
     if args.headless or args.replay:
@@ -250,7 +258,9 @@ def build_launcher(local):
     run([sys.executable, FRAMEWORK / 'tools/native_launcher_ui.py', '--source', source,
          '--output', prepared, '--git', executable('git')])
     run([executable('cmake'), '-S', FRAMEWORK / 'pilots/native-launcher', '-B', ROOT / 'build/launcher',
-         '-DXLLE_UI_SOURCE=' + str(prepared), '-DSDL2_DIR=' + str(local['launcher_sdl_sdk'] / 'cmake')])
+         '-DXLLE_UI_SOURCE=' + str(prepared), '-DSDL2_DIR=' + str(local['launcher_sdl_sdk'] / 'cmake'),
+         '-DXLLE_LAUNCHER_BOXART=' + str(ROOT / 'assets/launcher/boxart.png'),
+         '-DXLLE_LAUNCHER_ARTWORK_NOTICE=' + str(ROOT / 'assets/launcher/NOTICE.md')])
     run([executable('cmake'), '--build', ROOT / 'build/launcher', '--config', 'Release', '--parallel', '4'])
 
 
