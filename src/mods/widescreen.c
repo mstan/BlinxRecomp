@@ -9,6 +9,7 @@ static const struct PilotTitleModHost *host;
 static unsigned numerator,denominator,adaptive,phase,phase_dirty=1,projection_seen,frame_aspect[2];
 static FILE *trace;
 static unsigned trace_count;
+static unsigned trace_ui_only,trace_ready;
 static void fail(const char *reason)
 {fprintf(stderr,"[TITLE MOD STOP] %s\n",reason);fflush(stderr);exit(2);}
 static void read_data(unsigned address,void *data,unsigned bytes)
@@ -60,7 +61,8 @@ static void draw(struct PilotTitleModDraw *draw)
         if(xy[1]<min_y)min_y=xy[1];
         if(xy[1]>max_y)max_y=xy[1];
     }
-    if(trace && trace_count<1024) {
+    if(trace && trace_count<1024 && (trace_ui_only!=2 || trace_ready) &&
+       (!trace_ui_only || sprite || text || !draw->depth_test)) {
         float z=0;if(draw->position_type!=0x22)memcpy(&z,draw->positions+8,4);
         fprintf(trace,"%u %08x %08x %u %u %.6g %.6g %.6g %.6g z=%.9g depth=%u/%u\n",trace_count++,draw->caller,
             draw->shader,draw->position_type,draw->count,min_x,min_y,max_x,max_y,z,draw->depth_test,draw->depth_write);fflush(trace);
@@ -84,13 +86,22 @@ static void draw(struct PilotTitleModDraw *draw)
      * X=216, centered time controls, and trash inventory from X=448 onward.
      * Apply these bounds to absolute screen pixels, including sprite bias. */
     if(min_y>=320 && max_y<=480) {
-        if(max_x<=216)draw->x_anchor=0;
+        /* The slot-frame artwork occupies a padded 0..256 quad. Its visible
+         * circles belong to the crystal queue; the adjacent rewind button
+         * starts at X=218 and must retain the centered time-control anchor. */
+        if(max_x<=216 || (min_x<=1 && max_x<=256))draw->x_anchor=0;
         else if(min_x>=448)draw->x_anchor=640;
     }
 }
 static void present(void)
 {
     phase_dirty=1;
+    if(trace && trace_ui_only==2 && !trace_ready && mode()==9) {
+        unsigned player;unsigned char counts[2];read_data(0x4eb6c4,&player,4);
+        if(player && player<0x4000000-0x177) {
+            read_data(player+0x175,counts,2);trace_ready=counts[0] || counts[1];
+        }
+    }
     unsigned n=4,d=3;
     if(mode()==9 && projection_seen){n=frame_aspect[0];d=frame_aspect[1];}
     if(!host->frame_shape(n,d))fail("unsupported mod presentation shape");
@@ -114,6 +125,8 @@ const struct PilotTitleMod *pilot_title_mod_open(const struct PilotTitleModHost 
     if(!host->presentation(numerator,denominator,720))fail("aspect is outside 4:3 through 32:9 or backend is unsupported");
     const char *trace_path=getenv("BLINX_MOD_DRAW_TRACE");
     if(trace_path && *trace_path){trace=fopen(trace_path,"wb");if(!trace)fail("mod draw trace cannot be opened");}
+    const char *trace_filter=getenv("BLINX_MOD_DRAW_TRACE_UI_ONLY");
+    trace_ui_only=trace_filter && !strcmp(trace_filter,"populated") ? 2 : trace_filter && !strcmp(trace_filter,"1");
     fprintf(stderr,"[MOD] package=%s version=%s plugin=%s aspect=%u:%u adaptive=%u original-image=unchanged\n",
         package,version,plugin,numerator,denominator,adaptive);
     static const struct PilotTitleMod result={PILOT_TITLE_MOD_ABI,transform,draw,present};return &result;

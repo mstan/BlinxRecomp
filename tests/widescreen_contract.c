@@ -69,6 +69,14 @@ int main(int argc,char **argv)
     mod->draw(&draw);
     CHECK(draw.x_anchor==0 && close_to((50*draw.x_scale)*stretch,50));
     CHECK(close_to(162*draw.x_scale*stretch,162));
+    /* Actual populated-HUD trace: the slot-frame texture has transparent
+     * padding across absolute X=0..256, Y=388..452 (33811, float3 quad).
+     * Move its artwork with the icons, while retaining the neighboring
+     * rewind button's independent center anchor below. */
+    quad[0][0]=quad[2][0]=-320;quad[1][0]=quad[3][0]=-64;
+    quad[0][1]=quad[1][1]=148;quad[2][1]=quad[3][1]=212;
+    draw.x_scale=1;draw.x_anchor=320;mod->draw(&draw);
+    CHECK(draw.x_anchor==0 && close_to(256*draw.x_scale*stretch,256));
     quad[0][0]=quad[2][0]=-100;quad[1][0]=quad[3][0]=-64;
     quad[0][1]=quad[1][1]=160;quad[2][1]=quad[3][1]=194;
     draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_anchor==320);

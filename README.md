@@ -28,8 +28,10 @@ stages/boss and all of Round 3 also reached original Results/save with explicit
 HP/position/AI-state cheats. All three Round 4 normal stages and its boss also
 saved, followed by all of Rounds 5-8. Round 9's four rematches, pre-final shop
 and assisted final boss now reach the original rescue, ending, save and title
-return; a fresh process authenticates the completed save. Playable time abilities
-and other unique functions remain open. These assists do not prove
+return; a fresh process authenticates the completed save. All five time controls
+have original-input activation and lifecycle coverage, including REC's clone
+playback and cleanup. Natural combat, puzzle and optional inventory breadth
+remain explicit follow-ups. These assists do not prove
 every route or natural damage producer. Progress also authenticated on a fresh
 load. The fast HLE profile uses ahead-of-time compiled
 original CPU code and native services; missing native paths stop rather than
@@ -39,8 +41,9 @@ The default-off [widescreen mod](docs/WIDESCREEN.md) supports configurable and
 adaptive aspects through 32:9, with proportional HUD anchoring. The same Stage 1
 scene has actual 16:9, 21:9 and 32:9 captures, followed by original Results/save
 and Stage 2 unlock at 21:9. Gameplay widens; menus retain centered 4:3. Internal
-rendering remains 640x480. Later stages, bosses, time abilities and shop purchases
-are being exercised with authorized QA cheats in a separate muted instance.
+rendering remains 640x480. Populated 21:9/32:9 captures additionally verify the
+crystal icons and padded slot frames at left and trash inventory at right.
+Campaign and item/ability QA use authorized cheats in a separate muted instance.
 See [current validation](docs/STATUS.md) and the framework's
 [burndown](xboxlle/docs/BLINX-BURNDOWN.md).
 
