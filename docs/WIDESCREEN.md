@@ -75,3 +75,23 @@ in later scenes, higher internal resolution, controller artwork, and the shared
 launcher mod UI. Keep adding concrete newly discovered questions here or in
 the campaign ledger; do not treat this bounded first-stage proof as full-game
 visual qualification. No netplay or savestate compatibility is asserted.
+
+Owner-requested follow-up (2026-10-18), tracked in `beads-xbox.1.7.4`: add a
+separate default-off visual-quality mod with genuine internal rendering at
+1080p, 1440p, 1800p and 2160p, preserving the selected aspect through 32:9.
+These are height presets; 21:9/32:9 produce wider images than their 16:9 names.
+Keep output/window size independent and retain the original Native choice.
+Antialiasing, supersampling and texture filtering should be separate controls.
+Only working, supported options belong in the UI. The owner will playtest
+performance; keep a catalog visibility policy so selected expensive options
+can then be hidden without removing the implementation or changing quality
+silently during play. Actual shared launcher-provider wiring is still open.
+
+Higher FPS is a separate mod: prefer real faster updates only when game speed,
+physics, timers, audio and the five time controls remain correct. Optional
+interpolated presentation must preserve simulation timing and be labeled.
+Resolution/AA should not wait on FPS research. The shared implementation order
+and resource/copy/readback acceptance are in
+[the renderer plan](../xboxlle/docs/BLINX-ENHANCED-RENDERER.md#resolution-quality-and-frame-rate-request-2026-10-18).
+This is the next enhancement scope, not an assertion that the current build
+already renders above 640x480 or supports higher FPS.

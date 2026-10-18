@@ -1,5 +1,24 @@
 # Original NTSC Blinx
 
+## Native CPU assessment - 2026-10-18
+
+Fast `play` now pins framework `d48bec6` and selects a reviewed host-idle
+service in the original main-frame poll. Guest register state, counter
+publication, comparison and scheduler priority/readiness are preserved;
+reference builds retain original polling. The measured movement poll spends
+about 99.7% fewer CPU cycles, but mixed total CPU timings do not establish a
+whole-title FPS gain. Register-address caching and forced huge-function
+optimization were measured and rejected. There is still no x86 interpreter
+fallback in this fast profile. See [the assessment](PERFORMANCE.md).
+
+The native candidate reaches original Stage 8 Results/scoring/save and a fresh
+authenticated reload. Focused contracts and disabled-reference machine-code
+equivalence pass. The game-owned build passes 33 focused checks, loads its
+authentic QA save and runs 280 original Stage 1 updates without guest diagnostic
+writes or guards; exhaustive campaign/LLE validation was not repeated.
+Resolution presets through 2160p, antialiasing/supersampling and higher FPS are
+separate mod follow-up; the current internal render size remains 640x480.
+
 ## Optimized gameplay - 2026-10-18
 
 `--mode play` selects the optimized native HLE gameplay configuration. The same

@@ -1,4 +1,56 @@
-# Optimized native gameplay - 2026-10-18
+# Native CPU assessment and frame-poll idle - 2026-10-18
+
+The fast `play` profile now adopts framework
+`d48bec69f863cc0881175487a8ae3aefe51e643c` and selects the reviewed native
+host-idle component for the original frame-counter poll at `AB801`.
+The original comparison, guest registers/flags/stack, callback publication and
+guest CPU readiness/priority remain authoritative. The host sleeps while
+waiting for scheduler publication; it never fabricates a frame or makes a
+lower-priority guest eligible early. Reference modes keep original polling.
+This is build-time component selection, with no shipping runtime switch.
+
+Measured Stage 1 movement wait CPU cost falls from 4,204,445 to 13,223 cycles
+per original update (3.081% to 0.00995% of main-thread cycles). Actual elapsed
+waiting remains. This removes spin work; **whole-title CPU/FPS improvement is
+not established**. Unprofiled Stage 8 and a test-only same-image comparison
+give mixed total timings, including worse candidate windows. Stationary cases
+often have almost no unsatisfied wait. Full results and limitations are in
+[the CPU assessment](../xboxlle/docs/NATIVE-CPU-BOOKKEEPING-2026-10-18.md).
+
+Guest register access is still real native work. Address-cache experiments
+failed the performance gate and are archived. Fully optimizing the large
+player body reduced its own cycles but implied only about 0.2-0.3% potential
+main-thread savings at a five-minute compile cost, so that policy is also
+rejected. The register-model header is unchanged. No x86 interpreter fallback
+is introduced; broader CPU/FP, entry-barrier and movie-poll work stays on the
+documented deferral list with concrete reopening triggers.
+
+The source production candidate reaches original Round 3 Stage 1 Results,
+scoring and signed save using explicit HP/position assists. A fresh process
+authenticates that save without guest diagnostic writes or guards. Five poll
+binding/compiled-C checks, 13 extent checks, four checkpoint checks and 32
+framework runtime/ABI checks pass. With the option off, all 253 native code
+sections and symbolic relocations in the affected unit match the original.
+
+The game-owned build additionally passes 33 focused runtime/ABI/widescreen
+checks, authenticates its copied original QA save through the selector, and
+runs 280 original Stage 1 gameplay updates without guest diagnostic writes or
+guards. Its actual affected-unit compiler command selects the idle component.
+This is an integration smoke check, not another matched speed comparison; the
+host-load sample was 100%. The muted QA process was retired afterward.
+Its first harness deadline started while cold startup was still loading files;
+the same live process continued successfully, without a rebuild or relaunch.
+Tested game executable SHA256:
+`272c09d270075f516c2f3d4befd3cc6ebb1388876c4693fe69d26269706d39e5`.
+Only one generated CPU unit and its poll inventory changed. No full campaign
+or LLE qualification was restarted. Performance issue `beads-xbox.1.100` stays
+open for broader headroom; this assessment does not promise a sustained FPS.
+
+Higher internal resolution, AA/supersampling and higher FPS are opt-in mod work
+tracked separately in `beads-xbox.1.7.4`; see [the enhancement scope](WIDESCREEN.md).
+The current build still renders internally at 640x480.
+
+## Prior compiler optimization milestone - 2026-10-18
 
 The native target now defaults to `PILOT_NATIVE_OPTIMIZATION=OPTIMIZED`:
 MSVC `/O2 /fp:precise`, or GCC/Clang `-O2 -fno-strict-aliasing`. `BRINGUP`

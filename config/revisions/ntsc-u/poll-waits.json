@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "xbe_sha256": "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249",
+  "counter": "0x0050A520",
+  "publisher": {
+    "start": "0x000A04F0",
+    "end": "0x000A0500",
+    "sha256": "421978b0876b0cb2f411a313c51a5b0932b103857213be65f6b59eb9083656c2"
+  },
+  "registration": {
+    "start": "0x000AB64C",
+    "end": "0x000AB656",
+    "sha256": "070ec89124d712668b6bba0b819158412fac2c6311e72d40a5698488e7aaf6bb"
+  },
+  "export": {
+    "start": "0x001320D0",
+    "end": "0x001320E3",
+    "sha256": "c7214d70f5eee2910fd313b29d55a63b47c67553681133b0e68667b7303f3ff2"
+  },
+  "loops": [
+    {
+      "function": "0x000AB4F0",
+      "start": "0x000AB801",
+      "end": "0x000AB809",
+      "sha256": "4033be7038bcc80aaa6df390acee6aff1658e8a98d9de493561d6ccd2b36a5e0"
+    }
+  ],
+  "contract": "Only the original guest-scheduled vblank callback increments this counter during these waits. Keep original signed comparison, flag snapshots, checkpoints and counter writes. Host parking retains guest readiness and CPU ownership; publication wakes the scheduler, then the original checkpoint delivers the callback. Unknown owners or reference builds retain the original spin loop.",
+  "deferred_loops": [
+    {
+      "function": "0x000A57C0",
+      "start": "0x000A5820",
+      "end": "0x000A5828",
+      "sha256": "4033be7038bcc80aaa6df390acee6aff1658e8a98d9de493561d6ccd2b36a5e0"
+    },
+    {
+      "function": "0x000A57C0",
+      "start": "0x000A5946",
+      "end": "0x000A594E",
+      "sha256": "4033be7038bcc80aaa6df390acee6aff1658e8a98d9de493561d6ccd2b36a5e0"
+    },
+    {
+      "function": "0x000A57C0",
+      "start": "0x000A5A50",
+      "end": "0x000A5A58",
+      "sha256": "4033be7038bcc80aaa6df390acee6aff1658e8a98d9de493561d6ccd2b36a5e0"
+    }
+  ]
+}

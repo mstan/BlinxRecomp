@@ -63,6 +63,18 @@ def check_generated(directory):
     manifest = json.loads((directory / 'generation.aot-private.json').read_text(encoding='utf-8'))
     if manifest['sha256'] != PROFILE['game']['xbe_sha256'] or manifest['donor'] != PROFILE['generation']['donor_revision']:
         raise ValueError('Generated identity or CPU donor differs from the reviewed profile')
+    poll_contract = PROFILE['generation'].get('poll_waits')
+    poll_record = manifest.get('poll_waits')
+    if poll_contract:
+        expected = json.loads((REVISION / poll_contract).read_text(encoding='utf-8'))
+        if not poll_record or poll_record.get('version') != 1 or poll_record.get('contract') != expected:
+            raise ValueError('Generated native poll contract differs from this title revision')
+        digest = hashlib.sha256(json.dumps(expected, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+        units = json.loads((directory / 'gen/pilot_poll_wait_units.json').read_text(encoding='utf-8'))
+        if poll_record.get('contract_sha256') != digest or poll_record.get('units') != units:
+            raise ValueError('Generated native poll inventory/provenance is inconsistent')
+    elif poll_record:
+        raise ValueError('Unexpected native poll contract in generated input')
     actual = {path.name for path in (directory / 'gen').iterdir() if path.is_file()}
     if actual != set(manifest['files']):
         raise ValueError('Generated file inventory differs from its manifest')
@@ -85,6 +97,8 @@ def prepare(local):
                '--seed-functions', REVISION / 'seeds.json']
     for family in PROFILE['generation']['bindings']:
         command += [f'--{family}-symbols', local['xdk_symbols']]
+    if PROFILE['generation'].get('poll_waits'):
+        command += ['--poll-waits', REVISION / PROFILE['generation']['poll_waits']]
     env = dict(os.environ)
     env['PYTHONPATH'] = str(local['unicorn'].parent) + os.pathsep + env.get('PYTHONPATH', '')
     run(command, env=env)
