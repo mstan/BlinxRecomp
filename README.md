@@ -40,7 +40,8 @@ silently entering an interpreter.
 The default-off [widescreen mod](docs/WIDESCREEN.md) supports configurable and
 adaptive aspects through 32:9, with proportional HUD anchoring. The same Stage 1
 scene has actual 16:9, 21:9 and 32:9 captures, followed by original Results/save
-and Stage 2 unlock at 21:9. Gameplay widens; menus retain centered 4:3. Internal
+and Stage 2 unlock at 21:9. Gameplay and the Results replay widen; menus and the
+Results overlay retain centered 4:3. Internal
 rendering defaults to 640x480. Optional [visual quality mods](docs/GRAPHICS-MODS.md)
 add native 1080p–2160p rendering, AA, supersampling, texture filtering and
 separate blended presentation interpolation through the shared Xbox launcher.

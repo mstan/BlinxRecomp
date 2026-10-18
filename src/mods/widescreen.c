@@ -18,6 +18,15 @@ static void read_data(unsigned address,void *data,unsigned bytes)
 {if(!host->read(address,data,bytes))fail("Blinx mod data is unavailable");}
 static unsigned mode(void)
 {if(phase_dirty){read_data(0x50a57c,&phase,4);phase&=0x7f;phase_dirty=0;}return phase;}
+/* Screen 10 replays the stage behind the Results overlay. */
+static int scene_mode(void){unsigned value=mode();return value==9 || value==10;}
+static void open_trace(void)
+{
+    const char *path=getenv("BLINX_MOD_DRAW_TRACE");
+    if(path && *path){trace=fopen(path,"wb");if(!trace)fail("mod draw trace cannot be opened");}
+    const char *filter=getenv("BLINX_MOD_DRAW_TRACE_UI_ONLY");
+    trace_ui_only=filter && !strcmp(filter,"populated") ? 2 : filter && !strcmp(filter,"1");
+}
 static void aspect(unsigned *n,unsigned *d)
 {
     *n=numerator;*d=denominator;
@@ -34,7 +43,7 @@ static void transform(unsigned state,unsigned address,unsigned caller)
 {
     if(state!=1 || address!=0x39d910 || caller!=0x2c898)return;
     phase_dirty=1;
-    if(mode()!=9)return;
+    if(!scene_mode())return;
     float matrix[16];read_data(address,matrix,sizeof(matrix));
     /* This is the original perspective builder's negative 4:3 aspect. Change
      * its data before SetTransform and the title's following matrix copy;
@@ -49,9 +58,15 @@ static void transform(unsigned state,unsigned address,unsigned caller)
 }
 static void draw(struct PilotTitleModDraw *draw)
 {
-    if(mode()!=9 || !projection_seen || !draw->default_target || !draw->positions || draw->count>4096 || draw->stride<8 ||
+    if(!scene_mode() || !projection_seen || !draw->default_target || !draw->positions || draw->count>4096 || draw->stride<8 ||
        (draw->position_type!=0x22 && draw->position_type!=0x32 && draw->position_type!=0x42 && draw->position_type!=0x72))return;
-    int sprite=draw->caller==0x30c0a || (draw->caller==0x33811 && !draw->depth_test);
+    int marker=0;
+    if(draw->caller==0x33811 && draw->depth_test) {
+        unsigned programs[2];read_data(0x6678a8,programs,sizeof(programs));
+        marker=draw->shader==programs[0] || draw->shader==programs[1];
+    }
+    int sprite=draw->caller==0x30c0a || (draw->caller==0x33811 && (!draw->depth_test || marker));
+    int camera_sprite=draw->caller==0x30c0a && draw->depth_test;
     int text=draw->caller==0xef2ae || draw->caller==0xef8a4 || draw->caller==0xf183a;
     if(!sprite && !text && (!trace || trace_count>=1024))return;
     float min_x=1e20f,min_y=1e20f,max_x=-1e20f,max_y=-1e20f;
@@ -64,7 +79,7 @@ static void draw(struct PilotTitleModDraw *draw)
         if(xy[1]>max_y)max_y=xy[1];
     }
     if(trace && trace_count<1024 && (trace_ui_only!=2 || trace_ready) &&
-       (!trace_ui_only || sprite || text || !draw->depth_test)) {
+       (!trace_ui_only || sprite || text || draw->caller==0x33811 || !draw->depth_test)) {
         float z=0;if(draw->position_type!=0x22)memcpy(&z,draw->positions+8,4);
         fprintf(trace,"%u %08x %08x %u %u %.6g %.6g %.6g %.6g z=%.9g depth=%u/%u\n",trace_count++,draw->caller,
             draw->shader,draw->position_type,draw->count,min_x,min_y,max_x,max_y,z,draw->depth_test,draw->depth_write);fflush(trace);
@@ -77,17 +92,26 @@ static void draw(struct PilotTitleModDraw *draw)
     /* The ordinary sprite queue stores centered XY; its original shader adds
      * c121=(320,240,0,0). Font FVF submits absolute screen pixels instead. */
     if(sprite){min_x+=320;max_x+=320;min_y+=240;max_y+=240;}
-    if(min_x<=1 && max_x>=639 && min_y<=1 && max_y>=479)return;
+    if(!camera_sprite && min_x<=1 && max_x>=639 && min_y<=1 && max_y>=479)return;
     unsigned n=frame_aspect[0],d=frame_aspect[1];
     draw->x_scale=4.0f*d/(3.0f*n);draw->x_anchor=320;
-    if(min_y>=-32 && max_y<=160) {
+    /* 36180 builds depth-tested type-4 billboards with an already projected
+     * center, but a radius from the original pixel focal length. Preserve
+     * that center and correct only the width (enemy health/target circles).
+     * The type-4 program pair lives at 6678A8; depth alone also matches world
+     * geometry in this queue and cannot identify its position contract. */
+    if(marker){draw->x_anchor=(min_x+max_x)*.5f;return;}
+    /* The same immediate sprite helper draws the depth-tested visibility
+     * proxies. Those follow the camera, including beyond the old 4:3 edges;
+     * a proxy is never an edge-anchored HUD item or a full-screen effect. */
+    if(mode()==9 && !camera_sprite && min_y>=-32 && max_y<=160) {
         if(max_x<=270)draw->x_anchor=0;
         else if(min_x>=400)draw->x_anchor=640;
     }
     /* The lower strip has three independent groups: crystal queue through
      * X=216, centered time controls, and trash inventory from X=448 onward.
      * Apply these bounds to absolute screen pixels, including sprite bias. */
-    if(min_y>=320 && max_y<=480) {
+    if(mode()==9 && !camera_sprite && min_y>=320 && max_y<=480) {
         /* The slot-frame artwork occupies a padded 0..256 quad. Its visible
          * circles belong to the crystal queue; the adjacent rewind button
          * starts at X=218 and must retain the centered time-control anchor. */
@@ -111,7 +135,7 @@ static void present(void)
         }
     }
     unsigned n=4,d=3;
-    if(mode()==9 && projection_seen){n=frame_aspect[0];d=frame_aspect[1];}
+    if(scene_mode() && projection_seen){n=frame_aspect[0];d=frame_aspect[1];}
     if(!host->frame_shape(n,d))fail("unsupported mod presentation shape");
     phase_dirty=1;
 }
@@ -145,6 +169,7 @@ const struct PilotTitleMod *pilot_title_mod_open(const struct PilotTitleModHost 
             plan.options.antialiasing,plan.options.anisotropy,plan.options.frame_mode,plan.options.frame_rate);
         static struct PilotTitleMod combined;
         combined=(struct PilotTitleMod){PILOT_TITLE_MOD_ABI,wide?transform:NULL,wide?draw:NULL,(wide||frame_mode)?present:NULL};
+        if(wide)open_trace();
         return &combined;
     }
     char package[96],version[32],plugin[96],identity[65],extra;
@@ -157,10 +182,7 @@ const struct PilotTitleMod *pilot_title_mod_open(const struct PilotTitleModHost 
     unsigned literal;read_data(0x2c86b,&literal,4);
     if(literal!=0xbfaaaaab)fail("Blinx projection call-site guard differs");
     if(!host->presentation(numerator,denominator,720))fail("aspect is outside 4:3 through 32:9 or backend is unsupported");
-    const char *trace_path=getenv("BLINX_MOD_DRAW_TRACE");
-    if(trace_path && *trace_path){trace=fopen(trace_path,"wb");if(!trace)fail("mod draw trace cannot be opened");}
-    const char *trace_filter=getenv("BLINX_MOD_DRAW_TRACE_UI_ONLY");
-    trace_ui_only=trace_filter && !strcmp(trace_filter,"populated") ? 2 : trace_filter && !strcmp(trace_filter,"1");
+    open_trace();
     fprintf(stderr,"[MOD] package=%s version=%s plugin=%s aspect=%u:%u adaptive=%u original-image=unchanged\n",
         package,version,plugin,numerator,denominator,adaptive);
     static const struct PilotTitleMod result={PILOT_TITLE_MOD_ABI,transform,draw,present};return &result;

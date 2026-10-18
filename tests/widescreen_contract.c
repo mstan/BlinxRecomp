@@ -15,6 +15,7 @@ static int read_data(unsigned address,void *data,unsigned bytes)
     else if(address==0x50a534 && bytes==4)memcpy(data,&paused,4);
     else if(address==0x50312c && bytes==4)memcpy(data,&stage,4);
     else if(address==0x39d910 && bytes==64)memcpy(data,matrix,64);
+    else if(address==0x6678a8 && bytes==8){unsigned programs[2]={0x123001,0x456001};memcpy(data,programs,8);}
     else return 0;
     return 1;
 }
@@ -100,8 +101,44 @@ int main(int argc,char **argv)
     draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
     CHECK(draw.x_anchor==640);
     CHECK(close_to(640*stretch-(590*draw.x_scale+draw.x_anchor*(1-draw.x_scale))*stretch,50));
+    /* Visibility proxies share the immediate sprite helper. A proxy in a
+     * HUD corner must follow its world position rather than that HUD edge. */
+    draw.caller=0x30c0a;draw.depth_test=1;draw.depth_write=0;
+    for(unsigned side=0;side<2;++side) {
+        float center=side?700:-60;
+        quad[0][0]=quad[2][0]=center-340;quad[1][0]=quad[3][0]=center-300;
+        quad[0][1]=quad[1][1]=side?-220:100;quad[2][1]=quad[3][1]=side?-180:140;
+        draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+        CHECK(draw.x_anchor==320);
+        float mapped=center*draw.x_scale+draw.x_anchor*(1-draw.x_scale);
+        CHECK(close_to((mapped-320)*stretch,center-320));
+    }
+    draw.depth_test=draw.depth_write=0;
+    /* A world marker's center is already projected with the wide matrix;
+     * its original pixel radius must shrink without moving that center. */
+    draw.caller=0x33811;draw.depth_test=1;draw.shader=0x123001;
+    quad[0][0]=quad[2][0]=250;quad[1][0]=quad[3][0]=290;
+    quad[0][1]=quad[1][1]=50;quad[2][1]=quad[3][1]=90;
+    draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(close_to(draw.x_anchor,590));
+    CHECK(close_to(40*draw.x_scale*stretch,40));
+    CHECK(close_to(590*draw.x_scale+draw.x_anchor*(1-draw.x_scale),590));
+    draw.shader=0x777001;draw.x_scale=1;mod->draw(&draw);CHECK(draw.x_scale==1);
+    draw.depth_test=draw.depth_write=0;
     draw.caller=0x34a07;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_scale==1);
+    /* Results replays use the same 3D camera, with the overlay contained in
+     * the centered original 4:3 region. Its left/right text is not HUD. */
+    phase=10;mod->present();matrix[0]=.75f;
+    mod->transform(1,0x39d910,0x2c898);
+    CHECK(close_to(matrix[0]*aspect,-matrix[5]));
+    mod->present();CHECK(shape[0]*denominator==shape[1]*numerator);
+    if(frames)CHECK(!scope);
+    draw.caller=0xef2ae;draw.x_scale=1;draw.x_anchor=0;
+    quad[0][0]=quad[2][0]=50;quad[1][0]=quad[3][0]=180;
+    quad[0][1]=quad[1][1]=30;quad[2][1]=quad[3][1]=80;
+    mod->draw(&draw);CHECK(draw.x_anchor==320);
+    CHECK(close_to(130*draw.x_scale*stretch,130));
     phase=5;mod->present();CHECK(shape[0]==4 && shape[1]==3);
     draw.caller=0xef2ae;draw.x_scale=1;mod->draw(&draw);CHECK(draw.x_scale==1);
-    CHECK(writes==1);return 0;
+    CHECK(writes==2);return 0;
 }
