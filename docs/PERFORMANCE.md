@@ -1,4 +1,33 @@
-# Native CPU assessment and frame-poll idle - 2026-10-18
+# Blinx performance observations
+
+## Stage 1 entrance follow-up - 2026-10-18
+
+The reported entrance-ring slowdown reproduces as a graphics-heavy CPU
+workload at adaptive 21:9, 1080p, FXAA and 8x anisotropy. Audio runs separately;
+its continued playback does not establish that gameplay is keeping pace.
+The measurements do not isolate particles as the sole cause.
+
+Framework `dae6ce8` accelerates texture-owner lookup with a small hint cache.
+Every hit checks the live owner; resource data, effects, draw order and game
+timing remain unchanged. Four focused graphics checks pass, including real
+texture pixels, collisions, table growth and two release/reuse cycles.
+
+Sequential short runs with profiling/readback disabled, the same authentic
+copied save and original input give 39.714 versus 36.751 process CPU ms/game
+update near spawn (about 7.5% less). Main-loop throughput is 24.20 versus 26.50
+updates/s; mean shared host CPU load is 50.1% versus 47.7%. These are bounded
+observations, not sustained presentation FPS or whole-game guarantees. The
+windows start three seconds after the first initialized spawn and last about
+13 seconds, excluding selector/loading time. All automated runs are muted,
+use isolated state and are retired. Owner preferences and saves are preserved.
+
+Deferred graphics state and draw submission remain performance follow-ups in
+`beads-xbox.1.100` / `beads-xbox.1.7.3`. No interpreter, timing multiplier,
+particle suppression or lowered visual preset is introduced. Exact sample
+identities and private evidence paths are recorded in the
+[framework audit](../xboxlle/docs/NATIVE-HLE-OPTIMIZATION-2026-10-18.md).
+
+## Native CPU assessment and frame-poll idle - 2026-10-18
 
 The fast `play` profile now adopts framework
 `d48bec69f863cc0881175487a8ae3aefe51e643c` and selects the reviewed native

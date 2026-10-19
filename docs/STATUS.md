@@ -1,5 +1,15 @@
 # Original NTSC Blinx
 
+## Entrance performance follow-up - 2026-10-18
+
+The current visual mods support 1080p through 2160p, AA, supersampling and
+filtering; older 640x480-only milestone entries below are historical.
+Stage 1-1 entrance slowdown prompted a measured texture-owner lookup
+optimization in framework `dae6ce8`. A short original-input comparison at
+1080p/adaptive 21:9 uses about 7.5% less CPU time per game update. Sustained
+FPS and the remaining entrance slowdown are still open; effects and simulation
+timing are preserved. See [performance evidence](PERFORMANCE.md).
+
 ## Native CPU assessment - 2026-10-18
 
 Fast `play` now pins framework `d48bec6` and selects a reviewed host-idle
