@@ -6,7 +6,8 @@
 #define CHECK(c) do{if(!(c)){fprintf(stderr,"failed line %d: %s\n",__LINE__,#c);return 1;}}while(0)
 static float matrix[16]={.75f,0,0,0,0,-1,0,0,0,0,1,1,0,0,-1,0};
 static unsigned phase=0x89,numerator,denominator,shape[2],writes;
-static unsigned paused,stage,scope,frames;
+static unsigned paused,stage,scope,frames,time_state;
+static unsigned noise_slot=24,noise_header=0xd0000528,bound_texture;
 static int read_data(unsigned address,void *data,unsigned bytes)
 {
     unsigned guard=0xbfaaaaab;
@@ -14,6 +15,10 @@ static int read_data(unsigned address,void *data,unsigned bytes)
     else if(address==0x50a57c && bytes==4)memcpy(data,&phase,4);
     else if(address==0x50a534 && bytes==4)memcpy(data,&paused,4);
     else if(address==0x50312c && bytes==4)memcpy(data,&stage,4);
+    else if(address==0x50a428 && bytes==4)memcpy(data,&time_state,4);
+    else if(address==0x1e220c && bytes==4)memcpy(data,&noise_slot,4);
+    else if(address==0x142e58 && bytes==4)memcpy(data,&bound_texture,4);
+    else if(address==0x8d2860+noise_slot*4 && bytes==4)memcpy(data,&noise_header,4);
     else if(address==0x39d910 && bytes==64)memcpy(data,matrix,64);
     else if(address==0x6678a8 && bytes==8){unsigned programs[2]={0x123001,0x456001};memcpy(data,programs,8);}
     else return 0;
@@ -120,6 +125,29 @@ int main(int argc,char **argv)
         CHECK(close_to((mapped-320)*stretch,center-320));
         draw.default_target=1;
     }
+    /* The full-screen tint uses the immediate helper in Retry and neighboring
+     * lifecycle states. The raster-depth/default-target contract fills the
+     * wide raster; ordinary world proxies and neighboring geometry still map. */
+    quad[0][0]=quad[2][0]=-320;quad[1][0]=quad[3][0]=320;
+    quad[0][1]=quad[1][1]=-240;quad[2][1]=quad[3][1]=240;
+    for(unsigned i=0;i<4;++i)quad[i][2]=1;
+    time_state=4;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    time_state=0;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    quad[3][2]=2;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(close_to(draw.x_scale*stretch,1) && draw.x_anchor==320);
+    quad[3][2]=1;
+    time_state=4;draw.default_target=0;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(close_to(draw.x_scale*stretch,1) && draw.x_anchor==320);
+    draw.default_target=1;draw.depth_write=1;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(close_to(draw.x_scale*stretch,1) && draw.x_anchor==320);
+    draw.depth_write=0;draw.depth_test=0;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(draw.x_scale==1 && draw.x_anchor==0); /* Existing non-depth full-screen path. */
+    draw.depth_test=1;quad[3][0]=319;
+    quad[1][0]=319;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(close_to(draw.x_scale*stretch,1) && draw.x_anchor==320);
+    time_state=0;
     draw.depth_test=draw.depth_write=0;
     /* A world marker's center is already projected with the wide matrix;
      * its original pixel radius must shrink without moving that center. */
@@ -140,6 +168,27 @@ int main(int argc,char **argv)
     draw.shader=0x777001;draw.x_scale=1;mod->draw(&draw);CHECK(draw.x_scale==1);
     draw.depth_test=draw.depth_write=0;
     draw.caller=0x34a07;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_scale==1);
+    /* Actual automatic Retry: caller33811, live o_noise owner, centered
+     * X=-320..320 and six moving 12-pixel strips. Preserve full-width raster
+     * mapping across all aspect profiles; ordinary wide UI still contracts. */
+    draw.caller=0x33811;draw.position_type=0x32;draw.shader=1;
+    quad[0][0]=quad[2][0]=-320;quad[1][0]=quad[3][0]=320;
+    quad[0][1]=quad[1][1]=-238;quad[2][1]=quad[3][1]=-226;
+    bound_texture=noise_header;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    bound_texture=noise_header+32;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(close_to(draw.x_scale*stretch,1) && draw.x_anchor==320);
+    /* Reallocated resource headers are resolved live, not cached. */
+    noise_slot=37;noise_header=bound_texture;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    noise_slot=1024;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(close_to(draw.x_scale*stretch,1) && draw.x_anchor==320);
+    noise_slot=37;draw.default_target=0;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    draw.default_target=1;draw.depth_test=1;draw.caller=0x30c0a;
+    draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(close_to(draw.x_scale*stretch,1) && draw.x_anchor==320);
+    draw.depth_test=0;bound_texture=0;
     /* Results replays use the same 3D camera, with the overlay contained in
      * the centered original 4:3 region. Its left/right text is not HUD. */
     phase=10;mod->present();matrix[0]=.75f;

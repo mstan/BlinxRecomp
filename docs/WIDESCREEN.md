@@ -86,6 +86,56 @@ the stage with zero fault guards. This is a bounded assisted smoke check;
 the owner's natural camera route, static-door case and exact ring appearance
 still require confirmation.
 
+Automatic Retry's horizontal tape streaks now fill the wide frame. A targeted
+position-assisted fall reaches the original death handler and Retry state 4,
+replays the position history, restores the spawn and returns to normal state 0.
+The actual producer is six centered 640x12 sprites per frame from `33811`,
+with depth disabled. They use `o_noise`: its original catalogue record is at
+`1E21F0`, and its live owner slot is stored at `1E220C` (observed slot 24,
+superseding an earlier unverified index-23 hypothesis). The plugin resolves
+that slot through `8D2860` and compares the current texture binding before
+exempting these full-width strips from proportional HUD placement. Other
+textures, geometry, offscreen effects and menus keep their existing behavior.
+
+Retained `retry-target-003/004` evidence compares the old centered span near
+X=136..503 with corrected streaks across X=0..639 in renderer readbacks.
+The final candidate uses the owner's 1080p/FXAA/8x plan and adaptive clients
+1680x720 and 2560x720 (21:9 and 32:9); diagnostic PNGs are 640x480 readbacks,
+not native-resolution screenshots. Each original Retry lifecycle recovers,
+with no death/time-control/completion flag writes or fault guards. The three
+game CTest entries pass, including live-resource replacement, invalid slot,
+other-texture, proxy and offscreen controls across six aspects. This targeted
+check does not repeat campaign coverage. Final owner appearance confirmation
+and the existing enemy/door/health-circle acceptance remain open.
+Review found a second defect: a pale tint still occupied the old 4:3 span.
+Paired before/after draw captures (`retry-tint-009/frames/draw-1.png` and
+`draw-2.png`) identify its first introduction at `30C0A`, not the later
+`9FDA6` history pass. The immediate helper submits a centered 640x480 FLOAT3
+quad with all Z=1, depth test/write 1/0, to the default target. This exact
+full-screen raster contract now retains full-width mapping; other geometry,
+world depths, depth writes and offscreen proxies retain their prior mapping.
+The tint starts one frame before Retry state 4 (`retry-fixed-012` records
+time state 0 at frame 1028, then state 4 at 1029). Restricting the exemption
+to state 4 leaves the previous narrow tint carried through frame history.
+The live blank texture is not present in the title owner table, so no guessed
+catalogue identity is used for this producer.
+
+The final `retry-fixed-012/retry-21x9.png` and `retry-32x9.png` readbacks show
+both streaks and tint across the wide frame, with existing HUD anchors retained.
+Both actual original death/Retry/recovery cycles pass; three focused game
+CTest entries pass (0.51 seconds). No base recompiled function or graphics
+resource/raster semantics are changed. Final owner appearance acceptance
+remains open; this bounded check does not claim full-game visual coverage.
+
+Owner review on the integrated normal-audio candidate:
+
+- Move the camera past the former 4:3 boundaries: nearby enemy bodies and the
+  static door should remain visible until they leave the actual wide view.
+- Inspect an enemy health/target circle while moving the camera: its center
+  should track the enemy and its displayed shape should remain circular.
+- Trigger an ordinary death/Retry: streaks and tint should cover the wide
+  frame, the HUD should keep its anchors, and gameplay should recover.
+
 A short isolated Stage 1 run reaches original Results with the wide replay
 and centered overlay. Focused portable contracts cover replay/menu separation,
 proxy placement at both old horizontal boundaries, marker width and unchanged
@@ -104,6 +154,11 @@ and generated CPU bodies remain unchanged by this mod correction.
 Optional developer draw tracing can restrict its bounded output to HUD draws
 with `BLINX_MOD_DRAW_TRACE_UI_ONLY=1`, or begin only after a populated inventory
 with `populated`. This diagnostic is disabled during ordinary launches.
+The `effects` filter records small full-width strips, with caller, target,
+frame, time state and texture bindings. The `raster` filter selects exact
+default-target full-screen `30C0A` quads across their lifecycle.
+`BLINX_MOD_DRAW_TRACE_TRIGGER` can defer capture
+until a named file exists, avoiding a full trace before the target effect.
 
 Deferred enhancement questions: unvisited HUD/effect producers and remaining
 fringe-culling cases in later scenes. Resolution, controller artwork and shared

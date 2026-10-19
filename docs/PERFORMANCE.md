@@ -1,5 +1,36 @@
 # Blinx performance observations
 
+## Intermittent Stage 1 loading/audio report - 2026-10-18
+
+The owner observed a 25.169-second `rd11.mit` to `01_StageStart.adx`
+file-open span with choppy/echo-like audio. Isolated observations subsequently
+measured 0.760 seconds and a 6.58-second selector/initialization route; these
+are different measurements and do not establish a matched loading improvement.
+The original slow run created no new title vertex programs, and its logged
+HLSL compiler work totaled 11 ms. Driver/resource waits and populated rewind
+history remain hypotheses; neither is a diagnosed cause.
+
+The targeted Retry correction run `retry-target-004` uses the owner's
+1080p/adaptive/FXAA/8x plan and original saved Stage 1 entry, with isolated
+saves, muted output, normal priority and logical CPUs 12/15. Its corresponding
+file-open span is 2.7065 seconds. It does not reproduce the long stall and is
+not a controlled performance comparison. Original automatic Retry and recovery
+also complete at 21:9 and 32:9. No loading/audio fix or sustained FPS gain is
+claimed by the widescreen-effect correction. Issue `beads-xbox.1.100` remains
+open; a repeated slow run needs call/wait and stream-refill correlation before
+changing timing, audio buffering or graphics resource semantics.
+
+The 2026-10-19 populated-cache QA005 check byte-copies the owner's 302 cache
+files (574,159,884 bytes) into isolated QA state. Its corresponding entry takes
+3.9257 seconds and does not reproduce the long stall. The bounded diagnostics
+record 112 slow file-service intervals, up to 1006.8 ms, with near-zero calling
+thread CPU and outer media-lock wait; no observed GPU call exceeds 50 ms.
+These intervals can still include inner locks, host scheduling or actual I/O.
+The 120-second audio timeline has zero overflow. This narrows observations
+without explaining the earlier 12.4206-second feedback-draw gap or establishing
+a loading fix. The opt-in [loading diagnostic](LOADING-DIAGNOSTICS.md) preserves
+the selected settings and normal owner audio for a future slow occurrence.
+
 ## Stage 1 entrance follow-up - 2026-10-18
 
 The reported entrance-ring slowdown reproduces as a graphics-heavy CPU

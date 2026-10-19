@@ -219,6 +219,14 @@ def launch(local, args):
         env['XLLE_PILOT_PRESENT_CAPTURE'] = str(output)
         env['XLLE_PILOT_PRESENT_CAPTURE_INTERVAL_MS'] = '10000'
     command = [str(binary), str(local['xbe']), str(local['eeprom']), str(local['media_root']), str(local['state_dir'])]
+    if args.diagnose_loading:
+        # Diagnostic work is explicit and bounded. Keep real rendering/audio,
+        # guest timing and owner volume; automated launches still mute above.
+        env.update(XLLE_PILOT_GPU_CALL_PROFILE='1', XLLE_PILOT_FILE_PROFILE='1',
+                   XLLE_PILOT_SERVICE_PROFILE='1',
+                   XLLE_PILOT_AUDIO_CAPTURE=str(output / 'loading-audio.f32'),
+                   XLLE_PILOT_AUDIO_CAPTURE_SECONDS='120',
+                   XLLE_PILOT_AUDIO_TIMELINE=str(output / 'loading-audio.csv'))
     start = time.monotonic()
     deadline = False
     with (output / 'title.log').open('w', encoding='utf-8') as log:
@@ -272,6 +280,8 @@ def main():
     parser.add_argument('--seconds', type=float)
     parser.add_argument('--headless', action='store_true')
     parser.add_argument('--capture', action='store_true')
+    parser.add_argument('--diagnose-loading', action='store_true',
+                        help='Record sparse GPU/file timings, service totals and 120 seconds of audio/refill evidence; diagnostic overhead is not a performance benchmark')
     parser.add_argument('--replay', type=Path)
     ui_group = parser.add_mutually_exclusive_group()
     ui_group.add_argument('--launcher', action='store_true', help='Open mod settings, even when Skip launcher is selected')
@@ -286,6 +296,8 @@ def main():
                         help='One mutually exclusive frame-rate mod; unsupported title/profile choices are rejected')
     parser.add_argument('--frame-rate', type=int, choices=[60, 120], default=60)
     args = parser.parse_args()
+    if args.diagnose_loading and args.action != 'run':
+        parser.error('--diagnose-loading is only valid with run')
     if args.seconds is not None and args.seconds <= 0:
         parser.error('--seconds must be positive')
     local = paths()

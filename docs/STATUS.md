@@ -1,5 +1,18 @@
 # Original NTSC Blinx
 
+## Targeted Retry effect follow-up - 2026-10-19
+
+Automatic Retry's tape streaks and pale tint now span adaptive 21:9/32:9
+gameplay. The mod identifies the noise through its live title catalogue;
+paired draw captures identify the tint's separate full-screen immediate quad.
+Its first submission precedes time state 4, so the exemption follows its
+geometry/depth contract across the lifecycle. Three focused game tests pass;
+muted position-assisted falls run original death, Retry and recovery at both
+aspects without writing success or time-control flags. Final owner visual
+acceptance remains open alongside the enemy/door/health-circle cases. The
+intermittent long loading/audio stall was not reproduced or fixed by this change. See
+[widescreen evidence](WIDESCREEN.md) and [performance limits](PERFORMANCE.md).
+
 ## Entrance performance follow-up - 2026-10-18
 
 The current visual mods support 1080p through 2160p, AA, supersampling and

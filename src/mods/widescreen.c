@@ -12,6 +12,8 @@ static unsigned frame_mode;
 static FILE *trace;
 static unsigned trace_count;
 static unsigned trace_ui_only,trace_ready;
+static const char *trace_trigger;
+static unsigned trace_armed;
 static void fail(const char *reason)
 {fprintf(stderr,"[TITLE MOD STOP] %s\n",reason);fflush(stderr);exit(2);}
 static void read_data(unsigned address,void *data,unsigned bytes)
@@ -25,7 +27,11 @@ static void open_trace(void)
     const char *path=getenv("BLINX_MOD_DRAW_TRACE");
     if(path && *path){trace=fopen(path,"wb");if(!trace)fail("mod draw trace cannot be opened");}
     const char *filter=getenv("BLINX_MOD_DRAW_TRACE_UI_ONLY");
-    trace_ui_only=filter && !strcmp(filter,"populated") ? 2 : filter && !strcmp(filter,"1");
+    trace_ui_only=filter && !strcmp(filter,"raster") ? 4 :
+        filter && !strcmp(filter,"effects") ? 3 :
+        filter && !strcmp(filter,"populated") ? 2 : filter && !strcmp(filter,"1");
+    trace_trigger=getenv("BLINX_MOD_DRAW_TRACE_TRIGGER");
+    trace_armed=!trace_trigger || !*trace_trigger;
 }
 static void aspect(unsigned *n,unsigned *d)
 {
@@ -71,8 +77,10 @@ static void draw(struct PilotTitleModDraw *draw)
     /* The ordinary gameplay scene is rendered into a texture and copied to
      * the backbuffer by 9D9DB. Its camera proxies and world markers need the
      * same placement there. Keep offscreen UI/effect producers unchanged. */
-    if(!draw->default_target && !camera_sprite && !marker)return;
-    if(!sprite && !text && (!trace || trace_count>=1024))return;
+    int excluded_target=!draw->default_target && !camera_sprite && !marker;
+    int tracing=trace && trace_armed && trace_count<1024;
+    if(excluded_target && !tracing)return;
+    if(!sprite && !text && !tracing)return;
     float min_x=1e20f,min_y=1e20f,max_x=-1e20f,max_y=-1e20f;
     for(unsigned i=0;i<draw->count;++i) {
         float xy[2];memcpy(xy,draw->positions+i*draw->stride,8);
@@ -82,12 +90,20 @@ static void draw(struct PilotTitleModDraw *draw)
         if(xy[1]<min_y)min_y=xy[1];
         if(xy[1]>max_y)max_y=xy[1];
     }
-    if(trace && trace_count<1024 && (trace_ui_only!=2 || trace_ready) &&
+    if(tracing && (trace_ui_only!=2 || trace_ready) &&
+       (trace_ui_only!=4 || (draw->caller==0x30c0a && draw->default_target && draw->count==4 &&
+                            fabsf(min_x+320)<.001f && fabsf(max_x-320)<.001f &&
+                            fabsf(min_y+240)<.001f && fabsf(max_y-240)<.001f)) &&
+       (trace_ui_only!=3 || (!draw->depth_test && draw->count<=24 &&
+                            max_x-min_x>=500 && max_y-min_y<=64)) &&
        (!trace_ui_only || sprite || text || draw->caller==0x33811 || !draw->depth_test)) {
         float z=0;if(draw->position_type!=0x22)memcpy(&z,draw->positions+8,4);
-        fprintf(trace,"%u %08x %08x %u %u %.6g %.6g %.6g %.6g z=%.9g depth=%u/%u\n",trace_count++,draw->caller,
-            draw->shader,draw->position_type,draw->count,min_x,min_y,max_x,max_y,z,draw->depth_test,draw->depth_write);fflush(trace);
+        unsigned textures[4],frame,time_state;read_data(0x142e58,textures,sizeof(textures));read_data(0x50a464,&frame,4);read_data(0x50a428,&time_state,4);
+        fprintf(trace,"%u %08x %08x %u %u %.6g %.6g %.6g %.6g z=%.9g depth=%u/%u target=%u frame=%u time=%u textures=%08x,%08x,%08x,%08x\n",trace_count++,draw->caller,
+            draw->shader,draw->position_type,draw->count,min_x,min_y,max_x,max_y,z,draw->depth_test,draw->depth_write,
+            draw->default_target,frame,time_state,textures[0],textures[1],textures[2],textures[3]);fflush(trace);
     }
+    if(excluded_target)return;
     /* 30B16 submits ordinary screen-space sprites through the title's 2D
      * shader. World geometry and full-screen history/effect passes retain
      * their projection and raster mapping. Other UI helpers are added only
@@ -97,6 +113,35 @@ static void draw(struct PilotTitleModDraw *draw)
      * c121=(320,240,0,0). Font FVF submits absolute screen pixels instead. */
     if(sprite){min_x+=320;max_x+=320;min_y+=240;max_y+=240;}
     if(!camera_sprite && min_x<=1 && max_x>=639 && min_y<=1 && max_y>=479)return;
+    /* The full-screen tint/fade uses 30C0A with depth testing enabled, both
+     * during Retry and its surrounding lifecycle. That helper also submits
+     * world visibility proxies; preserve only this exact raster-covering
+     * quad, including its constant near-raster depth, without a time-state
+     * condition that would leave a narrow prior tint in frame history. */
+    if(camera_sprite && draw->default_target && draw->count==4 &&
+       draw->position_type==0x32 && draw->stride>=12 && !draw->depth_write &&
+       fabsf(min_x)<.001f && fabsf(max_x-640)<.001f &&
+       fabsf(min_y)<.001f && fabsf(max_y-480)<.001f) {
+        int raster_quad=1;
+        for(unsigned i=0;i<4;++i) {
+            float z;memcpy(&z,draw->positions+i*draw->stride+8,4);
+            if(!isfinite(z) || fabsf(z-1)>.001f)raster_quad=0;
+        }
+        if(raster_quad)return;
+    }
+    /* Automatic Retry draws six full-width 12-pixel tape-noise strips through
+     * the ordinary sprite queue. They cover the scene, so retaining their
+     * original raster mapping fills the wide frame. Resolve o_noise through
+     * the title's live catalogue/owner table; resource handles change on load.
+     * Do not exempt similarly sized HUD/dialog sprites or offscreen effects. */
+    if(draw->caller==0x33811 && !draw->depth_test && draw->count==4 &&
+       draw->position_type==0x32 && min_x>=-1 && min_x<=1 &&
+       max_x>=639 && max_x<=641 && max_y-min_y>0 && max_y-min_y<=64) {
+        unsigned slot,bound,noise=0;
+        read_data(0x1e220c,&slot,4);read_data(0x142e58,&bound,4);
+        if(slot<1024)read_data(0x8d2860+slot*4,&noise,4);
+        if(noise && bound==noise)return;
+    }
     unsigned n=frame_aspect[0],d=frame_aspect[1];
     draw->x_scale=4.0f*d/(3.0f*n);draw->x_anchor=320;
     /* 36180 builds depth-tested type-4 billboards with an already projected
@@ -126,6 +171,10 @@ static void draw(struct PilotTitleModDraw *draw)
 static void present(void)
 {
     phase_dirty=1;
+    if(trace && !trace_armed) {
+        FILE *trigger=fopen(trace_trigger,"rb");
+        if(trigger){fclose(trigger);trace_armed=1;}
+    }
     if(frame_mode) {
         unsigned paused=0,stage=0;read_data(0x50a534,&paused,4);read_data(0x50312c,&stage,4);
         /* Movies, menus, pause and stage changes have independent history.
