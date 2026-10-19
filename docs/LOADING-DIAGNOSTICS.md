@@ -26,6 +26,16 @@ Evidence is written to the run's ignored `local/runs/` directory:
   record includes time acquiring the outer media owner lock; remaining wall
   time can still include inner locks, host scheduling and actual I/O. Thread
   CPU is bracketed for the file service, with an explicit availability flag.
+  Slow synchronous reads additionally report actual NT-read entry/return,
+  wall time and bracketed thread CPU, or identify a cache hit with no NT call.
+  Per-file I/O-lock acquisition and the existing transfer-log duration have
+  separate sampled flags; zero with a false flag means unmeasured. These
+  fields use the same slow-service threshold and record cap; no per-read
+  diagnostic line is added below that threshold. Formatting occurs after
+  releasing ownership locks. NT-call wall time still includes host scheduling;
+  cache/position work and guest-CPU reacquisition are not assigned to storage.
+  The nested read/lock/log fields require framework commit `312e818` or later;
+  an already-running playtest executable may predate them.
   GPU records carry an explicitly cumulative end-of-call thread CPU sample,
   not an asserted CPU cost for that individual call.
 - `loading-audio.f32` and `.clock.csv`: at most 120 seconds of actual six-channel
@@ -43,6 +53,13 @@ a driver, disk or lock as the cause. Missing records can mean that an interval
 fell outside the observed service, below the threshold, after the capture
 window, or beyond a record cap. No full campaign or qualification sweep is
 needed for this diagnosis.
+
+For a repeated slow occurrence, correlate these records with a bounded host
+trace containing CPU samples, context switches/wait stacks and File/Disk I/O.
+Retain the exact executable and matching symbols actually available from its
+toolchain (for example MinGW/DWARF or a matching map); do not assume an MSVC
+PDB. Verify symbol resolution on that artifact before interpreting guest/native
+stacks. This capture diagnoses waits, not sustained performance.
 
 For an isolated developer Retry investigation, the existing bounded draw
 readback also accepts `XLLE_PILOT_FRAME_CAPTURE_TRIGGER`. It starts its first
