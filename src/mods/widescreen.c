@@ -58,7 +58,7 @@ static void transform(unsigned state,unsigned address,unsigned caller)
 }
 static void draw(struct PilotTitleModDraw *draw)
 {
-    if(!scene_mode() || !projection_seen || !draw->default_target || !draw->positions || draw->count>4096 || draw->stride<8 ||
+    if(!scene_mode() || !projection_seen || !draw->positions || draw->count>4096 || draw->stride<8 ||
        (draw->position_type!=0x22 && draw->position_type!=0x32 && draw->position_type!=0x42 && draw->position_type!=0x72))return;
     int marker=0;
     if(draw->caller==0x33811 && draw->depth_test) {
@@ -68,6 +68,10 @@ static void draw(struct PilotTitleModDraw *draw)
     int sprite=draw->caller==0x30c0a || (draw->caller==0x33811 && (!draw->depth_test || marker));
     int camera_sprite=draw->caller==0x30c0a && draw->depth_test;
     int text=draw->caller==0xef2ae || draw->caller==0xef8a4 || draw->caller==0xf183a;
+    /* The ordinary gameplay scene is rendered into a texture and copied to
+     * the backbuffer by 9D9DB. Its camera proxies and world markers need the
+     * same placement there. Keep offscreen UI/effect producers unchanged. */
+    if(!draw->default_target && !camera_sprite && !marker)return;
     if(!sprite && !text && (!trace || trace_count>=1024))return;
     float min_x=1e20f,min_y=1e20f,max_x=-1e20f,max_y=-1e20f;
     for(unsigned i=0;i<draw->count;++i) {

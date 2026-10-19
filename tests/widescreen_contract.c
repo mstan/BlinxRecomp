@@ -112,6 +112,13 @@ int main(int argc,char **argv)
         CHECK(draw.x_anchor==320);
         float mapped=center*draw.x_scale+draw.x_anchor*(1-draw.x_scale);
         CHECK(close_to((mapped-320)*stretch,center-320));
+        /* After scene history initializes, these same original submissions
+         * target a scene texture rather than the default backbuffer. */
+        draw.default_target=0;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+        CHECK(draw.x_anchor==320);
+        mapped=center*draw.x_scale+draw.x_anchor*(1-draw.x_scale);
+        CHECK(close_to((mapped-320)*stretch,center-320));
+        draw.default_target=1;
     }
     draw.depth_test=draw.depth_write=0;
     /* A world marker's center is already projected with the wide matrix;
@@ -123,6 +130,13 @@ int main(int argc,char **argv)
     CHECK(close_to(draw.x_anchor,590));
     CHECK(close_to(40*draw.x_scale*stretch,40));
     CHECK(close_to(590*draw.x_scale+draw.x_anchor*(1-draw.x_scale),590));
+    draw.default_target=0;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(close_to(draw.x_anchor,590) && close_to(40*draw.x_scale*stretch,40));
+    CHECK(close_to(590*draw.x_scale+draw.x_anchor*(1-draw.x_scale),590));
+    /* Offscreen HUD sprites are not the world scene's billboard contract. */
+    draw.depth_test=0;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    draw.default_target=1;draw.depth_test=1;
     draw.shader=0x777001;draw.x_scale=1;mod->draw(&draw);CHECK(draw.x_scale==1);
     draw.depth_test=draw.depth_write=0;
     draw.caller=0x34a07;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_scale==1);

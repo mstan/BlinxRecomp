@@ -68,6 +68,24 @@ Type-4 projected world markers are selected by the original program pair at
 `6678A8`; their centers already use the wide projection, so only their pixel
 width is corrected. Other depth-tested geometry remains untouched.
 
+The owner's next playtest exposed a missing target case: normal gameplay
+renders its 3D scene into a texture before the `9D9DB` backbuffer copy. The
+initial correction's default-target guard excluded those later scene draws.
+Identified depth-tested camera proxies and type-4 world markers now receive
+their placement on both targets. Offscreen HUD and effect submissions keep
+their original placement. The contract suite includes both target paths;
+in-game enemy/door fringe visibility and circle appearance remain an owner
+acceptance gate rather than being inferred from those contracts alone.
+
+An isolated 1080p/21:9 follow-up (`cull-followup-002`) places the three actual
+Stage 1 green enemies at left, center and right using explicit position cheats.
+Their original renderer remains active; no visibility or completion flags are
+changed. Both outer enemy bodies are visible beyond the centered 4:3 span
+(approximately X=137..503 in the 640-pixel readback). The build also reaches
+the stage with zero fault guards. This is a bounded assisted smoke check;
+the owner's natural camera route, static-door case and exact ring appearance
+still require confirmation.
+
 A short isolated Stage 1 run reaches original Results with the wide replay
 and centered overlay. Focused portable contracts cover replay/menu separation,
 proxy placement at both old horizontal boundaries, marker width and unchanged
