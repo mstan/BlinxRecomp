@@ -12,4 +12,7 @@ framework's [license scope](xboxlle/LICENSE-SCOPE.md), including the unresolved
 combined-executable restrictions and exclusion of GPL implementations from the
 intended non-GPL shipping product, remains in force. Private visibility is not
 a new licensing permission. No executable release is part of this repository
-setup. Owned binaries, media, EEPROMs, captures and generated code remain local.
+setup. Owned binaries, media, EEPROMs, diagnostic captures and generated code
+remain local. The few curated documentation/launcher images have separate
+notices linked from [Credits](CREDITS.md); the source license does not relicense
+their depicted game assets.
