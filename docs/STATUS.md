@@ -1,5 +1,21 @@
 # Original NTSC Blinx
 
+## Character transparency and tester diagnostics - 2026-10-22
+
+The shared framework now preserves whisker/fur alpha through later lighting
+stages that have no texture. An isolated native shop capture shows clean face,
+ear fur and thin whiskers, and an enhanced adaptive gameplay smoke reaches
+the stage with the same fix. Authored transparent/opaque BC2 pixel checks and
+Dashboard material regressions pass. The shared fix adds no draw passes or
+interpreter fallback. General empty-sampler equivalence remains explicitly
+tracked in the framework deferral ledger.
+
+This pin also retains per-launch logs and adds optional bounded controller-input
+reproduction with separate initial save copies. It is input-boundary replay,
+not a deterministic full-machine checkpoint. The earlier projectile continuation
+recovery remains included; the exact owner projectile-hit retest is pending.
+
+
 ## Targeted Retry effect follow-up - 2026-10-19
 
 Automatic Retry's tape streaks and pale tint now span adaptive 21:9/32:9
