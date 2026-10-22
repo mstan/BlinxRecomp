@@ -1,22 +1,26 @@
 # License scope and release contents
 
-Owner decision, October 22, 2026: owner-original code in this repository is
-**GPL-3.0-or-later**. [LICENSE](LICENSE) contains GPLv3; [NOTICE](NOTICE) records
-the grant. This supersedes the former PolyForm/non-GPL shipping policy for the
-current source. Third-party work retains its own terms and credits.
+Owner-original contributions are **GPL-3.0-or-later**. [LICENSE](LICENSE) and
+[NOTICE](NOTICE) record the terms. Third-party components retain their own
+copyrights, grants and attribution; see the shared
+[component inventory](xboxlle/THIRD_PARTY_ATTRIBUTION.md) and
+[framework license scope](xboxlle/LICENSE-SCOPE.md).
 
-The shared framework's [license scope](xboxlle/LICENSE-SCOPE.md) and
-[component inventory](xboxlle/THIRD_PARTY_ATTRIBUTION.md) describe the incorporated
-renderer/runtime dependencies. This GPL grant does not license the original
-game or generated code translated from it, artwork, firmware or console inputs.
+The Windows preview includes a precompiled native application and launcher.
+Source downloads contain project metadata, mods, build/generation tools, exact
+pinned framework source and a separate prepared dependency-source supplement.
+The native application contains mechanically translated original execution code;
+we claim no ownership of that code. Original-title source bodies are generated
+from the user's supported original input rather than included in source kits.
+The [developer guide](docs/DEVELOPMENT.md) describes local generation/building;
+players using the Windows ZIP do not need a compiler.
 
-The current release is a **source/tooling preview** with title metadata, mods,
-build scripts and its pinned framework source. It does not contain a precompiled
-game executable, translated original function bodies or original game assets.
-Build locally with your own supported game and the [developer guide](docs/DEVELOPMENT.md).
-The former private owner-use Windows candidates remain local; they are not
-corresponding-source-cleared GPL binary downloads.
+Original game software, artwork, audiovisual content and trademarks remain the
+property of their respective rights holders, with all original rights reserved.
+They are not licensed by our GPL grant. Users supply their own supported game
+data/assets. No original XBE, disc, firmware, HDD, EEPROM, signing keys, saves or
+used player profiles are bundled. Artwork/screenshots retain separate notices.
 
-Preserve the separate notices for curated screenshots and launcher artwork.
-No kernel, EEPROM, disk image, signing keys, native saves or player profiles are
-part of a release. The source license does not change those private-data rules.
+The [rights notice](RIGHTS-NOTICE.md) creates no permission from an original owner,
+copyright exception or exemption from incorporated open-source obligations.
+It adds no restrictions to the rights granted by the applicable software license.

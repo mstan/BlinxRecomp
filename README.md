@@ -32,14 +32,11 @@ higher-rate gameplay is not available yet. See the
 
 ## Getting started
 
-**[Download the GPL source/tooling preview](https://github.com/mstan/BlinxRecomp/releases/tag/preview-2026-10-22).**
-This release contains build tools, title metadata/mods and the pinned framework.
-It does not contain a precompiled game or original game code. Use the
-[developer setup guide](docs/DEVELOPMENT.md) to build locally with your own game.
-The tested native host is Windows x64; Linux releases are deferred.
-
-The local owner-use Windows candidate includes the launcher, Python and native
-dependencies. Its setup flow is described below for locally prepared packages.
+**[Download the Windows x64 preview](https://github.com/mstan/BlinxRecomp/releases/tag/windows-preview-2026-10-22).**
+The Windows ZIP includes the precompiled native application, launcher, Python
+and runtime dependencies. No compiler is needed to play. Separate project source
+and prepared dependency-source downloads are provided on the same release page.
+Linux releases remain deferred. The setup flow is described below.
 
 You supply your own **Blinx: The Time Sweeper (NTSC-U)** files. Open **Start Game.cmd**,
 choose **Skip** in the optional first-launch console setup, and select the
@@ -113,6 +110,7 @@ See [Credits](CREDITS.md) and the
 
 Owner-original source uses [GNU GPL version 3 or later](LICENSE), subject to
 [license scope](LICENSE-SCOPE.md). Third-party work retains its own terms.
-The source/tooling release excludes original and generated game code; local
-precompiled owner candidates are not included.
+The native application includes ahead-of-time translated execution code; users
+supply the original game data/assets. Original-title source bodies are generated
+from their own input. See [the original rights notice](RIGHTS-NOTICE.md).
 Blinx and its original assets belong to their respective rights holders.
