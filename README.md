@@ -39,6 +39,14 @@ You need your own **Blinx: The Time Sweeper (NTSC-U)** game files. Other regions
 and revisions have not been qualified. Original game files and generated game
 code are not included here.
 
+See the shared [setup and required-file guide](https://github.com/mstan/xboxllr/blob/master/docs/SETUP.md)
+for supported XBE hashes, private input preparation, optional original-console
+imports and save preservation. ISO-only setup is the release target, not yet
+available. Missing console files should normally be irrelevant to new
+single-player play once that virtual-profile path is qualified; existing Xbox
+save imports can require the original identity. The game does not boot a
+Microsoft kernel; today's owned-kernel requirement is offline signing setup.
+
 For an already prepared development checkout, build the gameplay profile and
 launcher, then open the launcher:
 
