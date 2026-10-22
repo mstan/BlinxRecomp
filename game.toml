@@ -6,13 +6,37 @@ xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
 
 [framework]
 repository = "https://github.com/mstan/xboxllr"
-revision = "8cdc4d99dc11cc184c4af10844bd5bdbb8977bbf"
+revision = "7072dba64fbfb18b4694069895ac35f8d830c0e4"
 directory = "xboxlle"
 
 [launcher]
 ui_revision = "ccc186e097b362555292b157ffd303abcea26fbf"
 # Modes become selectable only after shared and title-specific qualification.
 frame_modes = ["interpolated"]
+
+[launcher.defaults."blinx.enhancement.widescreen/widescreen"]
+enabled = true
+options = { aspect = "adaptive" }
+
+[launcher.defaults."xboxlle.enhancement.visuals/resolution"]
+enabled = true
+options = { height = "1080" }
+
+[launcher.defaults."xboxlle.enhancement.visuals/antialiasing"]
+enabled = true
+options = { method = "fxaa" }
+
+[launcher.defaults."xboxlle.enhancement.visuals/supersampling"]
+enabled = true
+options = { axis = "2" }
+
+[launcher.defaults."xboxlle.enhancement.visuals/filtering"]
+enabled = true
+options = { anisotropy = "8" }
+
+[launcher.defaults."xboxlle.enhancement.frame-rate/frame-rate"]
+enabled = true
+options = { mode = "interpolated", rate = "60" }
 
 [generation]
 donor_revision = "63f18f0334fbd8c00313c4bb565accf00627a4fd"

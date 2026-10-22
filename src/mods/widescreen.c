@@ -194,7 +194,11 @@ static void present(void)
 }
 const struct PilotTitleMod *pilot_title_mod_open(const struct PilotTitleModHost *api)
 {
-    const char *path=getenv("BLINX_MOD_PLAN");if(!path || !*path)return NULL;
+    const char *path=getenv("XLLE_PILOT_MOD_PLAN");
+    /* Shared release hosts use the common plan input. Retain the older game
+     * tool input for existing development commands; it cannot override it. */
+    if(!path || !*path)path=getenv("BLINX_MOD_PLAN");
+    if(!path || !*path)return NULL;
     if(!api || api->abi!=PILOT_TITLE_MOD_ABI || strcmp(api->xbe_sha256,BLINX_SHA))fail("widescreen title identity mismatch");
     host=api;
     FILE *file=fopen(path,"rb");if(!file)fail("resolved mod plan is unavailable");

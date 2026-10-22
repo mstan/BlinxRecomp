@@ -23,29 +23,40 @@ controller support through an Xbox-themed launcher. BlinxRecomp uses
 | Original saves | Persistent in-game saves, including fresh-process loading of the assisted campaign's completed save. |
 | Time controls | Original activation and lifecycle checks for all five time controls, including REC's clone playback. |
 
-Visual enhancements are optional mods. Original timing remains the default;
+Visual enhancements remain individually selectable mods. Fresh launchers use
+adaptive Fit to screen, 1080p, 2×2 supersampling, FXAA, 8× filtering and blended
+60 FPS presentation. The original simulation timing is preserved;
 interpolation can add double edges and one source frame of latency. Actual
 higher-rate gameplay is not available yet. See the
 [graphics guide](docs/GRAPHICS-MODS.md) for options and tradeoffs.
 
 ## Getting started
 
-**Windows x64 development preview.** Self-contained downloads are being prepared;
-native Linux builds are not available yet. Current setup still uses developer
-tools and private preparation inputs. The goal for the release is to require
-your own matching game dump and generate the remaining supported setup locally.
+**Windows x64 preview candidates are prepared; executable downloads await
+the [shared distribution review](https://github.com/mstan/xboxllr/blob/master/LICENSE-SCOPE.md).**
+Native Linux releases are deferred. A prepared ZIP includes the launcher,
+Python and native dependencies; players do not need developer tools.
 
-You need your own **Blinx: The Time Sweeper (NTSC-U)** game files. Other regions
-and revisions have not been qualified. Original game files and generated game
-code are not included here.
+You supply your own **Blinx: The Time Sweeper (NTSC-U)** files. Open **Start Game.cmd**,
+choose **Skip** in the optional first-launch console setup, and select the
+supported extracted `default.xbe` on the main screen. Keep the complete game
+asset folder beside that XBE. Direct ISO import and other revisions are not
+supported yet. Original game files are not included in this repository.
 
-See the shared [setup and required-file guide](https://github.com/mstan/xboxllr/blob/master/docs/SETUP.md)
-for supported XBE hashes, private input preparation, optional original-console
-imports and save preservation. ISO-only setup is the release target, not yet
-available. Missing console files should normally be irrelevant to new
-single-player play once that virtual-profile path is qualified; existing Xbox
-save imports can require the original identity. The game does not boot a
-Microsoft kernel; today's owned-kernel requirement is offline signing setup.
+No kernel dump, EEPROM or HDD image is needed to create a new local console.
+Automatic save storage is private to this game's package; no large disk image
+is generated. Advanced **Settings** can import original signing material and
+EEPROM, choose a shared save folder, or use an existing raw/QCOW2 FATX HDD image.
+An image takes priority over folder storage and requires validated original
+signing inputs and matching console identity. Original saves still undergo
+normal verification. Close xemu before sharing a disk image.
+
+Keep the package's `data` folder, your selected save storage and any
+`<image>.xboxllr` profile when updating. A new virtual identity is not equivalent
+to your physical Xbox's save identity. Xbox Live is unavailable; this generally
+does not affect new single-player play. Fresh virtual-profile save/restart/load
+and the full image-backed per-title save matrix remain qualification work.
+See the shared [setup guide](https://github.com/mstan/xboxllr/blob/master/docs/SETUP.md).
 
 For an already prepared development checkout, build the gameplay profile and
 launcher, then open the launcher:

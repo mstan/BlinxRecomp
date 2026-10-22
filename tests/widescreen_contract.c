@@ -46,10 +46,14 @@ int main(int argc,char **argv)
         read_data,write_data,presentation,client_size,frame_shape,visual_mods,frame_scope};
 #ifdef _WIN32
     _putenv_s("BLINX_MOD_PLAN","");
-    if(argc>=2)_putenv_s("BLINX_MOD_PLAN",argv[1]);
+    _putenv_s("XLLE_PILOT_MOD_PLAN","");
+    if(argc>=2)_putenv_s(argc==3 && !strcmp(argv[2],"--legacy-plan")?"BLINX_MOD_PLAN":"XLLE_PILOT_MOD_PLAN",argv[1]);
+    if(argc==3 && !strcmp(argv[2],"--common-priority"))_putenv_s("BLINX_MOD_PLAN","missing-legacy-plan");
 #else
     unsetenv("BLINX_MOD_PLAN");
-    if(argc>=2)setenv("BLINX_MOD_PLAN",argv[1],1);
+    unsetenv("XLLE_PILOT_MOD_PLAN");
+    if(argc>=2)setenv(argc==3 && !strcmp(argv[2],"--legacy-plan")?"BLINX_MOD_PLAN":"XLLE_PILOT_MOD_PLAN",argv[1],1);
+    if(argc==3 && !strcmp(argv[2],"--common-priority"))setenv("BLINX_MOD_PLAN","missing-legacy-plan",1);
 #endif
     const struct PilotTitleMod *mod=pilot_title_mod_open(&host);
     if(argc==3 && !strcmp(argv[2],"--quality-only")) {

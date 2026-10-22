@@ -2,7 +2,10 @@
 
 The native renderer can render at 1080p, 1440p, 1800p or 2160p, with optional
 fast approximate AA, 2×2/3×3 supersampling and anisotropic filtering. These are
-independent, default-off mods. The existing widescreen mod retains proportional
+independent mods with default-off base manifests. The current title launcher
+defaults enable adaptive Fit to screen, 1080p, 2×2 supersampling, FXAA, 8×
+filtering and blended 60 FPS presentation. Saved user choices take precedence;
+each enhancement can be disabled. The existing widescreen mod retains proportional
 HUD anchors and supports adaptive/fixed aspect through 32:9.
 
 Build the game and shared Xbox-themed launcher with the reviewed dependencies
@@ -48,6 +51,11 @@ the internal width; adaptive projection/presentation still follows subsequent
 window resizing. 2160p ultrawide costs more than 4K at 16:9. Supersampling
 multiplies that cost. Unsupported combinations exceeding the renderer's maximum
 dimension are rejected before allocation. No automatic quality changes occur.
+
+The shared package and registry use `XLLE_PILOT_MOD_PLAN`. Existing developer
+commands using `BLINX_MOD_PLAN` remain supported, with the common input taking
+precedence. The adaptive package starts in a 16:9, 1280×720 window; gameplay
+follows resizing, while original menus and movies keep their intended aspect.
 
 Frame rate is one mutually exclusive mode choice:
 

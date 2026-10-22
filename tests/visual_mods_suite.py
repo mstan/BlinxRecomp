@@ -24,6 +24,11 @@ def run(binary, framework):
         for options in profiles:
             mods.resolve_visual(path, framework=framework, aspect='21:9', **options)
             subprocess.run([str(binary), str(path)], check=True)
+        mods.resolve_visual(path, framework=framework, aspect='adaptive', height=1080,
+                            supersample=2, antialiasing='fxaa', anisotropy=8,
+                            frame_mode='interpolated', frame_rate=60)
+        for transport in ('--legacy-plan', '--common-priority'):
+            subprocess.run([str(binary), str(path), transport], check=True)
         mods.resolve_visual(path, framework=framework, height=1080)
         subprocess.run([str(binary), str(path), '--quality-only'], check=True)
         mods.resolve_visual(path, framework=framework, frame_mode='interpolated')
