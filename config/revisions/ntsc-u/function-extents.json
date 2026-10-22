@@ -130,6 +130,56 @@
       "reason": "Static original callback store atBB769 in already discoveredBB760 (not a live gameplay pass); source inventory verifies original registered 19-byte selector/tail wrapper 000B9FD0 and table0x1de9c8, complete decode, aligned non-overlapping executable bytes and13NOP boundary before next independent body. Exact callback-store evidence retained in dispatcher-inventory.aot-private.json; no replacement or invented result.",
       "terminal": "tail-jump",
       "new_entry": true
+    },
+    {
+      "start": 263104,
+      "original_end": 263104,
+      "end": 263349,
+      "sha256": "67ef5d743070bd461839ce9ae0dae51a3f1852d1a0db7b8bf90dfb5f02bf1c4a",
+      "reason": "Owner stage1-2 projectile hit reaches the original JG target000403C0 from000403A4. Recover the original effect-creation continuation through its restoring RET000404B4, retaining independently compiled overlapping continuation entries; no replacement or fallback.",
+      "contained_entries": [
+        {
+          "start": 263149,
+          "end": 263349,
+          "sha256": "b603c6479590e6ff79ec499c4a398be69d1378f2b86c8a08eba41ac99bcdda49"
+        },
+        {
+          "start": 263151,
+          "end": 263349,
+          "sha256": "37d7393d8a621316d05df687ae7b4cb232d85d6ef78cba203368a9dea936741d"
+        },
+        {
+          "start": 263153,
+          "end": 263349,
+          "sha256": "1625765bf23ca0ba49bbac404040f30b2bb068d0d7bf5ab3e32da2e5e660ef5f"
+        },
+        {
+          "start": 263164,
+          "end": 263349,
+          "sha256": "31e2b36958e15c6430bcbecc4fb781d0638162fa3890cda93c06c76628fc207d"
+        },
+        {
+          "start": 263179,
+          "end": 263349,
+          "sha256": "c416a8a5de9eb648c3ed188c11c858aa8a9ff4d8c4c500893b6389b43aa0f839"
+        },
+        {
+          "start": 263234,
+          "end": 263349,
+          "sha256": "bcfc06725492e74c85a174cc139d3577071d79a59d90d938bc1bafbfd5709a53"
+        },
+        {
+          "start": 263313,
+          "end": 263349,
+          "sha256": "2807d3f47f30f8327bd76b90f4d8842d2f9bb3cf1090b470ab65d6bfd8c4eb89"
+        },
+        {
+          "start": 263325,
+          "end": 263349,
+          "sha256": "c813827904e212c92a91010e4a76de6661d2b3b6a1820d1139f9bbd7d59a99c5"
+        }
+      ],
+      "new_entry": true
     }
   ]
 }

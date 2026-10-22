@@ -376,3 +376,20 @@ no guards, deliberate deadline exit 1. Captures 8/12/17 show Demo play,
 Start/title return and reentry. Private evidence:
 `local/runs/20261008-165451-attract/`; executable SHA-256
 `eed97b28dd47960081d495828c2b6a3596e9e7bbcb345f2490501e8ac4d26db1`.
+
+
+## October 22: Stage 1-2 projectile hit continuation
+
+Owner shooting at an enemy reached the native missing-target stop at
+`0x000403C0`. The original conditional branch at `0x000403B0` enters an effect
+creation continuation that the discovery inventory omitted. Recovery retains
+the original 245 bytes through the restoring return at `0x000404B4`, including
+the existing overlapping callable entries, with no HLE replacement or
+interpreter fallback. The revision extent inventory records the input hash and
+all source boundaries so full preparation regenerates the fix.
+
+Validation: original extent hashes and complete decoding pass; the former
+missing-target guard is retired and all direct callees in the recovered body
+already have native implementations. Optimized build and owner projectile-hit
+retest are recorded under `beads-xbox.1.7.15`. The separate shared tester replay
+work is `beads-xbox.1.191` and does not gate this playtest handoff.
