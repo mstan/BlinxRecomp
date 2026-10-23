@@ -83,6 +83,12 @@ Hide one FPS mode similarly with
 `["actual"]`. Hidden active choices are disabled on the next launch, so nothing
 keeps running invisibly. Framework and game visibility policies both apply.
 
+Camera controls are a separate shared mod. **Invert horizontal camera** and
+**Invert vertical camera** are independent checkboxes under Mods; both start
+off and apply on the next game launch. They reverse only Player 1's right stick,
+including keyboard camera input. Movement, buttons and saves are unchanged.
+Tester recordings store the resulting input, so replay does not invert twice.
+
 Framework architecture, targeted validation and explicit follow-up triggers:
 `xboxlle/docs/NATIVE-VISUAL-MODS-2026-10-18.md`.
 

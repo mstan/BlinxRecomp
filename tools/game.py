@@ -157,7 +157,7 @@ def launch(local, args):
         ui = importlib.util.module_from_spec(spec);spec.loader.exec_module(ui)
         manifests = [ROOT / 'mods/preloaded/packages/blinx.enhancement.widescreen/1.0.0/manifest.toml']
         manifests += [FRAMEWORK / 'mods/preloaded/packages' / pid / '1.0.0/manifest.toml'
-                      for pid in ('xboxlle.enhancement.visuals', 'xboxlle.enhancement.frame-rate')]
+                      for pid in ('xboxlle.enhancement.visuals', 'xboxlle.enhancement.frame-rate', 'xboxlle.enhancement.camera')]
         catalog = ui.Catalog(manifests, ROOT / 'local/mod-selection.json',
                              visibility=[FRAMEWORK / 'mods/ui-visibility.json', ROOT / 'mods/ui-visibility.json'],
                              frame_modes=PROFILE['launcher']['frame_modes'])
@@ -180,6 +180,9 @@ def launch(local, args):
         args.frame_mode = selected.get(('xboxlle.enhancement.frame-rate', 'frame-rate', 'mode'), 'original')
         args.frame_rate = int(selected.get(('xboxlle.enhancement.frame-rate', 'frame-rate', 'rate'), '60'))
         env['RECOMP_VOLUME'] = str(catalog.volume)
+        input_spec = importlib.util.spec_from_file_location('xlle_native_input_mods', FRAMEWORK / 'tools/native_input_mods.py')
+        input_mods = importlib.util.module_from_spec(input_spec);input_spec.loader.exec_module(input_mods)
+        env.update(input_mods.environment(catalog))
         player = catalog.player
         if player['source'] in ('none', 'keyboard'):
             env['XLLE_PILOT_INPUT'] = player['source']

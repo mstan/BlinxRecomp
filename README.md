@@ -20,6 +20,7 @@ controller support through an Xbox-themed launcher. BlinxRecomp uses
 | Image quality | Optional FXAA, 2x2 or 3x3 supersampling, and anisotropic texture filtering. |
 | Smoother presentation | Optional blended 60/120 Hz presentation while gameplay keeps its original timing. |
 | Controller selection | The shared recomp-ui Player 1 card detects connected controllers and remembers the selected device. Keyboard input is also available. |
+| Camera controls | Independent horizontal and vertical camera-invert toggles in Mods, both off by default. |
 | Original saves | Persistent in-game saves, including fresh-process loading of the assisted campaign's completed save. |
 | Time controls | Original activation and lifecycle checks for all five time controls, including REC's clone playback. |
 
