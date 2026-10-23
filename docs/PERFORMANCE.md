@@ -1,5 +1,27 @@
 # Blinx performance observations
 
+## Stage 2-2 entrance presentation - 2026-10-22
+
+The shared interpolation worker could miss display ticks while busy game
+graphics repeatedly held the renderer lock. A missed tick now becomes a
+coalesced request that the renderer owner services at its next safe boundary.
+Original game timing, effects and visual settings remain unchanged.
+
+In the first two seconds after player allocation, a visible Stage 2-2 run
+delivers 59.61 accepted native presentations/s with the fix, versus 33.15 with
+the diagnostic control disabled in the identical executable. Game updates
+remain 29.55 versus 29.13/s. Later sampled windows retain about 60 presentations/s.
+This is smoother interpolation, not faster simulation or physical scanout
+certification. The owner-reported entrance still needs a hands-on review.
+
+Six focused GPU/renderer checks pass, including unchanged source pixels,
+visibility-query isolation, FP environment preservation and close/recreate.
+Host load varies; no total CPU gain or elimination of loading stalls is claimed.
+Exact build identity, comparison and limits are in the
+[framework presentation audit](../xboxlle/docs/NATIVE-INTERPOLATION-COOPERATIVE-2026-10-22.md).
+Tracked in `beads-xbox.1.7.20` and shared `beads-xbox.1.192`. The published
+Windows preview `2026.10.22.1` predates this follow-up.
+
 ## Stage-entry texture preparation - 2026-10-22
 
 The Windows hotfix retains the exact native build accepted in the owner's
