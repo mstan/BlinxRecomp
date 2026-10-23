@@ -67,11 +67,25 @@ static void draw(struct PilotTitleModDraw *draw)
     if(!scene_mode() || !projection_seen || !draw->positions || draw->count>4096 || draw->stride<8 ||
        (draw->position_type!=0x22 && draw->position_type!=0x32 && draw->position_type!=0x42 && draw->position_type!=0x72))return;
     int marker=0;
-    if(draw->caller==0x33811 && draw->depth_test) {
-        unsigned programs[2];read_data(0x6678a8,programs,sizeof(programs));
-        marker=draw->shader==programs[0] || draw->shader==programs[1];
+    /* 36180's projected billboard quads are consumed by the ordinary queued
+     * draw at 33172, including the damaged-enemy gauge. Their centers already
+     * follow the wider projection; their pixel radii still use its vertical
+     * focal length. Other meshes in that queue have a different contract. */
+    int queued_marker=draw->caller==0x33172 && draw->primitive==6 && draw->count==4 &&
+        draw->position_type==0x32 && draw->stride>=12 && draw->depth_test && !draw->depth_write;
+    if(queued_marker) {
+        float z;memcpy(&z,draw->positions+8,4);
+        if(!isfinite(z))queued_marker=0;
+        for(unsigned i=1;i<4 && queued_marker;++i) {
+            float other;memcpy(&other,draw->positions+i*draw->stride+8,4);
+            if(!isfinite(other) || other!=z)queued_marker=0;
+        }
     }
-    int sprite=draw->caller==0x30c0a || (draw->caller==0x33811 && (!draw->depth_test || marker));
+    if((draw->caller==0x33811 || queued_marker) && draw->depth_test) {
+        unsigned programs[2];read_data(0x6678a8,programs,sizeof(programs));
+        marker=(programs[0] && draw->shader==programs[0]) || (programs[1] && draw->shader==programs[1]);
+    }
+    int sprite=draw->caller==0x30c0a || marker || (draw->caller==0x33811 && !draw->depth_test);
     int camera_sprite=draw->caller==0x30c0a && draw->depth_test;
     int text=draw->caller==0xef2ae || draw->caller==0xef8a4 || draw->caller==0xf183a;
     /* The ordinary gameplay scene is rendered into a texture and copied to
@@ -91,7 +105,7 @@ static void draw(struct PilotTitleModDraw *draw)
         if(xy[1]>max_y)max_y=xy[1];
     }
     if(tracing && (trace_ui_only!=2 || trace_ready) &&
-       (trace_ui_only!=5 || (draw->primitive==6 && draw->count>4 &&
+       (trace_ui_only!=5 || (draw->primitive==6 && draw->count>=4 &&
                             (draw->caller==0x33172 || draw->caller==0x33811))) &&
        (trace_ui_only!=4 || (draw->caller==0x30c0a && draw->default_target && draw->count==4 &&
                             fabsf(min_x+320)<.001f && fabsf(max_x-320)<.001f &&
@@ -99,11 +113,11 @@ static void draw(struct PilotTitleModDraw *draw)
        (trace_ui_only!=3 || (!draw->depth_test && draw->count<=24 &&
                             max_x-min_x>=500 && max_y-min_y<=64)) &&
        (!trace_ui_only || trace_ui_only==5 || sprite || text || draw->caller==0x33811 || !draw->depth_test)) {
-        float z=0;if(draw->position_type!=0x22)memcpy(&z,draw->positions+8,4);
+        float z=0,first[2];memcpy(first,draw->positions,8);if(draw->position_type!=0x22)memcpy(&z,draw->positions+8,4);
         unsigned textures[4],frame,time_state;read_data(0x142e58,textures,sizeof(textures));read_data(0x50a464,&frame,4);read_data(0x50a428,&time_state,4);
-        fprintf(trace,"%u %08x %08x %u %u %.6g %.6g %.6g %.6g z=%.9g depth=%u/%u target=%u frame=%u time=%u textures=%08x,%08x,%08x,%08x\n",trace_count++,draw->caller,
+        fprintf(trace,"%u %08x %08x %u %u %.6g %.6g %.6g %.6g z=%.9g depth=%u/%u target=%u frame=%u time=%u textures=%08x,%08x,%08x,%08x first=%.9g,%.9g\n",trace_count++,draw->caller,
             draw->shader,draw->position_type,draw->count,min_x,min_y,max_x,max_y,z,draw->depth_test,draw->depth_write,
-            draw->default_target,frame,time_state,textures[0],textures[1],textures[2],textures[3]);fflush(trace);
+            draw->default_target,frame,time_state,textures[0],textures[1],textures[2],textures[3],first[0],first[1]);fflush(trace);
     }
     if(excluded_target)return;
     /* 30B16 submits ordinary screen-space sprites through the title's 2D
@@ -146,10 +160,9 @@ static void draw(struct PilotTitleModDraw *draw)
     }
     unsigned n=frame_aspect[0],d=frame_aspect[1];
     draw->x_scale=4.0f*d/(3.0f*n);draw->x_anchor=320;
-    /* Preserve the projected center for this identified billboard program
-     * pair while correcting its original-pixel width. This producer is not
-     * sufficient to identify the separate damaged-enemy health gauge;
-     * depth alone also matches unrelated world geometry in this queue. */
+    /* The billboard quad's center already follows the wide projection.
+     * Correct its original-pixel width around that center, including the
+     * original health gauge. Depth alone cannot identify this contract. */
     if(marker){draw->x_anchor=(min_x+max_x)*.5f;return;}
     /* The same immediate sprite helper draws the depth-tested visibility
      * proxies. Those follow the camera, including beyond the old 4:3 edges;

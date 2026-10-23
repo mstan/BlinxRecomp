@@ -1,13 +1,26 @@
 # Original NTSC Blinx
 
+## Damaged-enemy health circle - 2026-10-23
+
+The actual original health UI is now corrected at queued caller `33172`, using
+the live billboard program and its constant-depth four-vertex float3 contract.
+Its projected center stays fixed while its original-pixel width contracts for
+the wider presentation. Ordinary meshes and other shader/depth/topology paths
+retain their mapping. Six aspect contracts and independent visual-plan checks
+pass; a disposable native 21:9 original-health-task fixture shows a circle
+instead of the previous oval. The fixture bypasses combat, so this is renderer
+evidence rather than another combat pass. See the
+[hotfix notes](RELEASE-NOTES-2026-10-23.1.md).
+
 ## Playtester package refresh - 2026-10-23
 
-The current pin includes the accepted stage-entry presentation change and the
+The first October 23 package (`69c05b2`) includes the stage-entry presentation change and the
 independent horizontal/vertical camera-invert controls, both off by default.
 The owner reports that all campaign stages load quickly. The October 23
 playtester package carries those improvements with local corresponding source.
-The damaged-enemy health circle is still open; previous billboard fixtures did
-not establish that particular gauge's shape. See the
+The damaged-enemy health circle was still open at that milestone; previous
+billboard fixtures did not establish that gauge's shape. The hotfix above
+supersedes that issue. See the
 [tester notes](PLAYTEST-2026-10-23.md) for scope and remaining issues.
 
 ## Character transparency and tester diagnostics - 2026-10-22

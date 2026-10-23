@@ -8,6 +8,7 @@ static float matrix[16]={.75f,0,0,0,0,-1,0,0,0,0,1,1,0,0,-1,0};
 static unsigned phase=0x89,numerator,denominator,shape[2],writes;
 static unsigned paused,stage,scope,frames,time_state;
 static unsigned noise_slot=24,noise_header=0xd0000528,bound_texture;
+static unsigned billboard_programs[2]={0x123001,0x456001};
 static int read_data(unsigned address,void *data,unsigned bytes)
 {
     unsigned guard=0xbfaaaaab;
@@ -20,7 +21,7 @@ static int read_data(unsigned address,void *data,unsigned bytes)
     else if(address==0x142e58 && bytes==4)memcpy(data,&bound_texture,4);
     else if(address==0x8d2860+noise_slot*4 && bytes==4)memcpy(data,&noise_header,4);
     else if(address==0x39d910 && bytes==64)memcpy(data,matrix,64);
-    else if(address==0x6678a8 && bytes==8){unsigned programs[2]={0x123001,0x456001};memcpy(data,programs,8);}
+    else if(address==0x6678a8 && bytes==8)memcpy(data,billboard_programs,8);
     else return 0;
     return 1;
 }
@@ -153,6 +154,32 @@ int main(int argc,char **argv)
     CHECK(close_to(draw.x_scale*stretch,1) && draw.x_anchor==320);
     time_state=0;
     draw.depth_test=draw.depth_write=0;
+    /* Original damaged-enemy gauge fixture: queued caller33172, two float3
+     * quads with a common depth and live 2D billboard program, on the scene
+     * texture. The center is already projected; only its width contracts. */
+    quad[0][0]=quad[2][0]=-28.5298f;quad[1][0]=quad[3][0]=12.7124f;
+    quad[0][1]=quad[1][1]=41.1283f;quad[2][1]=quad[3][1]=82.3705f;
+    for(unsigned i=0;i<4;++i)quad[i][2]=44.4867f;
+    draw.caller=0x33172;draw.primitive=6;draw.count=4;draw.position_type=0x32;
+    draw.shader=0x123001;draw.depth_test=1;draw.default_target=0;
+    draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    float gauge_center=320+(-28.5298f+12.7124f)*.5f;
+    CHECK(close_to(draw.x_anchor,gauge_center));
+    CHECK(close_to(41.2422f*draw.x_scale*stretch,41.2422f));
+    CHECK(close_to(gauge_center*draw.x_scale+draw.x_anchor*(1-draw.x_scale),gauge_center));
+    /* Neighboring mesh/shader/depth/topology contracts are not billboards. */
+    draw.shader=0x777001;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    billboard_programs[1]=0;
+    draw.shader=0;draw.x_scale=1;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    billboard_programs[1]=0x456001;
+    draw.shader=0x123001;draw.depth_write=1;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    draw.depth_write=0;draw.depth_test=0;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    draw.depth_test=1;draw.primitive=4;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    draw.primitive=6;draw.count=3;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    draw.count=4;quad[3][2]+=1;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    quad[3][2]-=1;quad[0][2]=NAN;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    quad[0][2]=44.4867f;quad[3][2]=NAN;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    quad[3][2]=44.4867f;draw.default_target=1;draw.depth_test=0;
     /* A world marker's center is already projected with the wide matrix;
      * its original pixel radius must shrink without moving that center. */
     draw.caller=0x33811;draw.depth_test=1;draw.shader=0x123001;
