@@ -27,7 +27,7 @@ static void open_trace(void)
     const char *path=getenv("BLINX_MOD_DRAW_TRACE");
     if(path && *path){trace=fopen(path,"wb");if(!trace)fail("mod draw trace cannot be opened");}
     const char *filter=getenv("BLINX_MOD_DRAW_TRACE_UI_ONLY");
-    trace_ui_only=filter && !strcmp(filter,"raster") ? 4 :
+    trace_ui_only=filter && !strcmp(filter,"fans") ? 5 : filter && !strcmp(filter,"raster") ? 4 :
         filter && !strcmp(filter,"effects") ? 3 :
         filter && !strcmp(filter,"populated") ? 2 : filter && !strcmp(filter,"1");
     trace_trigger=getenv("BLINX_MOD_DRAW_TRACE_TRIGGER");
@@ -91,12 +91,13 @@ static void draw(struct PilotTitleModDraw *draw)
         if(xy[1]>max_y)max_y=xy[1];
     }
     if(tracing && (trace_ui_only!=2 || trace_ready) &&
+       (trace_ui_only!=5 || (draw->primitive==6 && draw->count>4 && !draw->depth_write)) &&
        (trace_ui_only!=4 || (draw->caller==0x30c0a && draw->default_target && draw->count==4 &&
                             fabsf(min_x+320)<.001f && fabsf(max_x-320)<.001f &&
                             fabsf(min_y+240)<.001f && fabsf(max_y-240)<.001f)) &&
        (trace_ui_only!=3 || (!draw->depth_test && draw->count<=24 &&
                             max_x-min_x>=500 && max_y-min_y<=64)) &&
-       (!trace_ui_only || sprite || text || draw->caller==0x33811 || !draw->depth_test)) {
+       (!trace_ui_only || trace_ui_only==5 || sprite || text || draw->caller==0x33811 || !draw->depth_test)) {
         float z=0;if(draw->position_type!=0x22)memcpy(&z,draw->positions+8,4);
         unsigned textures[4],frame,time_state;read_data(0x142e58,textures,sizeof(textures));read_data(0x50a464,&frame,4);read_data(0x50a428,&time_state,4);
         fprintf(trace,"%u %08x %08x %u %u %.6g %.6g %.6g %.6g z=%.9g depth=%u/%u target=%u frame=%u time=%u textures=%08x,%08x,%08x,%08x\n",trace_count++,draw->caller,
