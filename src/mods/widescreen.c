@@ -91,7 +91,8 @@ static void draw(struct PilotTitleModDraw *draw)
         if(xy[1]>max_y)max_y=xy[1];
     }
     if(tracing && (trace_ui_only!=2 || trace_ready) &&
-       (trace_ui_only!=5 || (draw->primitive==6 && draw->count>4 && !draw->depth_write)) &&
+       (trace_ui_only!=5 || (draw->primitive==6 && draw->count>4 &&
+                            (draw->caller==0x33172 || draw->caller==0x33811))) &&
        (trace_ui_only!=4 || (draw->caller==0x30c0a && draw->default_target && draw->count==4 &&
                             fabsf(min_x+320)<.001f && fabsf(max_x-320)<.001f &&
                             fabsf(min_y+240)<.001f && fabsf(max_y-240)<.001f)) &&
@@ -145,11 +146,10 @@ static void draw(struct PilotTitleModDraw *draw)
     }
     unsigned n=frame_aspect[0],d=frame_aspect[1];
     draw->x_scale=4.0f*d/(3.0f*n);draw->x_anchor=320;
-    /* 36180 builds depth-tested type-4 billboards with an already projected
-     * center, but a radius from the original pixel focal length. Preserve
-     * that center and correct only the width (enemy health/target circles).
-     * The type-4 program pair lives at 6678A8; depth alone also matches world
-     * geometry in this queue and cannot identify its position contract. */
+    /* Preserve the projected center for this identified billboard program
+     * pair while correcting its original-pixel width. This producer is not
+     * sufficient to identify the separate damaged-enemy health gauge;
+     * depth alone also matches unrelated world geometry in this queue. */
     if(marker){draw->x_anchor=(min_x+max_x)*.5f;return;}
     /* The same immediate sprite helper draws the depth-tested visibility
      * proxies. Those follow the camera, including beyond the old 4:3 edges;

@@ -1,5 +1,15 @@
 # Original NTSC Blinx
 
+## Playtester package refresh - 2026-10-23
+
+The current pin includes the accepted stage-entry presentation change and the
+independent horizontal/vertical camera-invert controls, both off by default.
+The owner reports that all campaign stages load quickly. The October 23
+playtester package carries those improvements with local corresponding source.
+The damaged-enemy health circle is still open; previous billboard fixtures did
+not establish that particular gauge's shape. See the
+[tester notes](PLAYTEST-2026-10-23.md) for scope and remaining issues.
+
 ## Character transparency and tester diagnostics - 2026-10-22
 
 The shared framework now preserves whisker/fur alpha through later lighting
