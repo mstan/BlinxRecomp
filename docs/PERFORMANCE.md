@@ -1,5 +1,25 @@
 # Blinx performance observations
 
+## Stage-entry texture preparation - 2026-10-22
+
+The Windows hotfix retains the exact native build accepted in the owner's
+Stage 2-1 playtest. Shared resource-write tracking lets unchanged texture
+preparations be reused while writes, resource reuse and relevant state changes
+invalidate them. Visual quality and original simulation timing are preserved.
+
+In the bounded balanced Stage 2-1 comparison, process CPU cost fell from
+35.575 to 29.770 ms per game update (about 16.3% less). Throughput rose from
+27.995 to 29.914 updates/s, with similar sampled background CPU load. These
+are game-update measurements, not interpolated presentation FPS or whole-game
+performance guarantees. Separate cold-entry runs varied with host load.
+
+The owner reported the accepted build was "much much smoother" and "vastly
+improved," with a possible minor hitch or two. Residual hitches remain tracked
+in `beads-xbox.1.7.18`; this release does not claim zero stutter. Exact evidence
+and focused contract checks are in the
+[framework assessment](../xboxlle/docs/BLINX-STAGE21-PERFORMANCE-ASSESSMENT-2026-10-22.md)
+and [write-tracking audit](../xboxlle/docs/NATIVE-RESOURCE-WRITE-WATCH-2026-10-22.md).
+
 ## Intermittent Stage 1 loading/audio report - 2026-10-18
 
 The owner observed a 25.169-second `rd11.mit` to `01_StageStart.adx`
