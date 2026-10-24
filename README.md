@@ -33,17 +33,17 @@ higher-rate gameplay is not available yet. See the
 
 ## Getting started
 
-**[Download the Windows x64 preview](https://github.com/mstan/BlinxRecomp/releases/tag/windows-preview-2026-10-23.1).**
+**[Download the Windows x64 preview](https://github.com/mstan/BlinxRecomp/releases/tag/windows-preview-2026-10-23.2).**
 The Windows ZIP includes the precompiled native application, launcher, Python
 and runtime dependencies. No compiler is needed to play. Matching project and
 prepared dependency sources are included locally under `source/`.
 Linux releases remain deferred. The setup flow is described below.
 
-The October 23 hotfix corrects the damaged-enemy health circle in widescreen
-and includes the latest stage-entry presentation improvements and camera-invert
-controls. Character-face/whisker transparency, the projectile-effect crash fix
-and opt-in tester diagnostics are retained. See the
-[hotfix notes](docs/RELEASE-NOTES-2026-10-23.1.md).
+The October 23 controller hotfix fixes gamepads that appeared connected but
+gave no input. The damaged-enemy health circle correction, stage-entry
+presentation improvements and camera-invert controls are retained, alongside
+character-face/whisker transparency, the projectile-effect crash fix and opt-in
+tester diagnostics. See the [hotfix notes](docs/RELEASE-NOTES-2026-10-23.2.md).
 
 You supply your own **Blinx: The Time Sweeper (NTSC-U)** files. Open **Start Game.cmd**,
 choose **Skip** in the optional first-launch console setup, and select the

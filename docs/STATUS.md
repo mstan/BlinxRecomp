@@ -1,5 +1,13 @@
 # Original NTSC Blinx
 
+## Windows controller input - 2026-10-23.2
+
+The shared framework now processes Windows RawInput messages on SDL's joystick
+notification thread. A controller could previously open successfully while
+buttons and sticks remained zero because the native renderer has no SDL video
+message loop. The correction is compiled in and retains the selected controller
+GUID and console/save identity. See [release notes](RELEASE-NOTES-2026-10-23.2.md).
+
 ## Damaged-enemy health circle - 2026-10-23
 
 The actual original health UI is now corrected at queued caller `33172`, using
