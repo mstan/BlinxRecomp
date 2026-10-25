@@ -6,7 +6,7 @@ xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
 
 [framework]
 repository = "https://github.com/mstan/xboxllr"
-revision = "0d6e627c2563d40c848938acec4cf42ef7540822"
+revision = "e27b40421bb0c30911b566c0404b23b3e8723323"
 directory = "xboxlle"
 
 [launcher]
@@ -37,6 +37,9 @@ options = { anisotropy = "8" }
 [launcher.defaults."xboxlle.enhancement.frame-rate/frame-rate"]
 enabled = true
 options = { mode = "interpolated", rate = "60" }
+
+[launcher.defaults."xboxllr.diagnostics/session-replay"]
+enabled = true
 
 [generation]
 donor_revision = "63f18f0334fbd8c00313c4bb565accf00627a4fd"
