@@ -2,6 +2,7 @@ format_version = 1
 id = "blinx.enhancement.widescreen"
 version = "1.0.0"
 name = "Blinx Widescreen"
+category = "Visual enhancements"
 description = "Widen the original camera with proportional, anchored HUD. Fixed or adaptive aspect from 4:3 through 32:9."
 save_compatibility = "shared"
 
