@@ -299,6 +299,30 @@ int main(int argc,char **argv)
         draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
         draw.default_target=1;
     }
+    /* Original Stage Select lower-right panel: X=183..640, height 220.
+     * Its upper-left corner must follow the proportional menu layout so it
+     * clears Stage 1, while its right edge still reaches the wide raster.
+     * Blend back to the closed pose so no seam opens during a transition. */
+    cover_progress=0;cover_held=1;cover_dim=0;mod->present();
+    bound_texture=cover_header;
+    quad[0][0]=quad[2][0]=183-320;quad[1][0]=quad[3][0]=640-320;
+    for(unsigned pose=0;pose<3;++pose) {
+        cover_progress=1-.5f*pose;mod->present();
+        float y=260;
+        quad[0][1]=quad[1][1]=y-240;quad[2][1]=quad[3][1]=y+220-240;
+        draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+        float left=183*draw.x_scale+draw.x_anchor*(1-draw.x_scale);
+        float expected=183+(.8f*(320-183))*(1-1/stretch)*(.5f*pose);
+        CHECK(close_to(left,expected));
+        CHECK(close_to(640*draw.x_scale+draw.x_anchor*(1-draw.x_scale),640));
+    }
+    bound_texture=glow_header;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    /* Neighboring cover tiles and the gameplay side retain their mapping. */
+    bound_texture=cover_header;quad[1][0]-=1;quad[3][0]-=1;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(draw.x_scale==1 && draw.x_anchor==0);quad[1][0]+=1;quad[3][0]+=1;
+    quad[0][0]=quad[2][0]=-320;quad[1][0]=quad[3][0]=-96;
+    quad[0][1]=quad[1][1]=-240;quad[2][1]=quad[3][1]=240;
     /* Menu-to-gameplay camera setup and changing live resource ownership. */
     cover_progress=.25f;cover_dim=0;cover_held=0;
     matrix[0]=.75f;mod->transform(1,0x39d910,0x2c898);CHECK(writes==3);

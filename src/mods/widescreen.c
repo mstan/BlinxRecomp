@@ -156,7 +156,25 @@ static void draw(struct PilotTitleModDraw *draw)
      * Resolve live owner handles so stage reloads cannot stale this identity. */
     if(cover_active && draw->caller==0x33811 && draw->default_target &&
        !draw->depth_test && draw->count==4 && draw->position_type==0x32 &&
-       (bound_resource(0x23b168) || bound_resource(0x23b188)))return;
+       (bound_resource(0x23b168) || bound_resource(0x23b188))) {
+        /* Stage Select holds the same cover atlas around its proportional
+         * controls. Its lower-right panel (A55A5: X=183..640, height=220)
+         * otherwise stretches its corner over the Stage 1 node. Move that
+         * corner toward the centered menu while retaining the full right edge.
+         * Its original closing progress blends the adjustment away as
+         * the shutter closes, preserving the original closed seams. */
+        if(mode()==5 && fabsf(min_x-183)<.01f && fabsf(max_x-640)<.01f &&
+           fabsf(max_y-min_y-220)<.01f && bound_resource(0x23b168)) {
+            unsigned n,d;aspect(&n,&d);
+            float progress;read_data(0x62f308,&progress,4);
+            float reveal=isfinite(progress)?1-progress:0;
+            if(reveal<0)reveal=0;
+            if(reveal>1)reveal=1;
+            float scale=1-(109.6f/457)*(1-4.0f*d/(3.0f*n))*reveal;
+            if(scale<1){draw->x_scale=scale;draw->x_anchor=640;}
+        }
+        return;
+    }
     if(!camera_sprite && min_x<=1 && max_x>=639 && min_y<=1 && max_y>=479)return;
     /* The full-screen tint/fade uses 30C0A with depth testing enabled, both
      * during Retry and its surrounding lifecycle. That helper also submits

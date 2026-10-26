@@ -214,3 +214,10 @@ Round 2 Stage 1 check captures original entry/exit back to Stage Select and
 populated inventory at 21:9 and 32:9, exiting cleanly. The inventory setup uses
 three source-qualified pickup cheats; completion flags are not changed.
 Owner visual acceptance of this candidate remains pending.
+
+Owner follow-up: the main framing and trim changes look good. Stage Select's
+lower-right panel still overlapped the Stage 1 marker slightly. Its corner
+now moves toward the proportional menu layout while the right edge remains at the
+window edge. This adjustment blends out using the original closing
+progress, so the fully closed shutters retain their original seams. Other cover
+pieces and loading/gameplay framing are unchanged.
