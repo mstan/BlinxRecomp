@@ -47,9 +47,12 @@ tester diagnostics. See the [hotfix notes](docs/RELEASE-NOTES-2026-10-23.2.md).
 
 You supply your own **Blinx: The Time Sweeper (NTSC-U)** files. Open **Start Game.cmd**,
 choose **Skip** in the optional first-launch console setup, and select the
-supported extracted `default.xbe` on the main screen. Keep the complete game
-asset folder beside that XBE. Direct ISO import and other revisions are not
-supported yet. Original game files are not included in this repository.
+supported `.iso`, `.xiso` or extracted `default.xbe` on the main screen. Disc
+images are imported once with progress and Cancel, then reused from `data/discs`
+with the same gameplay file access as an extracted copy. Keep that cache across
+updates to avoid importing again. Extracted XBEs still need the complete game
+asset folder beside them. Other revisions remain unsupported. Original game
+files are not included in this repository.
 
 No kernel dump, EEPROM or HDD image is needed to create a new local console.
 Automatic save storage is private to this game's package; no large disk image
