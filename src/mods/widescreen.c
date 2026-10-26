@@ -9,6 +9,7 @@
 static const struct PilotTitleModHost *host;
 static unsigned numerator,denominator,adaptive,phase,phase_dirty=1,projection_seen,frame_aspect[2];
 static unsigned frame_mode;
+static unsigned cover_active;
 static FILE *trace;
 static unsigned trace_count;
 static unsigned trace_ui_only,trace_ready;
@@ -19,7 +20,27 @@ static void fail(const char *reason)
 static void read_data(unsigned address,void *data,unsigned bytes)
 {if(!host->read(address,data,bytes))fail("Blinx mod data is unavailable");}
 static unsigned mode(void)
-{if(phase_dirty){read_data(0x50a57c,&phase,4);phase&=0x7f;phase_dirty=0;}return phase;}
+{
+    if(phase_dirty) {
+        float progress,dim;unsigned held;
+        read_data(0x50a57c,&phase,4);phase&=0x7f;
+        /* A4CA0 draws the original mechanical covers whenever their animation
+         * is running or held closed. Its independent glow also covers menus.
+         * Read current controls, never the pending destination screen. */
+        read_data(0x62f308,&progress,4);read_data(0x62ff34,&held,4);
+        read_data(0x50aa64,&dim,4);
+        cover_active=(isfinite(progress) && progress!=0) || held || (isfinite(dim) && dim!=0);
+        phase_dirty=0;
+    }
+    return phase;
+}
+static int bound_resource(unsigned record)
+{
+    unsigned slot,bound,texture=0;
+    read_data(record+28,&slot,4);read_data(0x142e58,&bound,4);
+    if(slot<1024)read_data(0x8d2860+slot*4,&texture,4);
+    return texture && texture==bound;
+}
 /* Screen 10 replays the stage behind the Results overlay. */
 static int scene_mode(void){unsigned value=mode();return value==9 || value==10;}
 static void open_trace(void)
@@ -49,7 +70,7 @@ static void transform(unsigned state,unsigned address,unsigned caller)
 {
     if(state!=1 || address!=0x39d910 || caller!=0x2c898)return;
     phase_dirty=1;
-    if(!scene_mode())return;
+    if(!scene_mode() && !cover_active)return;
     float matrix[16];read_data(address,matrix,sizeof(matrix));
     /* This is the original perspective builder's negative 4:3 aspect. Change
      * its data before SetTransform and the title's following matrix copy;
@@ -64,7 +85,8 @@ static void transform(unsigned state,unsigned address,unsigned caller)
 }
 static void draw(struct PilotTitleModDraw *draw)
 {
-    if(!scene_mode() || !projection_seen || !draw->positions || draw->count>4096 || draw->stride<8 ||
+    int scene=scene_mode();
+    if((!(scene && projection_seen) && !cover_active) || !draw->positions || draw->count>4096 || draw->stride<8 ||
        (draw->position_type!=0x22 && draw->position_type!=0x32 && draw->position_type!=0x42 && draw->position_type!=0x72))return;
     int marker=0;
     /* 36180's projected billboard quads are consumed by the ordinary queued
@@ -128,6 +150,13 @@ static void draw(struct PilotTitleModDraw *draw)
     /* The ordinary sprite queue stores centered XY; its original shader adds
      * c121=(320,240,0,0). Font FVF submits absolute screen pixels instead. */
     if(sprite){min_x+=320;max_x+=320;min_y+=240;max_y+=240;}
+    /* The cover atlas is three resources: mechanical panels, their glow,
+     * and the separate Now Loading label. Stretch only panels/glow together,
+     * including partial opening/closing quads and menu-side transition frames.
+     * Resolve live owner handles so stage reloads cannot stale this identity. */
+    if(cover_active && draw->caller==0x33811 && draw->default_target &&
+       !draw->depth_test && draw->count==4 && draw->position_type==0x32 &&
+       (bound_resource(0x23b168) || bound_resource(0x23b188)))return;
     if(!camera_sprite && min_x<=1 && max_x>=639 && min_y<=1 && max_y>=479)return;
     /* The full-screen tint/fade uses 30C0A with depth testing enabled, both
      * during Retry and its surrounding lifecycle. That helper also submits
@@ -159,7 +188,20 @@ static void draw(struct PilotTitleModDraw *draw)
         if(noise && bound==noise)return;
     }
     unsigned n=frame_aspect[0],d=frame_aspect[1];
+    if(cover_active)aspect(&n,&d);
     draw->x_scale=4.0f*d/(3.0f*n);draw->x_anchor=320;
+    /* The original four/nine-slot inventory frame has a long decorative
+     * continuation down to the bottom raster (captured 33811 queue, 64x128 +
+     * 64x20 pieces). In the wide HUD it leaves a detached hanging spike.
+     * Keep the actual trash icons/count and place only this frame beyond the
+     * right clip edge. At native 4:3 retain the original artwork. */
+    if(mode()==9 && draw->caller==0x33811 && !draw->depth_test &&
+       draw->default_target && draw->count==4 && draw->position_type==0x32 &&
+       min_x>=448 && max_x<=640 && min_y>=160 && max_y<=480 &&
+       draw->x_scale<1 && (bound_resource(0x1e2290) || bound_resource(0x1e22b0))) {
+        draw->x_anchor=(641-min_x*draw->x_scale)/(1-draw->x_scale);
+        return;
+    }
     /* The billboard quad's center already follows the wide projection.
      * Correct its original-pixel width around that center, including the
      * original health gauge. Depth alone cannot identify this contract. */
@@ -203,6 +245,7 @@ static void present(void)
     }
     unsigned n=4,d=3;
     if(scene_mode() && projection_seen){n=frame_aspect[0];d=frame_aspect[1];}
+    if(cover_active)aspect(&n,&d);
     if(!host->frame_shape(n,d))fail("unsupported mod presentation shape");
     phase_dirty=1;
 }

@@ -7,6 +7,10 @@
 static float matrix[16]={.75f,0,0,0,0,-1,0,0,0,0,1,1,0,0,-1,0};
 static unsigned phase=0x89,numerator,denominator,shape[2],writes;
 static unsigned paused,stage,scope,frames,time_state;
+static float cover_progress,cover_dim;
+static unsigned cover_held,cover_slot=92,glow_slot=93,label_slot=94;
+static unsigned trim_slot=29,large_trim_slot=30,trim_header=0xd0000628,large_trim_header=0xd0000648;
+static unsigned cover_header=0xd0000e08,glow_header=0xd0000e28,label_header=0xd0000e48;
 static unsigned noise_slot=24,noise_header=0xd0000528,bound_texture;
 static unsigned billboard_programs[2]={0x123001,0x456001};
 static int read_data(unsigned address,void *data,unsigned bytes)
@@ -14,6 +18,19 @@ static int read_data(unsigned address,void *data,unsigned bytes)
     unsigned guard=0xbfaaaaab;
     if(address==0x2c86b && bytes==4)memcpy(data,&guard,4);
     else if(address==0x50a57c && bytes==4)memcpy(data,&phase,4);
+    else if(address==0x62f308 && bytes==4)memcpy(data,&cover_progress,4);
+    else if(address==0x62ff34 && bytes==4)memcpy(data,&cover_held,4);
+    else if(address==0x50aa64 && bytes==4)memcpy(data,&cover_dim,4);
+    else if(address==0x23b184 && bytes==4)memcpy(data,&cover_slot,4);
+    else if(address==0x23b1a4 && bytes==4)memcpy(data,&glow_slot,4);
+    else if(address==0x23b1c4 && bytes==4)memcpy(data,&label_slot,4);
+    else if(address==0x8d2860+cover_slot*4 && bytes==4)memcpy(data,&cover_header,4);
+    else if(address==0x8d2860+glow_slot*4 && bytes==4)memcpy(data,&glow_header,4);
+    else if(address==0x8d2860+label_slot*4 && bytes==4)memcpy(data,&label_header,4);
+    else if(address==0x1e22ac && bytes==4)memcpy(data,&trim_slot,4);
+    else if(address==0x1e22cc && bytes==4)memcpy(data,&large_trim_slot,4);
+    else if(address==0x8d2860+trim_slot*4 && bytes==4)memcpy(data,&trim_header,4);
+    else if(address==0x8d2860+large_trim_slot*4 && bytes==4)memcpy(data,&large_trim_header,4);
     else if(address==0x50a534 && bytes==4)memcpy(data,&paused,4);
     else if(address==0x50312c && bytes==4)memcpy(data,&stage,4);
     else if(address==0x50a428 && bytes==4)memcpy(data,&time_state,4);
@@ -67,6 +84,15 @@ int main(int argc,char **argv)
     }
     if(argc==1){CHECK(!mod && !writes && !numerator);return 0;}
     CHECK(mod && mod->abi==PILOT_TITLE_MOD_ABI);
+    /* Covers also run before the first gameplay camera is ever submitted. */
+    phase=5;cover_progress=.5f;mod->present();
+    CHECK(shape[0]*denominator==shape[1]*numerator && writes==0);
+    float opening[4][3]={{-320,-240,1},{-96,-240,1},{-320,240,1},{-96,240,1}};
+    struct PilotTitleModDraw cold={0x33811,1,6,4,1,(const unsigned char*)opening,12,0x32,1,0,0,0};
+    bound_texture=cover_header;mod->draw(&cold);CHECK(cold.x_scale==1 && cold.x_anchor==0);
+    bound_texture=label_header;mod->draw(&cold);CHECK(cold.x_anchor==320);
+    cover_progress=0;bound_texture=0;mod->present();CHECK(shape[0]==4 && shape[1]==3);
+    phase=0x89;
     mod->transform(1,0x39d910,0x2c898);
     CHECK(writes==1);
     /* The same world-space X/Y distance has equal displayed pixel lengths;
@@ -111,6 +137,23 @@ int main(int argc,char **argv)
     draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
     CHECK(draw.x_anchor==640);
     CHECK(close_to(640*stretch-(590*draw.x_scale+draw.x_anchor*(1-draw.x_scale))*stretch,50));
+    /* Actual inventory-frame trace: these two decorative continuation
+     * pieces leave a hanging spike beside the independently anchored icons.
+     * Only their live resources are clipped, only on the wide default HUD. */
+    for(unsigned resource=0;resource<2;++resource)for(unsigned part=0;part<2;++part) {
+        quad[0][0]=quad[2][0]=235;quad[1][0]=quad[3][0]=299;
+        quad[0][1]=quad[1][1]=part?220:92;quad[2][1]=quad[3][1]=part?240:220;
+        bound_texture=resource?large_trim_header:trim_header;
+        draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+        float left=555*draw.x_scale+draw.x_anchor*(1-draw.x_scale);
+        if(stretch>1.001f)CHECK(left>640);
+        else CHECK(draw.x_scale==1);
+        /* Ordinary icons, other targets and projected geometry still draw. */
+        bound_texture=0;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_anchor==640);
+        bound_texture=trim_header;draw.default_target=0;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+        CHECK(draw.x_scale==1 && draw.x_anchor==0);draw.default_target=1;
+    }
+    bound_texture=0;
     /* Visibility proxies share the immediate sprite helper. A proxy in a
      * HUD corner must follow its world position rather than that HUD edge. */
     draw.caller=0x30c0a;draw.depth_test=1;draw.depth_write=0;
@@ -234,5 +277,37 @@ int main(int argc,char **argv)
     CHECK(close_to(130*draw.x_scale*stretch,130));
     phase=5;mod->present();CHECK(shape[0]==4 && shape[1]==3);
     draw.caller=0xef2ae;draw.x_scale=1;mod->draw(&draw);CHECK(draw.x_scale==1);
-    CHECK(writes==2);return 0;
+    CHECK(writes==2);
+    /* A stage-select screen stays 4:3 at rest. During the actual shutter
+     * animation its original UI keeps its proportions inside the wide frame;
+     * only the identified cover/glow atlas fills the raster. */
+    draw.caller=0x33811;draw.position_type=0x32;draw.count=4;
+    draw.depth_test=draw.depth_write=0;draw.default_target=1;
+    quad[0][0]=quad[2][0]=-320;quad[1][0]=quad[3][0]=-96;
+    quad[0][1]=quad[1][1]=-240;quad[2][1]=quad[3][1]=240;
+    for(unsigned control=0;control<3;++control) {
+        cover_progress=control==0?.5f:0;cover_held=control==1;cover_dim=control==2?.3f:0;
+        mod->present();CHECK(shape[0]*denominator==shape[1]*numerator);
+        for(unsigned texture=0;texture<3;++texture) {
+            bound_texture=texture==0?cover_header:texture==1?glow_header:label_header;
+            draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+            if(texture<2)CHECK(draw.x_scale==1 && draw.x_anchor==0);
+            else CHECK(close_to(draw.x_scale*stretch,1) && draw.x_anchor==320);
+        }
+        /* The same texture on an offscreen producer is not a cover. */
+        bound_texture=cover_header;draw.default_target=0;
+        draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
+        draw.default_target=1;
+    }
+    /* Menu-to-gameplay camera setup and changing live resource ownership. */
+    cover_progress=.25f;cover_dim=0;cover_held=0;
+    matrix[0]=.75f;mod->transform(1,0x39d910,0x2c898);CHECK(writes==3);
+    CHECK(close_to(matrix[0]*aspect,-matrix[5]));
+    cover_slot=101;cover_header=0xd0005008;bound_texture=cover_header;
+    draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_scale==1);
+    cover_slot=1024;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(close_to(draw.x_scale*stretch,1) && draw.x_anchor==320);
+    cover_progress=cover_dim=0;cover_held=0;
+    mod->present();CHECK(shape[0]==4 && shape[1]==3);
+    return 0;
 }

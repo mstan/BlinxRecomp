@@ -187,3 +187,30 @@ and resource/copy/readback acceptance are in
 [the renderer plan](../xboxlle/docs/BLINX-ENHANCED-RENDERER.md#resolution-quality-and-frame-rate-request-2026-10-18).
 Resolution and blended presentation interpolation are implemented. Real faster
 simulation remains deferred and unavailable in the launcher.
+
+## Mechanical covers and inventory trim (2026-10-25)
+
+Stage entry/exit follows the original cover animation controls from `A4CA0`,
+including the held panels around Stage Select. The mechanical atlas
+`h_flame_all_1layer` and its glow fill the adaptive raster throughout the
+animation; the separate loading label and menu UI retain their proportions.
+Stage Select's mechanical frame fills the window while its controls retain
+the centered original layout. Other menus without those covers remain 4:3.
+The same projection adjustment applies to original camera submissions during
+these transitions, including a cover shown before the first gameplay camera.
+Original loading work, progress, input and audio are unchanged.
+
+The original four/nine-slot inventory frame has a decorative continuation
+below the trash icons. In the wide HUD the two frame pieces left a dangling
+line at the bottom right. These identified decorations are clipped outside the
+wide raster; actual item icons, quantities and the crystal/time-control groups
+remain. Native 4:3 retains the original decoration. Resource ownership is
+resolved live, so reloading a stage cannot retain stale texture handles.
+
+Focused contracts cover six aspect profiles, first-camera ordering, partial
+covers, held panels, glow, the proportional loading label, unchanged offscreen
+producers and unrelated icons, and live resource replacement. A muted native
+Round 2 Stage 1 check captures original entry/exit back to Stage Select and
+populated inventory at 21:9 and 32:9, exiting cleanly. The inventory setup uses
+three source-qualified pickup cheats; completion flags are not changed.
+Owner visual acceptance of this candidate remains pending.
