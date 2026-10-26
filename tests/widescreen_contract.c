@@ -12,10 +12,29 @@ static unsigned cover_held,cover_slot=92,glow_slot=93,label_slot=94;
 static unsigned trim_slot=29,large_trim_slot=30,trim_header=0xd0000628,large_trim_header=0xd0000648;
 static unsigned cover_header=0xd0000e08,glow_header=0xd0000e28,label_header=0xd0000e48;
 static unsigned noise_slot=24,noise_header=0xd0000528,bound_texture;
+static unsigned preview_slots[9]={200,201,202,203,204,205,206,207,208};
+static unsigned round_slots[2]={209,210};
+static unsigned currency_slots[3]={211,212,213};
 static unsigned billboard_programs[2]={0x123001,0x456001};
 static int read_data(unsigned address,void *data,unsigned bytes)
 {
     unsigned guard=0xbfaaaaab;
+    const unsigned currency_records[3]={0x23b578,0x23b5a0,0x23b5e0};
+    for(unsigned i=0;i<3;++i) {
+        unsigned texture=0xd0007508+32*i;
+        if(address==currency_records[i]+28 && bytes==4){memcpy(data,&currency_slots[i],4);return 1;}
+        if(address==0x8d2860+4*currency_slots[i] && bytes==4){memcpy(data,&texture,4);return 1;}
+    }
+    for(unsigned i=0;i<9;++i) {
+        unsigned texture=0xd0007008+32*i;
+        if(address==0x1e351c+32*i && bytes==4){memcpy(data,&preview_slots[i],4);return 1;}
+        if(address==0x8d2860+4*preview_slots[i] && bytes==4){memcpy(data,&texture,4);return 1;}
+    }
+    for(unsigned i=0;i<2;++i) {
+        unsigned texture=0xd0007408+32*i;
+        if(address==(i?0x23b33c:0x23b294) && bytes==4){memcpy(data,&round_slots[i],4);return 1;}
+        if(address==0x8d2860+4*round_slots[i] && bytes==4){memcpy(data,&texture,4);return 1;}
+    }
     if(address==0x2c86b && bytes==4)memcpy(data,&guard,4);
     else if(address==0x50a57c && bytes==4)memcpy(data,&phase,4);
     else if(address==0x62f308 && bytes==4)memcpy(data,&cover_progress,4);
@@ -153,6 +172,21 @@ int main(int argc,char **argv)
         bound_texture=trim_header;draw.default_target=0;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
         CHECK(draw.x_scale==1 && draw.x_anchor==0);draw.default_target=1;
     }
+    bound_texture=0;
+    /* Captured Gold pickup stack: third and later rows cross above Y=320.
+     * All ten original rows, their glyphs and total panel stay in one group. */
+    for(unsigned asset=0;asset<3;++asset)for(unsigned row=0;row<10;++row) {
+        bound_texture=0xd0007508+32*asset;
+        quad[0][0]=quad[2][0]=-270.6667f;quad[1][0]=quad[3][0]=-126.6667f;
+        quad[0][1]=quad[1][1]=103.6667f-16*row;
+        quad[2][1]=quad[3][1]=119.6667f-16*row;
+        draw.x_scale=1;draw.x_anchor=320;mod->draw(&draw);
+        CHECK(draw.x_anchor==0 && close_to(draw.x_scale*stretch,1));
+    }
+    /* The same number atlas in the middle of the screen is unrelated UI. */
+    quad[0][0]=quad[2][0]=-20;quad[1][0]=quad[3][0]=20;
+    quad[0][1]=quad[1][1]=70;quad[2][1]=quad[3][1]=86;
+    draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_anchor==320);
     bound_texture=0;
     /* Visibility proxies share the immediate sprite helper. A proxy in a
      * HUD corner must follow its world position rather than that HUD edge. */
@@ -304,6 +338,32 @@ int main(int argc,char **argv)
      * clears Stage 1, while its right edge still reaches the wide raster.
      * Blend back to the closed pose so no seam opens during a transition. */
     cover_progress=0;cover_held=1;cover_dim=0;mod->present();
+    /* Captured outgoing/incoming preview poses must retain one raster map,
+     * even while moving or zooming. All nine live resources can be selected. */
+    for(unsigned texture=0;texture<9;++texture) {
+        bound_texture=0xd0007008+32*texture;
+        quad[0][0]=quad[2][0]=-341.6889f;quad[1][0]=quad[3][0]=319.6444f;
+        quad[0][1]=quad[1][1]=-248;quad[2][1]=quad[3][1]=248;
+        draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
+        quad[0][0]=quad[2][0]=-10.6667f;quad[1][0]=quad[3][0]=629.3333f;
+        quad[0][1]=quad[1][1]=-240;quad[2][1]=quad[3][1]=240;
+        draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_scale==1 && draw.x_anchor==0);
+    }
+    bound_texture=0;draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+    CHECK(close_to(draw.x_scale*stretch,1) && draw.x_anchor==320);
+    /* Round word/digit share one anchor inside the stretched panel, keeping
+     * their original spacing and glyph widths at every supported aspect. */
+    for(unsigned language=0;language<2;++language)for(unsigned digit=0;digit<2;++digit) {
+        bound_texture=0xd0007408+32*language;
+        quad[0][0]=quad[2][0]=digit?251:159;quad[1][0]=quad[3][0]=digit?275:287;
+        quad[0][1]=quad[1][1]=-201;quad[2][1]=quad[3][1]=-169;
+        draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);
+        CHECK(close_to(draw.x_scale*stretch,1) && draw.x_anchor==479);
+        CHECK(close_to(479*draw.x_scale+draw.x_anchor*(1-draw.x_scale),479));
+    }
+    /* The Stage Select heading shares the atlas but belongs to the center. */
+    quad[0][0]=quad[2][0]=-257;quad[1][0]=quad[3][0]=-1;
+    draw.x_scale=1;draw.x_anchor=0;mod->draw(&draw);CHECK(draw.x_anchor==320);
     bound_texture=cover_header;
     quad[0][0]=quad[2][0]=183-320;quad[1][0]=quad[3][0]=640-320;
     for(unsigned pose=0;pose<3;++pose) {

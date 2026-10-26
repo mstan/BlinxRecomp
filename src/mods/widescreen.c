@@ -48,7 +48,7 @@ static void open_trace(void)
     const char *path=getenv("BLINX_MOD_DRAW_TRACE");
     if(path && *path){trace=fopen(path,"wb");if(!trace)fail("mod draw trace cannot be opened");}
     const char *filter=getenv("BLINX_MOD_DRAW_TRACE_UI_ONLY");
-    trace_ui_only=filter && !strcmp(filter,"fans") ? 5 : filter && !strcmp(filter,"raster") ? 4 :
+    trace_ui_only=filter && !strcmp(filter,"menu") ? 6 : filter && !strcmp(filter,"fans") ? 5 : filter && !strcmp(filter,"raster") ? 4 :
         filter && !strcmp(filter,"effects") ? 3 :
         filter && !strcmp(filter,"populated") ? 2 : filter && !strcmp(filter,"1");
     trace_trigger=getenv("BLINX_MOD_DRAW_TRACE_TRIGGER");
@@ -114,7 +114,7 @@ static void draw(struct PilotTitleModDraw *draw)
      * the backbuffer by 9D9DB. Its camera proxies and world markers need the
      * same placement there. Keep offscreen UI/effect producers unchanged. */
     int excluded_target=!draw->default_target && !camera_sprite && !marker;
-    int tracing=trace && trace_armed && trace_count<1024;
+    int tracing=trace && trace_armed && trace_count<(trace_ui_only==6?2048u:1024u);
     if(excluded_target && !tracing)return;
     if(!sprite && !text && !tracing)return;
     float min_x=1e20f,min_y=1e20f,max_x=-1e20f,max_y=-1e20f;
@@ -127,6 +127,7 @@ static void draw(struct PilotTitleModDraw *draw)
         if(xy[1]>max_y)max_y=xy[1];
     }
     if(tracing && (trace_ui_only!=2 || trace_ready) &&
+       (trace_ui_only!=6 || (!draw->depth_test && draw->count<=24)) &&
        (trace_ui_only!=5 || (draw->primitive==6 && draw->count>=4 &&
                             (draw->caller==0x33172 || draw->caller==0x33811))) &&
        (trace_ui_only!=4 || (draw->caller==0x30c0a && draw->default_target && draw->count==4 &&
@@ -134,12 +135,12 @@ static void draw(struct PilotTitleModDraw *draw)
                             fabsf(min_y+240)<.001f && fabsf(max_y-240)<.001f)) &&
        (trace_ui_only!=3 || (!draw->depth_test && draw->count<=24 &&
                             max_x-min_x>=500 && max_y-min_y<=64)) &&
-       (!trace_ui_only || trace_ui_only==5 || sprite || text || draw->caller==0x33811 || !draw->depth_test)) {
+       (!trace_ui_only || trace_ui_only==5 || trace_ui_only==6 || sprite || text || draw->caller==0x33811 || !draw->depth_test)) {
         float z=0,first[2];memcpy(first,draw->positions,8);if(draw->position_type!=0x22)memcpy(&z,draw->positions+8,4);
         unsigned textures[4],frame,time_state;read_data(0x142e58,textures,sizeof(textures));read_data(0x50a464,&frame,4);read_data(0x50a428,&time_state,4);
-        fprintf(trace,"%u %08x %08x %u %u %.6g %.6g %.6g %.6g z=%.9g depth=%u/%u target=%u frame=%u time=%u textures=%08x,%08x,%08x,%08x first=%.9g,%.9g\n",trace_count++,draw->caller,
+        fprintf(trace,"%u %08x %08x %u %u %.6g %.6g %.6g %.6g z=%.9g depth=%u/%u target=%u frame=%u time=%u textures=%08x,%08x,%08x,%08x first=%.9g,%.9g mode=%u\n",trace_count++,draw->caller,
             draw->shader,draw->position_type,draw->count,min_x,min_y,max_x,max_y,z,draw->depth_test,draw->depth_write,
-            draw->default_target,frame,time_state,textures[0],textures[1],textures[2],textures[3],first[0],first[1]);fflush(trace);
+            draw->default_target,frame,time_state,textures[0],textures[1],textures[2],textures[3],first[0],first[1],mode());fflush(trace);
     }
     if(excluded_target)return;
     /* 30B16 submits ordinary screen-space sprites through the title's 2D
@@ -150,6 +151,15 @@ static void draw(struct PilotTitleModDraw *draw)
     /* The ordinary sprite queue stores centered XY; its original shader adds
      * c121=(320,240,0,0). Font FVF submits absolute screen pixels instead. */
     if(sprite){min_x+=320;max_x+=320;min_y+=240;max_y+=240;}
+    /* 14F90 slides and zooms both ssl_rXX round-preview images during a
+     * selection change. Their partial quads remain full-raster artwork;
+     * geometric full-screen tests stop recognizing them mid-animation.
+     * Match the live catalogue owners, including the outgoing preview. */
+    if(mode()==5 && draw->caller==0x33811 && draw->default_target &&
+       !draw->depth_test && draw->count==4 && draw->position_type==0x32 &&
+       max_x-min_x>=600 && max_y-min_y>=400) {
+        for(unsigned i=0;i<9;++i)if(bound_resource(0x1e3500+32*i))return;
+    }
     /* The cover atlas is three resources: mechanical panels, their glow,
      * and the separate Now Loading label. Stretch only panels/glow together,
      * including partial opening/closing quads and menu-side transition frames.
@@ -208,6 +218,16 @@ static void draw(struct PilotTitleModDraw *draw)
     unsigned n=frame_aspect[0],d=frame_aspect[1];
     if(cover_active)aspect(&n,&d);
     draw->x_scale=4.0f*d/(3.0f*n);draw->x_anchor=320;
+    /* 1E1D0 draws the Round word and digit separately from h_select_round.
+     * Keep both proportional, sharing the label slot's left edge as it
+     * follows the stretched upper-right mechanical panel. The same atlas's
+     * Stage Select heading elsewhere retains its existing placement. */
+    if(mode()==5 && draw->caller==0x33811 && !draw->depth_test &&
+       draw->default_target && draw->count==4 && draw->position_type==0x32 &&
+       min_x>=478 && max_x<=608 && min_y>=38 && max_y<=72 &&
+       (bound_resource(0x23b278) || bound_resource(0x23b320))) {
+        draw->x_anchor=479;return;
+    }
     /* The original four/nine-slot inventory frame has a long decorative
      * continuation down to the bottom raster (captured 33811 queue, 64x128 +
      * 64x20 pieces). In the wide HUD it leaves a detached hanging spike.
@@ -224,6 +244,16 @@ static void draw(struct PilotTitleModDraw *draw)
      * Correct its original-pixel width around that center, including the
      * original health gauge. Depth alone cannot identify this contract. */
     if(marker){draw->x_anchor=(min_x+max_x)*.5f;return;}
+    /* A18C0 stacks up to ten currency pickup notices above the Gold total.
+     * The third notice crosses Y=320, so classifying each row by the bottom
+     * HUD band split one stack between two anchors. Keep its banner, panel
+     * and number glyphs together throughout the complete original stack. */
+    if(mode()==9 && draw->caller==0x33811 && !draw->depth_test &&
+       draw->default_target && draw->count==4 && draw->position_type==0x32 &&
+       min_x>=49 && max_x<=194 && min_y>=190 && max_y<=382 &&
+       (bound_resource(0x23b578) || bound_resource(0x23b5a0) || bound_resource(0x23b5e0))) {
+        draw->x_anchor=0;return;
+    }
     /* The same immediate sprite helper draws the depth-tested visibility
      * proxies. Those follow the camera, including beyond the old 4:3 edges;
      * a proxy is never an edge-anchored HUD item or a full-screen effect. */

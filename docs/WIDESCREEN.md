@@ -221,3 +221,22 @@ now moves toward the proportional menu layout while the right edge remains at th
 window edge. This adjustment blends out using the original closing
 progress, so the fully closed shutters retain their original seams. Other cover
 pieces and loading/gameplay framing are unchanged.
+
+## Stage Select animation and Gold notifications (2026-10-26)
+
+Both live `ssl_rXX` preview images keep their full-raster mapping while the
+original round-change animation slides and zooms them. This prevents a partial
+preview from suddenly narrowing and exposing the preceding image. The Round
+word and digit retain proportional widths and share the label slot's anchor
+inside the stretched upper-right panel.
+
+The Gold pickup banner, total panel and number glyphs share a left anchor
+throughout the original ten-entry stack. Previously the third entry crossed
+above the bottom HUD band's boundary and reverted to the centered 4:3 region.
+Other HUD groups and native 4:3 placement retain their existing behavior.
+
+Focused contracts cover all nine preview resources, both Round atlas variants,
+the ten currency rows and neighboring UI across the six aspect profiles. Native
+captures reproduced all three reported defects before their corrections. Gold
+notification validation uses original UI-only notification entries and timers
+in a disposable profile; it does not alter money, completion flags or saves.
