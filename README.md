@@ -21,7 +21,7 @@ controller support through an Xbox-themed launcher. BlinxRecomp uses
 | Smoother presentation | Optional blended 60/120 Hz presentation while gameplay keeps its original timing. |
 | Controller selection | The shared recomp-ui Player 1 card detects connected controllers and remembers the selected device. Keyboard input is also available. |
 | Camera controls | Independent horizontal and vertical camera-invert toggles in Mods, both off by default. |
-| Gameplay cheats | Optional, off by default: no stage time limit, and time controls with either 10 slots plus a 255-per-kind reserve or infinite use. See [cheats](docs/CHEATS.md). |
+| Gameplay cheats | Optional, off by default and independent: no stage time limit, up to 20 held time controls, and infinite time controls. Hearts are never changed. See [cheats](docs/CHEATS.md). |
 | Original saves | Persistent in-game saves, including fresh-process loading of the assisted campaign's completed save. |
 | Time controls | Original activation and lifecycle checks for all five time controls, including REC's clone playback. |
 

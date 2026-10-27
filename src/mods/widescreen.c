@@ -354,7 +354,7 @@ const struct PilotTitleMod *pilot_title_mod_open(const struct PilotTitleModHost 
 {
     const struct PilotTitleMod *visual=visual_open(api);
     cheats_configure();
-    if(!no_time_limit && !stock_mode)return visual;
+    if(!no_time_limit && !more_stock && !infinite_controls)return visual;
     if(!api || api->abi!=PILOT_TITLE_MOD_ABI || strcmp(api->xbe_sha256,BLINX_SHA) || !api->invoke)
         fail("cheat title identity mismatch");
     host=api;

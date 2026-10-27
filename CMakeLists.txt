@@ -28,12 +28,12 @@ add_executable(blinx_cheats_contract tests/cheats_contract.c src/mods/widescreen
   "${XBOXLLE_ROOT}/pilots/native-title/visual_mods.c"
   "${XBOXLLE_ROOT}/pilots/native-title/visual_mod_plan.c")
 target_include_directories(blinx_cheats_contract PRIVATE "${XBOXLLE_ROOT}/pilots/native-title")
-foreach(mode off time more infinite)
+foreach(mode off time more infinite both)
   add_test(NAME blinx_cheats_${mode} COMMAND blinx_cheats_contract ${mode})
 endforeach()
 add_test(NAME blinx_cheats_rejects_invalid COMMAND blinx_cheats_contract invalid)
 set_tests_properties(blinx_cheats_rejects_invalid PROPERTIES
-  PASS_REGULAR_EXPRESSION "TITLE MOD STOP\\] invalid time-control cheat selection")
+  PASS_REGULAR_EXPRESSION "TITLE MOD STOP\\] invalid Blinx cheat selection")
 add_test(NAME blinx_cheats_rejects_locked COMMAND blinx_cheats_contract locked)
 set_tests_properties(blinx_cheats_rejects_locked PROPERTIES
   PASS_REGULAR_EXPRESSION "TITLE MOD STOP\\] Blinx time-limit constants are not writable")

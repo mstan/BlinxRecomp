@@ -1,40 +1,44 @@
 /* Authored Blinx gameplay cheats, selected by launcher title switches.
  * Source-bound facts and limits: docs/CHEATS.md. Original CPU bodies stay
- * intact; hooks only adjust reviewed data around their calls.
- *   NO_TIME_LIMIT=1      original fail (A6740 -> A2620 at clock>=17989) and
- *                        17999 clamp never trigger; no final countdown.
- *   TIME_CONTROLS=more     all 10 original slots; overflow joins a reserve
- *                        (255 per kind) that refills slots as they are used.
- *   TIME_CONTROLS=infinite never consumed, one of each kind always held; no
- *                        non-heart crystals spawn except in the final boss. */
-enum {CHEAT_FRAME=1,CHEAT_STOCK_ADD,CHEAT_ACTIVATE,CHEAT_HUD,CHEAT_STAGE_INIT,CHEAT_SPAWN,CHEAT_UNLINK,CHEAT_HUD_SPLIT};
-enum {STOCK_OFF,STOCK_MORE,STOCK_INFINITE};
+ * intact; hooks only adjust reviewed data around their calls. Hearts are never
+ * written. The switches are independent and may be combined.
+ *   NO_TIME_LIMIT=1            original fail (A6740 -> A2620 at clock>=17989)
+ *                              and 17999 clamp never trigger; no countdown.
+ *   MORE_STOCK=1               20 held: the original 10 slots plus a 10-entry
+ *                              reserve that refills slots; HUD badges count both.
+ *   INFINITE_TIME_CONTROLS=1   never consumed, one of each kind always held; no
+ *                              non-heart crystals spawn except in the final boss. */
+enum {CHEAT_FRAME=1,CHEAT_STOCK_ADD,CHEAT_ACTIVATE,CHEAT_HUD,CHEAT_STAGE_INIT,CHEAT_SPAWN,CHEAT_UNLINK,CHEAT_HUD_SPLIT,
+      CHEAT_HUD_STOCK};
 #define CHEAT_SLOTS 10u
-#define CHEAT_RESERVE_EACH 255u
+#define CHEAT_RESERVE 10u
+#define CHEAT_BADGE_MAX 10u /* A0B90 badge art holds digits 1-10 */
 #define CHEAT_FINAL_BOSS 39u
-static unsigned no_time_limit,stock_mode,time_limit_open,cheat_announced;
+static unsigned no_time_limit,more_stock,infinite_controls,time_limit_open,cheat_announced;
 struct CheatStock {int8_t count;uint8_t rec[CHEAT_SLOTS*2];uint16_t id[CHEAT_SLOTS];uint8_t data[CHEAT_SLOTS*8];};
 static struct CheatStock stock_before;
 static unsigned stock_before_valid;
 static struct {unsigned valid,index,count;uint8_t kind,duration;} used;
-static struct {uint8_t kind,duration;} reserve[5*CHEAT_RESERVE_EACH];
-static unsigned reserve_head,reserve_length,reserve_count[7];
+static struct {uint8_t kind,duration;} reserve[CHEAT_RESERVE];
+static unsigned reserve_head,reserve_length;
 static float hud_clock;
 static unsigned hud_substituted;
+static uint8_t hud_stock[42],hud_stock_saved;
 
 static void cheat_write(uint32_t address,const void *data,uint32_t bytes)
 {if(!host->write_data(address,data,bytes))fail("Blinx cheat data is not writable");}
 static uint32_t cheat_u32(uint32_t address){uint32_t value;read_data(address,&value,4);return value;}
+static unsigned cheat_switch(const char *name)
+{
+    const char *value=getenv(name);
+    if(value && strcmp(value,"0") && strcmp(value,"1"))fail("invalid Blinx cheat selection");
+    return value && !strcmp(value,"1");
+}
 static void cheats_configure(void)
 {
-    const char *value=getenv("XLLE_PILOT_TITLE_MOD_NO_TIME_LIMIT");
-    if(value && strcmp(value,"0") && strcmp(value,"1"))fail("invalid No time limit selection");
-    no_time_limit=value && !strcmp(value,"1");
-    value=getenv("XLLE_PILOT_TITLE_MOD_TIME_CONTROLS");
-    if(!value || !strcmp(value,"0"))stock_mode=STOCK_OFF;
-    else if(!strcmp(value,"more"))stock_mode=STOCK_MORE;
-    else if(!strcmp(value,"infinite"))stock_mode=STOCK_INFINITE;
-    else fail("invalid time-control cheat selection");
+    no_time_limit=cheat_switch("XLLE_PILOT_TITLE_MOD_NO_TIME_LIMIT");
+    more_stock=cheat_switch("XLLE_PILOT_TITLE_MOD_MORE_STOCK");
+    infinite_controls=cheat_switch("XLLE_PILOT_TITLE_MOD_INFINITE_TIME_CONTROLS");
 }
 static int gameplay(void){return (cheat_u32(0x50a57c)&0x7f)==9;}
 static void stock_read(struct CheatStock *s)
@@ -70,16 +74,17 @@ static void stock_remove(struct CheatStock *s,unsigned index)
     memmove(s->data+index*8,s->data+(index+1)*8,(count-index-1)*8);
     s->count=(int8_t)(count-1);
 }
+/* The reserve lives for the play session; only the original 10 slots are
+ * saved. A full reserve loses the record, as the original full stock does. */
 static void reserve_push(uint8_t kind,uint8_t duration)
 {
-    if(kind<2 || kind>6 || reserve_count[kind]>=CHEAT_RESERVE_EACH)return;
-    unsigned at=(reserve_head+reserve_length)%(sizeof(reserve)/sizeof(reserve[0]));
-    reserve[at].kind=kind;reserve[at].duration=duration;++reserve_length;++reserve_count[kind];
+    if(kind<2 || kind>6 || reserve_length>=CHEAT_RESERVE)return;
+    unsigned at=(reserve_head+reserve_length)%CHEAT_RESERVE;
+    reserve[at].kind=kind;reserve[at].duration=duration;++reserve_length;
 }
-static void reserve_clear(void){reserve_head=reserve_length=0;memset(reserve_count,0,sizeof(reserve_count));}
 static void cheat_capacity(void)
 {
-    int32_t capacity=(int32_t)cheat_u32(0x50a5c8),wanted=stock_mode==STOCK_MORE?(int32_t)CHEAT_SLOTS:5;
+    int32_t capacity=(int32_t)cheat_u32(0x50a5c8),wanted=more_stock?(int32_t)CHEAT_SLOTS:5;
     if(capacity<3 || capacity>(int32_t)CHEAT_SLOTS)fail("unexpected original time-control capacity");
     if(capacity<wanted)cheat_write(0x50a5c8,&wanted,4);
 }
@@ -115,10 +120,35 @@ static void more_frame(void)
     struct CheatStock s;stock_read(&s);
     unsigned capacity=cheat_u32(0x50a5c8),dirty=0;
     while(reserve_length && (unsigned)s.count<capacity) {
-        unsigned at=reserve_head;reserve_head=(reserve_head+1)%(sizeof(reserve)/sizeof(reserve[0]));--reserve_length;
-        --reserve_count[reserve[at].kind];stock_insert(&s,(unsigned)s.count,reserve[at].kind,reserve[at].duration);dirty=1;
+        unsigned at=reserve_head;reserve_head=(reserve_head+1)%CHEAT_RESERVE;--reserve_length;
+        stock_insert(&s,(unsigned)s.count,reserve[at].kind,reserve[at].duration);dirty=1;
     }
     if(dirty)stock_write(&s);
+}
+/* A0B90 draws 10 capacity pips from slots [0,capacity) and per-kind badges by
+ * counting [0,count). For that call only, append reserve kinds after the real
+ * slots (badge-limited to 10 per kind): pips read as full at 10+, badges show
+ * the combined count. The overlapped ID bytes are restored on exit. */
+static void hud_stock_restore(void)
+{if(hud_stock_saved){cheat_write(0x50a39a,hud_stock,sizeof(hud_stock));hud_stock_saved=0;}}
+static void hud_stock_substitute(void)
+{
+    hud_stock_restore();
+    if(!reserve_length)return;
+    read_data(0x50a39a,hud_stock,sizeof(hud_stock));
+    int8_t count=(int8_t)hud_stock[0];
+    if(count<0 || (unsigned)count>CHEAT_SLOTS)fail("unexpected original time-control stock");
+    uint8_t view[1+CHEAT_SLOTS*2+CHEAT_RESERVE*2];unsigned held[7]={0},n=(unsigned)count;
+    memcpy(view,hud_stock,1+n*2);
+    for(unsigned i=0;i<n;++i)++held[view[1+i*2]%7];
+    for(unsigned i=0;i<reserve_length;++i) {
+        uint8_t kind=reserve[(reserve_head+i)%CHEAT_RESERVE].kind;
+        if(held[kind]>=CHEAT_BADGE_MAX)continue;
+        ++held[kind];view[1+n*2]=kind;view[2+n*2]=10;++n;
+    }
+    if(n==(unsigned)count)return;
+    view[0]=(uint8_t)n;hud_stock_saved=1;
+    cheat_write(0x50a39a,view,1+n*2);
 }
 static void open_time_limit(void)
 {
@@ -145,20 +175,21 @@ static int cheat_function(struct PilotTitleModCall *call)
         if(!call->phase) {
             if(no_time_limit && !time_limit_open)open_time_limit();
             if(!cheat_announced) {
-                fprintf(stderr,"[MOD] cheats no-time-limit=%u time-controls=%s\n",no_time_limit,
-                        stock_mode==STOCK_MORE?"more":stock_mode==STOCK_INFINITE?"infinite":"original");
+                fprintf(stderr,"[MOD] cheats no-time-limit=%u more-stock=%u infinite-time-controls=%u\n",
+                        no_time_limit,more_stock,infinite_controls);
                 cheat_announced=1;
             }
             return 0;
         }
-        if(stock_mode && gameplay()) {
+        if((more_stock || infinite_controls) && gameplay()) {
             cheat_capacity();
-            if(stock_mode==STOCK_INFINITE)infinite_frame();else more_frame();
+            if(infinite_controls)infinite_frame();
+            if(more_stock)more_frame();
         }
         return 0;
     case CHEAT_STOCK_ADD:
         /* C26E0 drops the oldest record when the stock is full. Keep it. */
-        if(stock_mode!=STOCK_MORE)return 0;
+        if(!more_stock)return 0;
         if(!call->phase){stock_read(&stock_before);stock_before_valid=1;return 0;}
         if(stock_before_valid) {
             struct CheatStock after;stock_read(&after);
@@ -171,7 +202,7 @@ static int cheat_function(struct PilotTitleModCall *call)
         }
         return 0;
     case CHEAT_ACTIVATE:
-        if(stock_mode==STOCK_INFINITE && !call->phase) {
+        if(infinite_controls && !call->phase) {
             /* The sole caller (A8099) pushes ESI=[50A5C0], the selected slot.
              * Guest stacks live above the 64 MiB window, so use the global. */
             uint32_t index=cheat_u32(0x50a5c0);struct CheatStock s;
@@ -195,14 +226,19 @@ static int cheat_function(struct PilotTitleModCall *call)
     case CHEAT_HUD_SPLIT:
         if(!call->phase)hud_restore();
         return 0;
+    case CHEAT_HUD_STOCK:
+        if(more_stock) {
+            if(!call->phase)hud_stock_substitute();else hud_stock_restore();
+        }
+        return 0;
     case CHEAT_STAGE_INIT:
-        if(call->phase && stock_mode) {
-            reserve_clear();used.valid=0;stock_before_valid=0;
+        if(call->phase && (more_stock || infinite_controls)) {
+            used.valid=0;stock_before_valid=0;
             if(gameplay())cheat_capacity();
         }
         return 0;
     case CHEAT_SPAWN:
-        if(call->phase && stock_mode==STOCK_INFINITE && call->gpr[0] && cheat_u32(0x50312c)!=CHEAT_FINAL_BOSS) {
+        if(call->phase && infinite_controls && call->gpr[0] && cheat_u32(0x50312c)!=CHEAT_FINAL_BOSS) {
             uint32_t object=call->gpr[0];uint8_t header[3];
             read_data(object,header,3);
             /* Kinds 59-64 are C3890 pickups, color (kind-59)%6; color 3 is

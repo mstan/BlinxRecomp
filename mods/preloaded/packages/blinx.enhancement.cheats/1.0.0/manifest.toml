@@ -3,7 +3,7 @@ id = "blinx.enhancement.cheats"
 version = "1.0.0"
 name = "Blinx Cheats"
 category = "Gameplay"
-description = "Optional gameplay cheats. Settings apply when the game starts."
+description = "Optional gameplay cheats. Settings apply when the game starts. Hearts are never changed."
 save_compatibility = "shared"
 
 [[target]]
@@ -17,15 +17,13 @@ description = "Stages never fail at 10:00 and the final 30-second countdown warn
 default_enabled = false
 
 [[feature]]
-id = "time-controls"
-name = "Time control cheats"
-description = "More stock holds all 10 slots plus a reserve of up to 255 of each kind that refills slots as you use them. Infinite keeps every time control after use, starts each stage with one of each, and removes non-heart crystals except in the final boss."
+id = "more-stock"
+name = "More time-control stock"
+description = "Hold up to 20 time controls: the game's 10 slots plus a 10-control reserve that refills slots as you use them. Icon counts include the reserve (up to 10 each). The reserve lasts until you close the game."
 default_enabled = false
-[[option]]
-feature = "time-controls"
-id = "mode"
-label = "Mode"
-type = "choice"
-default = "more"
-values = ["more", "infinite"]
-labels = ["More stock (10 slots + reserve)", "Infinite (never used up)"]
+
+[[feature]]
+id = "infinite-time-controls"
+name = "Infinite time controls"
+description = "Always hold one of each time control; using one never uses it up. Only heart crystals appear, except in the final boss."
+default_enabled = false

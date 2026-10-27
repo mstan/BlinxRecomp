@@ -72,7 +72,7 @@ static void base(void)
 {
     putf(0x1c960c,17989.0f);putf(0x1c9608,17999.0f);
     put32(0x50a57c,9);put32(0x50a5c8,3);put32(0x50a428,0);put32(0x50a424,0xffffffffu);
-    put32(0x62f0a0,100);put32(0x50312c,4);put32(0x40d7b0,5);
+    put32(0x62f0a0,100);put32(0x50312c,4);put32(0x40d7b0,5);put32(0x50a4ec,2);put32(0x50a480,3);
 }
 int main(int argc,char **argv)
 {
@@ -82,8 +82,8 @@ int main(int argc,char **argv)
     const char *mode=argc==2?argv[1]:"";
     setenv_value("BLINX_MOD_PLAN","");setenv_value("XLLE_PILOT_MOD_PLAN","");
     setenv_value("XLLE_PILOT_TITLE_MOD_NO_TIME_LIMIT",!strcmp(mode,"time") || !strcmp(mode,"locked")?"1":"0");
-    setenv_value("XLLE_PILOT_TITLE_MOD_TIME_CONTROLS",!strcmp(mode,"more")?"more":!strcmp(mode,"infinite")?"infinite":
-                 !strcmp(mode,"invalid")?"unlimited":"0");
+    setenv_value("XLLE_PILOT_TITLE_MOD_MORE_STOCK",!strcmp(mode,"more") || !strcmp(mode,"both")?"1":!strcmp(mode,"invalid")?"2":"0");
+    setenv_value("XLLE_PILOT_TITLE_MOD_INFINITE_TIME_CONTROLS",!strcmp(mode,"infinite") || !strcmp(mode,"both")?"1":"0");
     base();
     mod=pilot_title_mod_open(&host);
     if(!strcmp(mode,"off")){CHECK(!mod);return 0;}
@@ -116,14 +116,19 @@ int main(int argc,char **argv)
         put32(0x50a424,0xffffffffu);put32(0x50a428,2);frame();CHECK(count()==9);
         put32(0x50a428,0);frame();
         CHECK(count()==10 && kind(9)==oldest_kind && memory[0x50a3c4+9*8]==0xff && id(9)==get32(0x62f0a0)-1);
-        /* Reserve caps at 255 per kind and is cleared by stage initialization. */
-        for(unsigned n=0;n<300;++n){call(2,0,0);remove_slot(0);add(5);call(2,1,0);}
+        /* The reserve holds 10 (20 total) and survives stage initialization. */
+        for(unsigned n=0;n<30;++n){call(2,0,0);remove_slot(0);add(5);call(2,1,0);}
+        call(5,0,0);call(5,1,0);
+        /* Slots are ten REW; the reserve kept the first ten dropped records
+         * (3,4,5,2,3,4,5,6,4,2). HUD (A0B90) sees slots plus reserve with each
+         * badge limited to 10, so the two reserve REW are omitted: 18 shown. */
+        uint8_t saved[42];memcpy(saved,memory+0x50a39a,42);
+        call(9,0,0);CHECK(count()==18 && kind(10)==3 && kind(12)==2 && kind(17)==2);call(9,1,0);
+        CHECK(!memcmp(saved,memory+0x50a39a,42)); /* IDs overlapped by the view are restored. */
         unsigned refilled=0;
-        for(unsigned n=0;n<400;++n){remove_slot(0);frame();if(count()!=10)break;++refilled;}
-        CHECK(refilled>=255 && refilled<300);
-        call(2,0,0);remove_slot(0);add(6);call(2,1,0);
-        CHECK(count()==9); /* That overflow left one record in the reserve. */
-        call(5,0,0);call(5,1,0);remove_slot(0);frame();CHECK(count()==8);
+        for(unsigned n=0;n<40;++n){remove_slot(0);frame();if(count()!=10)break;++refilled;}
+        CHECK(refilled==10);
+        call(9,0,0);CHECK(count()==9);call(9,1,0); /* Empty reserve: HUD untouched. */
         /* No crystal suppression in this mode. */
         memory[0x4f2aa0]=1;memory[0x4f2aa2]=0x5a;call(6,1,0x4f2aa0);CHECK(memory[0x4f2aa0]==1 && !unlinks);
         return 0;
@@ -153,6 +158,17 @@ int main(int argc,char **argv)
         CHECK(memory[0x4f2aa0]==1); /* Final boss keeps original crystals. */
         /* Outside gameplay the stock is untouched. */
         put32(0x50a57c,10);remove_slot(0);frame();CHECK(count()==4);
+        return 0;
+    }
+    if(!strcmp(mode,"both")) {
+        frame();CHECK(get32(0x50a5c8)==10 && count()==5);
+        /* Infinite keeps the used slot; More still keeps overflow. */
+        for(uint8_t k=0;k<5;++k)add((uint8_t)(2+k));
+        call(2,0,0);remove_slot(0);add(6);call(2,1,0);CHECK(count()==10);
+        uint8_t used=kind(4);stack[1]=4;call(3,0,0);put32(0x50a424,4);remove_slot(4);frame();
+        CHECK(count()==10 && kind(4)==used);
+        put32(0x50a424,0xffffffffu);call(9,0,0);CHECK(count()==11);call(9,1,0);CHECK(count()==10);
+        CHECK(get32(0x50a4ec)==2 && get32(0x50a480)==3);
         return 0;
     }
     return 2;
