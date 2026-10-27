@@ -6,7 +6,7 @@ xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
 
 [framework]
 repository = "https://github.com/mstan/xboxllr"
-revision = "50dc65c58f77bdf582ba7e02634baf8eb2f12743"
+revision = "c619cd158fe96b105028791da56e37b5bfe0fcd4"
 directory = "xboxlle"
 
 [launcher]
@@ -68,6 +68,7 @@ PILOT_INPUT = "NATIVE"
 
 # Fast native gameplay, independently selected from the retained LLE modes.
 [modes.play]
+PILOT_NATIVE_IPO = "ON"
 PILOT_NATIVE_POLL_WAIT = "ON"
 PILOT_INPUT = "NATIVE"
 PILOT_SCHEDULING = "NATIVE"

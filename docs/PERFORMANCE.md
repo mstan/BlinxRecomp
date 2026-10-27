@@ -1,5 +1,34 @@
 # Blinx performance observations
 
+## Native service preparation and compiler optimization - 2026-10-27
+
+The candidate framework pin reuses prepared native draw work, immutable shader
+stream plans and validated vertex-owner index hints. Qualified MSVC x64 Release
+play builds also request whole-program optimization; other hosts and development
+profiles retain normal compilation. Graphics features and original game timing
+remain unchanged.
+
+Matched Round 2 Stage 1 samples on the CPU-bound NAS cost 62.126 ms per original
+update for the delivered build and 54.975 ms for the combined candidate (about
+11% less). The compiler increment over the renderer candidate is about 7%.
+Original update throughput rises from 15.324 to 16.607/s there; the simulation
+target remains unchanged. Initial reference A/A variation is 2.38%; later
+background load rises and delivered endpoints drift about 3%. These are retained
+workload/host observations, not whole-game or local-host FPS guarantees.
+
+The candidate activates and recovers all five time controls, reaches original
+Round 2 Stage 1 Results/save after explicit HP/position assistance and normal
+dialogue acknowledgement, then fresh-loads those new native save bytes into
+Stage 1 gameplay. The final pinned executable also passes fresh Stage 2-1 entry.
+The local IPO GPU gates pass with reuse enabled and disabled. Shared NAS fixture
+failures reproduced by the frozen framework baseline are tracked separately in
+`beads-xbox.1.203`, without relaxing their assertions.
+
+Tracking and machine-readable raw evidence: central `beads-55wj`, campaign
+`beads-2wy8.1`, and the
+[framework burndown](../xboxlle/docs/NATIVE-OPTIMIZATION-BURNDOWN-2026-10-26.md).
+The owner visual/play check and merge handoff remain pending.
+
 ## Stage 2-2 entrance presentation - 2026-10-22
 
 The shared interpolation worker could miss display ticks while busy game
