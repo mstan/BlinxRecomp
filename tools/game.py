@@ -158,6 +158,9 @@ def launch(local, args):
         manifests = [ROOT / 'mods/preloaded/packages/blinx.enhancement.widescreen/1.0.0/manifest.toml']
         manifests += [FRAMEWORK / 'mods/preloaded/packages' / pid / '1.0.0/manifest.toml'
                       for pid in ('xboxlle.enhancement.visuals', 'xboxlle.enhancement.frame-rate', 'xboxlle.enhancement.camera')]
+        switch_spec = importlib.util.spec_from_file_location('xlle_native_title_switches', FRAMEWORK / 'tools/native_title_switches.py')
+        switches = importlib.util.module_from_spec(switch_spec);switch_spec.loader.exec_module(switches)
+        manifests += switches.manifests(ROOT / 'game.toml', PROFILE)
         catalog = ui.Catalog(manifests, ROOT / 'local/mod-selection.json',
                              visibility=[FRAMEWORK / 'mods/ui-visibility.json', ROOT / 'mods/ui-visibility.json'],
                              frame_modes=PROFILE['launcher']['frame_modes'])
@@ -183,6 +186,7 @@ def launch(local, args):
         input_spec = importlib.util.spec_from_file_location('xlle_native_input_mods', FRAMEWORK / 'tools/native_input_mods.py')
         input_mods = importlib.util.module_from_spec(input_spec);input_spec.loader.exec_module(input_mods)
         env.update(input_mods.environment(catalog))
+        env.update(switches.environment(catalog, PROFILE))
         player = catalog.player
         if player['source'] in ('none', 'keyboard'):
             env['XLLE_PILOT_INPUT'] = player['source']
@@ -316,8 +320,9 @@ def main():
         shutil.copytree(args.from_dir / 'gen', GENERATED / 'gen')
         for name in ['generation.aot-private.json', 'identity.aot-private.json', 'function-extents.aot-private.json']:
             shutil.copy2(args.from_dir / name, GENERATED / name)
-        for family in PROFILE['generation']['bindings'] + ['display']:
-            shutil.copy2(args.from_dir / f'{family}-binding.aot-private.json', GENERATED)
+        # Static title hooks record one binding per hooked function.
+        for record in args.from_dir.glob('*-binding.aot-private.json'):
+            shutil.copy2(record, GENERATED)
         check_generated(GENERATED)
     elif args.action == 'prepare':
         prepare(local)

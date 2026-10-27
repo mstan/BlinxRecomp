@@ -24,6 +24,19 @@ add_executable(blinx_widescreen_contract tests/widescreen_contract.c src/mods/wi
   "${XBOXLLE_ROOT}/pilots/native-title/visual_mod_plan.c")
 target_include_directories(blinx_widescreen_contract PRIVATE "${XBOXLLE_ROOT}/pilots/native-title")
 add_test(NAME blinx_widescreen_disabled COMMAND blinx_widescreen_contract)
+add_executable(blinx_cheats_contract tests/cheats_contract.c src/mods/widescreen.c
+  "${XBOXLLE_ROOT}/pilots/native-title/visual_mods.c"
+  "${XBOXLLE_ROOT}/pilots/native-title/visual_mod_plan.c")
+target_include_directories(blinx_cheats_contract PRIVATE "${XBOXLLE_ROOT}/pilots/native-title")
+foreach(mode off time more infinite)
+  add_test(NAME blinx_cheats_${mode} COMMAND blinx_cheats_contract ${mode})
+endforeach()
+add_test(NAME blinx_cheats_rejects_invalid COMMAND blinx_cheats_contract invalid)
+set_tests_properties(blinx_cheats_rejects_invalid PROPERTIES
+  PASS_REGULAR_EXPRESSION "TITLE MOD STOP\\] invalid time-control cheat selection")
+add_test(NAME blinx_cheats_rejects_locked COMMAND blinx_cheats_contract locked)
+set_tests_properties(blinx_cheats_rejects_locked PROPERTIES
+  PASS_REGULAR_EXPRESSION "TITLE MOD STOP\\] Blinx time-limit constants are not writable")
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 add_test(NAME blinx_widescreen_profiles COMMAND "${Python3_EXECUTABLE}"
   "${CMAKE_CURRENT_SOURCE_DIR}/tests/widescreen_suite.py" --contract "$<TARGET_FILE:blinx_widescreen_contract>")

@@ -6,7 +6,7 @@ xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
 
 [framework]
 repository = "https://github.com/mstan/xboxllr"
-revision = "b21215cb1f1d02a22b93345c410ab8a5846025d4"
+revision = "d8e47469393bd639da2906d08b78a15b73b1a468"
 directory = "xboxlle"
 
 [launcher]
@@ -41,10 +41,17 @@ options = { mode = "interpolated", rate = "60" }
 [launcher.defaults."xboxllr.diagnostics/session-replay"]
 enabled = true
 
+[mods]
+# Trusted gameplay cheats compiled into src/mods/widescreen.c (docs/CHEATS.md).
+switches = [
+  { manifest = "mods/preloaded/packages/blinx.enhancement.cheats/1.0.0/manifest.toml", package = "blinx.enhancement.cheats", feature = "no-time-limit", key = "NO_TIME_LIMIT" },
+  { manifest = "mods/preloaded/packages/blinx.enhancement.cheats/1.0.0/manifest.toml", package = "blinx.enhancement.cheats", feature = "time-controls", key = "TIME_CONTROLS" },
+]
+
 [generation]
 donor_revision = "63f18f0334fbd8c00313c4bb565accf00627a4fd"
 data_sections = "MDL*,MAP[0-9]*"
-bindings = ["media", "cache", "d3d", "jump", "cpu", "input", "audio"]
+bindings = ["media", "cache", "d3d", "jump", "cpu", "input", "audio", "title"]
 poll_waits = "poll-waits.json"
 
 [build]

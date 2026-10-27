@@ -297,7 +297,7 @@ static void present(void)
     if(!host->frame_shape(n,d))fail("unsupported mod presentation shape");
     phase_dirty=1;
 }
-const struct PilotTitleMod *pilot_title_mod_open(const struct PilotTitleModHost *api)
+static const struct PilotTitleMod *visual_open(const struct PilotTitleModHost *api)
 {
     const char *path=getenv("XLLE_PILOT_MOD_PLAN");
     /* Shared release hosts use the common plan input. Retain the older game
@@ -348,4 +348,18 @@ const struct PilotTitleMod *pilot_title_mod_open(const struct PilotTitleModHost 
     fprintf(stderr,"[MOD] package=%s version=%s plugin=%s aspect=%u:%u adaptive=%u original-image=unchanged\n",
         package,version,plugin,numerator,denominator,adaptive);
     static const struct PilotTitleMod result={PILOT_TITLE_MOD_ABI,transform,draw,present};return &result;
+}
+#include "cheats.inc"
+const struct PilotTitleMod *pilot_title_mod_open(const struct PilotTitleModHost *api)
+{
+    const struct PilotTitleMod *visual=visual_open(api);
+    cheats_configure();
+    if(!no_time_limit && !stock_mode)return visual;
+    if(!api || api->abi!=PILOT_TITLE_MOD_ABI || strcmp(api->xbe_sha256,BLINX_SHA) || !api->invoke)
+        fail("cheat title identity mismatch");
+    host=api;
+    static struct PilotTitleMod combined;
+    combined=visual?*visual:(struct PilotTitleMod){PILOT_TITLE_MOD_ABI};
+    combined.function=cheat_function;
+    return &combined;
 }
