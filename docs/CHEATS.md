@@ -14,6 +14,7 @@ bodies are unchanged.
 The switches are independent; enabling both is allowed. No mod writes hearts:
 they carry between stages through the original save (`1A820` stores
 `max(hearts,0)` at `save+2C`; `A5AB0` reloads it).
+
 ## Source facts (NTSC-U, XBE `e6b7cd8a...`)
 
 - Stage clock `50C2BC` counts frames upward. `A6740` calls the shared fail
