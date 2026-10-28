@@ -34,17 +34,15 @@ higher-rate gameplay is not available yet. See the
 
 ## Getting started
 
-**[Download the Windows x64 preview](https://github.com/mstan/BlinxRecomp/releases/tag/windows-preview-2026.10.27.1).**
+**[Download the Windows x64 preview](https://github.com/mstan/BlinxRecomp/releases/tag/windows-preview-2026.10.28.1).**
 The Windows ZIP includes the precompiled native application, launcher, Python
 and runtime dependencies. No compiler is needed to play. Matching project and
 prepared dependency sources are included locally under `source/`.
 Linux releases remain deferred. The setup flow is described below.
 
-The [October 27 optimization update](docs/RELEASE-NOTES-2026.10.27.1.md)
-reduces CPU time in the measured draw-heavy workload while retaining the
-existing controller, rendering, presentation and save fixes. The
-[2026.10.27.3 preview](docs/RELEASE-NOTES-2026.10.27.3.md) adds optional
-gameplay cheats.
+The [October 28 native architecture update](docs/RELEASE-NOTES-2026.10.28.1.md)
+reduces CPU work in the measured draw-heavy workload and includes the current
+optional gameplay cheats. See the release notes for measurements and limits.
 
 You supply your own **Blinx: The Time Sweeper (NTSC-U)** files. Open **Start Game.cmd**,
 choose **Skip** in the optional first-launch console setup, and select the
