@@ -42,7 +42,9 @@ Linux releases remain deferred. The setup flow is described below.
 
 The [October 27 optimization update](docs/RELEASE-NOTES-2026.10.27.1.md)
 reduces CPU time in the measured draw-heavy workload while retaining the
-existing controller, rendering, presentation and save fixes.
+existing controller, rendering, presentation and save fixes. The
+[2026.10.27.3 preview](docs/RELEASE-NOTES-2026.10.27.3.md) adds optional
+gameplay cheats.
 
 You supply your own **Blinx: The Time Sweeper (NTSC-U)** files. Open **Start Game.cmd**,
 choose **Skip** in the optional first-launch console setup, and select the
