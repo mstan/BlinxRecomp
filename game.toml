@@ -6,7 +6,7 @@ xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
 
 [framework]
 repository = "https://github.com/mstan/xboxllr"
-revision = "239aeca4cc656e1c21a8774603252fa0c6884218"
+revision = "f27457f57ce24617838c322da91bcd6fd13035ad"
 directory = "xboxlle"
 
 [launcher]
@@ -112,6 +112,7 @@ PILOT_CACHE = "ORIGINAL"
 PILOT_FILES_TITLE_ROOT = '\Device\Harddisk0\Partition1\Titles\4D530013'
 
 [runtime]
+XLLE_PILOT_RAM_CACHE = "1"
 XLLE_PILOT_GUEST_SCHEDULER = "1"
 XLLE_PILOT_DEFER_STREAM_UPLOAD = "1"
 XLLE_PILOT_TEXTURE_EXPOSURE_CACHE = "1"

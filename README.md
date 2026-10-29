@@ -23,6 +23,7 @@ controller support through an Xbox-themed launcher. BlinxRecomp uses
 | Camera controls | Independent horizontal and vertical camera-invert toggles in Mods, both off by default. |
 | Gameplay cheats | Optional, off by default and independent: no stage time limit, up to 20 held time controls, and infinite time controls. Hearts are never changed. See [cheats](docs/CHEATS.md). |
 | Original saves | Persistent in-game saves, including fresh-process loading of the assisted campaign's completed save. |
+| RAM-backed game cache | Disposable utility-cache contents stay in process memory, allocated as needed within a 750 MiB volume. Native saves remain on persistent storage. |
 | Time controls | Original activation and lifecycle checks for all five time controls, including REC's clone playback. |
 
 Visual enhancements remain individually selectable mods. Fresh launchers use

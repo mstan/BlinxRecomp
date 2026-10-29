@@ -6,6 +6,7 @@ Special thanks to the projects that made this work possible:
 
 | Contributor / project | Contribution or reference |
 | --- | --- |
+| [apexJCL — blinx1-recomp](https://github.com/apexJCL/blinx1-recomp) | The idea of keeping Blinx's disposable game cache in RAM, independently implemented in the shared framework. |
 | [sp00nz / sp00nznet — xboxrecomp](https://github.com/sp00nznet/xboxrecomp) | Xbox static recompilation foundations and native service work. |
 | [Phobos — DirectXbox-Recomp](https://github.com/phobos665/DirectXbox-Recomp) | Xbox CPU translation, native runtime and renderer work; its documented reference title is Burnout 3: Takedown. |
 | [NoRain — doaxbv-re](https://github.com/NoRain211/doaxbv-re) | Dead or Alive Xtreme Beach Volleyball recompilation, including audio and texture work used or referenced by the framework. |
