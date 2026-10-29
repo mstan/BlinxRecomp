@@ -16,8 +16,6 @@ recompiler ecosystem.
 
 ![Native Blinx gameplay in 21:9 with adaptive widescreen enabled](docs/screenshots/alpha-21x9.png)
 
-*Real in-game captures. [Image provenance and rights](docs/screenshots/NOTICE.md).*
-
 ## Features
 
 | Feature | Public alpha |

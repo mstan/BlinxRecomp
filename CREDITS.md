@@ -19,9 +19,7 @@ distinguishes copied/adapted implementations from behavior-only references and
 retains their exact notices. These thanks do not replace those licenses.
 
 Blinx: The Time Sweeper was created by Artoon and published by Microsoft Game
-Studios. Original game assets remain with their rights holders. See the
-[launcher artwork credit](assets/launcher/NOTICE.md) and
-[screenshot notice](docs/screenshots/NOTICE.md) for the images shown here.
+Studios. See the [launcher artwork credit](assets/launcher/NOTICE.md).
 
 The current [license scope](LICENSE-SCOPE.md) still applies to this private
 reference preview and any future distribution.
