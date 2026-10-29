@@ -15,3 +15,8 @@ Original Blinx: The Time Sweeper visuals belong to Artoon, Microsoft and the
 applicable rights holders. The repository's source-code license does not
 relicense the depicted game assets. This screenshot is documentation, not a
 redistributable game-data package.
+
+The October 29 PNG captures were re-exported as opaque RGB after discovering
+that the ignored framebuffer alpha had been saved as web transparency. Every
+RGB sample is identical to the original capture; no color/contrast adjustment
+was applied. Older transparent exports remain only in Git history.

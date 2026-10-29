@@ -49,7 +49,7 @@ Populated 21:9/32:9 captures additionally verify the
 crystal icons and padded slot frames at left and trash inventory at right.
 Campaign and item/ability QA use authorized cheats in a separate muted instance.
 See [current validation](STATUS.md) and the framework's
-[burndown](../xboxlle/docs/BLINX-BURNDOWN.md).
+[burndown](https://github.com/mstan/xboxllr/blob/5faaafad269d671b39737edbebaed66c81b2b9fb/docs/BLINX-BURNDOWN.md).
 
 Dashboard support is required architecture, with an original dashboard route
 and an accelerated/direct-title choice. Supplied dashboard files should be
@@ -59,7 +59,7 @@ and flushes; HLE can accelerate those services. The default native pilot uses
 persistent host directories; the private files-LLE route now uses a real FATX
 HDD image. General shared-profile provisioning and the combined dashboard
 selector remain tracked requirements in
-the [console launch/storage contract](../xboxlle/docs/CONSOLE-LAUNCH-STORAGE.md).
+the [console launch/storage contract](../xboxlle/docs/reference/storage/CONSOLE-LAUNCH-STORAGE.md).
 That contract also records an optional permissive open-source default dashboard,
 the original retail boot/logo route with supplied compatible software, and a
 configurable console/save profile intended to support one shared drive across
@@ -91,7 +91,7 @@ and `run --mode play` (optionally `--widescreen adaptive`). It uses native
 scheduling/calendar services and no original device interpreter. All modes now
 select the framework's `OPTIMIZED` compiler profile explicitly. The separate
 reference modes remain available; see [measured performance](PERFORMANCE.md)
-and the [register/HLE audit](../xboxlle/docs/NATIVE-HLE-OPTIMIZATION-2026-10-18.md).
+and the [register/HLE audit](../xboxlle/docs/reference/runtime/NATIVE-HLE-OPTIMIZATION-2026-10-18.md).
 
 `--mode display-lle` keeps native input/rendering/audio and selects the original
 display driver over maintained NV2A/PIC. Its actual scanout, blocking waits,

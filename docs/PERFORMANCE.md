@@ -26,7 +26,7 @@ failures reproduced by the frozen framework baseline are tracked separately in
 
 Tracking and machine-readable raw evidence: central `beads-55wj`, campaign
 `beads-2wy8.1`, and the
-[framework burndown](../xboxlle/docs/NATIVE-OPTIMIZATION-BURNDOWN-2026-10-26.md).
+[historical framework validation](https://github.com/mstan/xboxllr/blob/5faaafad269d671b39737edbebaed66c81b2b9fb/docs/NATIVE-OPTIMIZATION-BURNDOWN-2026-10-26.md).
 The owner visual/play check and merge handoff remain pending.
 
 ## Stage 2-2 entrance presentation - 2026-10-22
@@ -47,7 +47,7 @@ Six focused GPU/renderer checks pass, including unchanged source pixels,
 visibility-query isolation, FP environment preservation and close/recreate.
 Host load varies; no total CPU gain or elimination of loading stalls is claimed.
 Exact build identity, comparison and limits are in the
-[framework presentation audit](../xboxlle/docs/NATIVE-INTERPOLATION-COOPERATIVE-2026-10-22.md).
+[framework presentation audit](../xboxlle/docs/reference/runtime/NATIVE-INTERPOLATION-COOPERATIVE-2026-10-22.md).
 Tracked in `beads-xbox.1.7.20` and shared `beads-xbox.1.192`. The published
 Windows preview `2026.10.22.1` predates this follow-up.
 
@@ -68,8 +68,8 @@ The owner reported the accepted build was "much much smoother" and "vastly
 improved," with a possible minor hitch or two. Residual hitches remain tracked
 in `beads-xbox.1.7.18`; this release does not claim zero stutter. Exact evidence
 and focused contract checks are in the
-[framework assessment](../xboxlle/docs/BLINX-STAGE21-PERFORMANCE-ASSESSMENT-2026-10-22.md)
-and [write-tracking audit](../xboxlle/docs/NATIVE-RESOURCE-WRITE-WATCH-2026-10-22.md).
+[framework assessment](https://github.com/mstan/xboxllr/blob/5faaafad269d671b39737edbebaed66c81b2b9fb/docs/BLINX-STAGE21-PERFORMANCE-ASSESSMENT-2026-10-22.md)
+and [write-tracking audit](../xboxlle/docs/reference/runtime/NATIVE-RESOURCE-WRITE-WATCH-2026-10-22.md).
 
 ## Intermittent Stage 1 loading/audio report - 2026-10-18
 
@@ -127,7 +127,7 @@ Deferred graphics state and draw submission remain performance follow-ups in
 `beads-xbox.1.100` / `beads-xbox.1.7.3`. No interpreter, timing multiplier,
 particle suppression or lowered visual preset is introduced. Exact sample
 identities and private evidence paths are recorded in the
-[framework audit](../xboxlle/docs/NATIVE-HLE-OPTIMIZATION-2026-10-18.md).
+[framework audit](../xboxlle/docs/reference/runtime/NATIVE-HLE-OPTIMIZATION-2026-10-18.md).
 
 ## Native CPU assessment and frame-poll idle - 2026-10-18
 
@@ -146,7 +146,7 @@ waiting remains. This removes spin work; **whole-title CPU/FPS improvement is
 not established**. Unprofiled Stage 8 and a test-only same-image comparison
 give mixed total timings, including worse candidate windows. Stationary cases
 often have almost no unsatisfied wait. Full results and limitations are in
-[the CPU assessment](../xboxlle/docs/NATIVE-CPU-BOOKKEEPING-2026-10-18.md).
+[the CPU assessment](../xboxlle/docs/reference/cpu/NATIVE-CPU-BOOKKEEPING-2026-10-18.md).
 
 Guest register access is still real native work. Address-cache experiments
 failed the performance gate and are archived. Fully optimizing the large
@@ -232,7 +232,7 @@ That build additionally passes 33 focused runtime/ABI/widescreen checks in
 19.63 seconds and a fresh original-save load to the selector without guards or
 guest diagnostic writes. Its hidden client size is verified as 1680x720.
 The copied QA process is retired afterward; no owner playtest is launched.
-The [framework audit](../xboxlle/docs/NATIVE-HLE-OPTIMIZATION-2026-10-18.md)
+The [framework audit](../xboxlle/docs/reference/runtime/NATIVE-HLE-OPTIMIZATION-2026-10-18.md)
 records exact donor pins, binary identities, methodology, register constraints
 and private evidence locations. The short native sample points toward graphics
 state/resource synchronization for the next HLE optimization; it does not

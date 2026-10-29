@@ -184,7 +184,7 @@ physics, timers, audio and the five time controls remain correct. Optional
 interpolated presentation must preserve simulation timing and be labeled.
 Resolution/AA should not wait on FPS research. The shared implementation order
 and resource/copy/readback acceptance are in
-[the renderer plan](../xboxlle/docs/BLINX-ENHANCED-RENDERER.md#resolution-quality-and-frame-rate-request-2026-10-18).
+[the renderer plan](../xboxlle/docs/reference/graphics/BLINX-ENHANCED-RENDERER.md#resolution-quality-and-frame-rate-request-2026-10-18).
 Resolution and blended presentation interpolation are implemented. Real faster
 simulation remains deferred and unavailable in the launcher.
 
