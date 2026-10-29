@@ -1,126 +1,106 @@
+> **Playable public alpha:** Tested through **World 2**. End-to-end completion is **not guaranteed**. Expect bugs and please [file GitHub issues](https://github.com/mstan/BlinxRecomp/issues) with the release version, mods and steps to reproduce.
+
 # Blinx: The Time Sweeper Recompiled
 
-Play Blinx on PC with adaptive widescreen, higher internal resolution and
-controller support through an Xbox-themed launcher. BlinxRecomp uses
-[xboxllr](https://github.com/mstan/xboxllr), the shared Xbox Low Level Recompiler.
+Play Blinx on Windows with adaptive widescreen, higher internal resolution,
+controller support and optional gameplay mods through an Xbox-themed launcher.
+Built on [XboxLLR](https://github.com/mstan/xboxllr), the early low-level Xbox
+recompiler ecosystem.
 
-![Blinx exploring a street in adaptive widescreen, with crystals at left and trash at right](docs/screenshots/adaptive-gameplay.jpg)
+**[Download the playable Windows x64 alpha](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.10.29.1)**
+— no compiler needed. Supply your own supported **NTSC-U** game files.
 
-*An owner playtest of the widescreen development preview. [Image credits](docs/screenshots/NOTICE.md).*
+![Blinx exploring a street in adaptive ultrawide, with the HUD at the edges](docs/screenshots/adaptive-gameplay.jpg)
 
-[Features](#features) | [Getting started](#getting-started) |
-[Controls and graphics](#controls-and-graphics) | [Credits](CREDITS.md)
+![Native Blinx gameplay in 16:9 with adaptive widescreen enabled](docs/screenshots/alpha-16x9.png)
+
+![Native Blinx gameplay in 21:9 with adaptive widescreen enabled](docs/screenshots/alpha-21x9.png)
+
+*Real in-game captures. [Image provenance and rights](docs/screenshots/NOTICE.md).*
 
 ## Features
 
-| Feature | Available in the development preview |
+| Feature | Public alpha |
 | --- | --- |
-| Adaptive widescreen | Fit gameplay to the window, or choose a fixed aspect through 32:9. The camera expands, with HUD elements anchored to the appropriate edges. |
-| Higher resolution | Native internal heights of 1080p, 1440p, 1800p and 2160p, independently of the window size. |
-| Image quality | Optional FXAA, 2x2 or 3x3 supersampling, and anisotropic texture filtering. |
-| Smoother presentation | Optional blended 60/120 Hz presentation while gameplay keeps its original timing. |
-| Controller selection | The shared recomp-ui Player 1 card detects connected controllers and remembers the selected device. Keyboard input is also available. |
-| Camera controls | Independent horizontal and vertical camera-invert toggles in Mods, both off by default. |
-| Gameplay cheats | Optional, off by default and independent: no stage time limit, up to 20 held time controls, and infinite time controls. Hearts are never changed. See [cheats](docs/CHEATS.md). |
-| Original saves | Persistent in-game saves, including fresh-process loading of the assisted campaign's completed save. |
-| RAM-backed game cache | Disposable utility-cache contents stay in process memory, allocated as needed within a 750 MiB volume. Native saves remain on persistent storage. |
-| Time controls | Original activation and lifecycle checks for all five time controls, including REC's clone playback. |
+| Adaptive widescreen | **Fit to screen**, or fixed aspects from 4:3 through 32:9. The camera expands and gameplay HUD elements follow the appropriate edges. Menus and the Results overlay retain their centered 4:3 layout. |
+| Higher resolution | Internal heights up to 2160p, independent of window size. |
+| Image quality | Optional FXAA, 2×2 or 3×3 supersampling and anisotropic filtering. Higher settings cost GPU time. |
+| Smoother presentation | Optional blended 60/120 Hz presentation at original simulation speed. It can add double edges and one source frame of latency; actual faster simulation is unavailable. |
+| Input | Remembered Player 1 controller selection, keyboard input and independent horizontal/vertical camera-invert toggles. |
+| Native saves | Persistent in-game progress and loading across process restarts. Keep your console identity with your saves. |
+| RAM-backed game cache | Disposable utility-cache contents stay in process memory, allocated on demand within a 750 MiB volume. Native saves remain on disk. |
+| Original time controls | PAUSE, SLOW, FAST FORWARD, REWIND and RECORD use the original game logic. Alpha coverage is bounded; report failures. |
 
-Visual enhancements remain individually selectable mods. Fresh launchers use
-adaptive Fit to screen, 1080p, 2×2 supersampling, FXAA, 8× filtering and blended
-60 FPS presentation. The original simulation timing is preserved;
-interpolation can add double edges and one source frame of latency. Actual
-higher-rate gameplay is not available yet. See the
-[graphics guide](docs/GRAPHICS-MODS.md) for options and tradeoffs.
+Fresh launchers default to adaptive Fit to screen, 1080p internal rendering,
+2×2 supersampling, FXAA, 8× filtering and blended 60 FPS presentation.
+Change these individually under **Mods**. See [graphics options and costs](docs/GRAPHICS-MODS.md).
+
+### Crystal and time-control modes
+
+These optional **Gameplay** mods are independent and **off by default**:
+
+| Mod | What changes |
+| --- | --- |
+| **No stage time limit** | Removes the ten-minute failure limit and final 30-second warning. The elapsed clock and Results continue to track real time; the clock is not frozen. |
+| **More time-control stock** | Hold up to 20 controls: the original ten slots plus a ten-control reserve, which refills free slots when no control is active. Only the original ten slots persist in native saves; the reserve lasts for the current process. HUD badge art tops out at ten per icon. |
+| **Infinite time controls** | Start each stage with one of each of the five controls and keep them after use. Non-heart crystals, including enemy drops, are suppressed except in the final boss stage. Heart crystals remain unchanged. |
+
+Leave those mods off for the original crystal collection and stock rules.
+Enabling More stock and Infinite together is supported. None of these modes
+changes hearts. [Detailed behavior and validation](docs/CHEATS.md).
 
 ## Getting started
 
-**[Download the Windows x64 preview](https://github.com/mstan/BlinxRecomp/releases/tag/windows-preview-2026.10.28.1).**
-The Windows ZIP includes the precompiled native application, launcher, Python
-and runtime dependencies. No compiler is needed to play. Matching project and
-prepared dependency sources are included locally under `source/`.
-Linux releases remain deferred. The setup flow is described below.
+1. Extract the entire Windows alpha ZIP into a writable folder and open
+   **Start Game.exe**. The launcher, Python and runtime DLLs are included.
+2. Choose **Skip** in the optional console-files setup for a new local console
+   identity and automatic private save folders. No BIOS, kernel dump, EEPROM
+   or large HDD image is needed for new local play.
+3. Select your supported NTSC-U `.iso`, `.xiso` or extracted `default.xbe`.
+   Disc images import once with progress and Cancel, then reuse `data/discs`.
+   An extracted XBE needs its complete game asset folder beside it.
+4. Select your controller in **Player 1**, choose **Mods**, then start.
 
-The [October 28 native architecture update](docs/RELEASE-NOTES-2026.10.28.1.md)
-reduces CPU work in the measured draw-heavy workload and includes the current
-optional gameplay cheats. See the release notes for measurements and limits.
+The supported original `default.xbe` SHA-256 is
+`e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249`.
+Other revisions are unsupported. Original game data is not included.
+Linux playable releases remain deferred.
 
-You supply your own **Blinx: The Time Sweeper (NTSC-U)** files. Open **Start Game.cmd**,
-choose **Skip** in the optional first-launch console setup, and select the
-supported `.iso`, `.xiso` or extracted `default.xbe` on the main screen. Disc
-images are imported once with progress and Cancel, then reused from `data/discs`
-with the same gameplay file access as an extracted copy. Keep that cache across
-updates to avoid importing again. Extracted XBEs still need the complete game
-asset folder beside them. Other revisions remain unsupported. Original game
-files are not included in this repository.
+Keep the complete `data` folder, imported-disc cache, selected external save
+storage and any `<image>.xboxllr` profile when updating. A virtual identity
+is different from your physical Xbox's identity. Original-console save imports
+may require the original signing inputs and matching EEPROM in **Settings**.
+An explicitly selected raw/QCOW2 FATX HDD image takes priority over folder
+storage; close xemu or other writers before sharing it. Xbox Live is unavailable.
+See [console and save setup](https://github.com/mstan/xboxllr/blob/master/docs/SETUP.md).
 
-No kernel dump, EEPROM or HDD image is needed to create a new local console.
-Automatic save storage is private to this game's package; no large disk image
-is generated. Advanced **Settings** can import original signing material and
-EEPROM, choose a shared save folder, or use an existing raw/QCOW2 FATX HDD image.
-An image takes priority over folder storage and requires validated original
-signing inputs and matching console identity. Original saves still undergo
-normal verification. Close xemu before sharing a disk image.
+## Alpha coverage and bug reports
 
-Keep the package's `data` folder, your selected save storage and any
-`<image>.xboxllr` profile when updating. A new virtual identity is not equivalent
-to your physical Xbox's save identity. Xbox Live is unavailable; this generally
-does not affect new single-player play. Fresh virtual-profile save/restart/load
-and the full image-backed per-title save matrix remain qualification work.
-See the shared [setup guide](https://github.com/mstan/xboxllr/blob/master/docs/SETUP.md).
+**The public playtest scope is through World 2. The game is not guaranteed to
+work from beginning to end.** Internal assisted routes, time-control checks and
+save/reload tests do not establish every natural puzzle, encounter or later level.
+Unreached paths may still stop with diagnostics. This is an early playable alpha.
 
-For an already prepared development checkout, build the gameplay profile and
-launcher, then open the launcher:
+Please [open a GitHub issue](https://github.com/mstan/BlinxRecomp/issues/new)
+with the release version, world/stage, selected mods, Windows/GPU/controller
+details and steps to reproduce. Attach a screenshot and the launcher's crash
+report where useful, after reviewing it for private information. Do not attach
+original game files, console keys or EEPROMs.
 
-```powershell
-python tools/game.py build --mode play
-python tools/game.py build-launcher
-python tools/game.py run --mode play --launcher
-```
-
-For first-time preparation, prerequisites and revision verification, follow the
-[developer setup guide](docs/DEVELOPMENT.md). It also documents the separate
-correctness-reference builds. The framework's
-[release readiness plan](https://github.com/mstan/xboxllr/blob/master/docs/RELEASE-READINESS.md) tracks packaging,
-platform support and distribution requirements.
-
-## Controls and graphics
-
-Select your controller in **Player 1**, choose enhancements in **Mods**, then
-launch the game. Individual button remapping is not exposed in this preview.
-Use `--launcher` to reopen settings if you previously selected Skip launcher.
-
-Adaptive widescreen follows the window's aspect. Crystals sit at the left,
-trash at the right, and time controls remain centered. Gameplay and the Results
-replay expand; menus and the Results overlay retain their centered 4:3 layout.
-Higher resolution and supersampling cost more GPU time, especially at ultrawide
-aspects. Start with original presentation timing when comparing performance.
-
-## Current playtest scope
-
-An assisted campaign pass reached all nine rounds, the ending, original save
-and title return. Cheats and teleports accelerated that pass; it does not prove
-every natural combat encounter, puzzle or optional route. The owner has also
-briefly playtested the widescreen preview. Remaining limits and reproducible
-evidence are recorded in [current status](docs/STATUS.md) and the
-[framework burndown](xboxlle/docs/BLINX-BURNDOWN.md).
-
-The tested fast profile compiles the original CPU code ahead of time and uses
-shared native services. It has no guest x86 interpreter fallback. Unreached
-code can still expose an unsupported boundary; native coverage is not a promise
-that every possible game path has been exercised.
+Developers: [build instructions](docs/DEVELOPMENT.md),
+[current technical status](docs/STATUS.md), [alpha release notes](docs/RELEASE-NOTES-ALPHA-2026.10.29.1.md).
 
 ## Credits and license
 
-Development and integration: **Matthew Stanley**. Special thanks to
-**sp00nz / sp00nznet**, **Phobos**, **NoRain** and the **xemu contributors** for
-the recompiler, renderer, audio and hardware work this project draws from.
-See [Credits](CREDITS.md) and the
-[component attribution](THIRD_PARTY_ATTRIBUTION.md) for links and exact scope.
+Development and integration: **Matthew Stanley**. Thanks to **sp00nz / sp00nznet**,
+**Phobos**, **NoRain**, the **xemu contributors** and **apexJCL**. The RAM-cache
+design was inspired by [apexJCL's Blinx project](https://github.com/apexJCL/blinx1-recomp);
+our implementation uses XboxLLR's FATX storage. See [Credits](CREDITS.md) and
+[component attribution](THIRD_PARTY_ATTRIBUTION.md).
 
-Owner-original source uses [GNU GPL version 3 or later](LICENSE), subject to
-[license scope](LICENSE-SCOPE.md). Third-party work retains its own terms.
-The native application includes ahead-of-time translated execution code; users
-supply the original game data/assets. Original-title source bodies are generated
-from their own input. See [the original rights notice](RIGHTS-NOTICE.md).
-Blinx and its original assets belong to their respective rights holders.
+Owner-original source uses [GPL version 3 or later](LICENSE), subject to
+[license scope](LICENSE-SCOPE.md). Other components retain their own terms.
+The native executable contains ahead-of-time translated execution code; original
+title bodies are generated from the user's matching input. Corresponding project
+and prepared dependency source accompany the ZIP. Blinx and its original assets
+belong to their respective rights holders. [Original rights notice](RIGHTS-NOTICE.md).
