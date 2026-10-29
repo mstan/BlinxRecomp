@@ -106,6 +106,10 @@ def prepare(local):
 
 
 def configure(local, mode):
+    # Refresh optional callback effects through the framework's strict,
+    # reproducible generator; CPU bodies and binding receipts remain unchanged.
+    run([sys.executable, FRAMEWORK / 'tools/native_gpu_callback_effects.py',
+         '--xbe', local['xbe'], '--output', GENERATED])
     check_generated(GENERATED)
     options = dict(PROFILE['build'], **PROFILE['modes'][mode])
     mapping = {'PILOT_D3D_SOURCE': 'd3d_source', 'PILOT_DSP_SOURCE': 'dsp_source',
