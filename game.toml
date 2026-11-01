@@ -6,7 +6,7 @@ xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
 
 [framework]
 repository = "https://github.com/mstan/xboxllr"
-revision = "128b3188d10cef1ad16777a3fbc9e064b48f434f"
+revision = "78dac7dfd3d9bf5c02eee7b260586ef33686b14b"
 directory = "xboxlle"
 
 [launcher]
@@ -76,6 +76,8 @@ PILOT_INPUT = "NATIVE"
 
 # Fast native gameplay, independently selected from the retained LLE modes.
 [modes.play]
+PILOT_INPUT_REPLAY_OWNER = "ON"
+PILOT_SESSION_PAGE_OWNER = "OFF"
 PILOT_GPU_MOVIE_UPLOAD = "ON"
 PILOT_AUDIO_DORMANT_OWNER = "OFF"
 PILOT_DSP_GRAPH_OWNER = "ON"
@@ -116,6 +118,8 @@ PILOT_CACHE = "ORIGINAL"
 PILOT_FILES_TITLE_ROOT = '\Device\Harddisk0\Partition1\Titles\4D530013'
 
 [runtime]
+XLLE_PILOT_INPUT_REPLAY_OWNER = "1"
+XLLE_PILOT_SESSION_PAGE_OWNER = "0"
 XLLE_PILOT_GPU_MOVIE_UPLOAD = "1"
 XLLE_PILOT_DSP_GRAPH_OWNER = "1"
 XLLE_PILOT_DSP_DMA = "1"
