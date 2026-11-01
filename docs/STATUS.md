@@ -200,7 +200,7 @@ Detailed source/evidence is maintained with the implementation in
 [MEMORY-LLE.md](../xboxlle/pilots/native-title/MEMORY-LLE.md),
 [FILES-LLE.md](../xboxlle/pilots/native-title/FILES-LLE.md),
 [CALENDAR-LLE.md](../xboxlle/pilots/native-title/CALENDAR-LLE.md) and
-[BLINX-BURNDOWN.md](../xboxlle/docs/BLINX-BURNDOWN.md).
+[BLINX-BURNDOWN.md](https://github.com/mstan/xboxllr/blob/5faaafad269d671b39737edbebaed66c81b2b9fb/docs/BLINX-BURNDOWN.md).
 
 The game repository adopts the existing generation manifest only after checking
 every generated file, the original image, CPU donor, all eight binding records

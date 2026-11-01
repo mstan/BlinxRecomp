@@ -6,6 +6,7 @@ Special thanks to the projects that made this work possible:
 
 | Contributor / project | Contribution or reference |
 | --- | --- |
+| [apexJCL — blinx1-recomp](https://github.com/apexJCL/blinx1-recomp) | The idea of keeping Blinx's disposable game cache in RAM, independently implemented in the shared framework. |
 | [sp00nz / sp00nznet — xboxrecomp](https://github.com/sp00nznet/xboxrecomp) | Xbox static recompilation foundations and native service work. |
 | [Phobos — DirectXbox-Recomp](https://github.com/phobos665/DirectXbox-Recomp) | Xbox CPU translation, native runtime and renderer work; its documented reference title is Burnout 3: Takedown. |
 | [NoRain — doaxbv-re](https://github.com/NoRain211/doaxbv-re) | Dead or Alive Xtreme Beach Volleyball recompilation, including audio and texture work used or referenced by the framework. |
@@ -18,9 +19,7 @@ distinguishes copied/adapted implementations from behavior-only references and
 retains their exact notices. These thanks do not replace those licenses.
 
 Blinx: The Time Sweeper was created by Artoon and published by Microsoft Game
-Studios. Original game assets remain with their rights holders. See the
-[launcher artwork credit](assets/launcher/NOTICE.md) and
-[screenshot notice](docs/screenshots/NOTICE.md) for the images shown here.
+Studios. See the [launcher artwork credit](assets/launcher/NOTICE.md).
 
 The current [license scope](LICENSE-SCOPE.md) still applies to this private
 reference preview and any future distribution.
