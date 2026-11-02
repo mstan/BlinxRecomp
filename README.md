@@ -7,7 +7,7 @@ controller support and optional gameplay mods through an Xbox-themed launcher.
 Built on [XboxLLR](https://github.com/mstan/xboxllr), the early low-level Xbox
 recompiler ecosystem.
 
-**[Download the playable Windows x64 alpha](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.10.29.1)**
+**[Download the playable Windows x64 alpha](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.11.01.1)**
 — no compiler needed. Supply your own supported **NTSC-U** game files.
 
 ![Blinx exploring a street in adaptive ultrawide, with the HUD at the edges](docs/screenshots/adaptive-gameplay.jpg)
@@ -86,7 +86,7 @@ report where useful, after reviewing it for private information. Do not attach
 original game files, console keys or EEPROMs.
 
 Developers: [build instructions](docs/DEVELOPMENT.md),
-[current technical status](docs/STATUS.md), [alpha release notes](docs/RELEASE-NOTES-ALPHA-2026.10.29.1.md).
+[current technical status](docs/STATUS.md), [alpha release notes](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.11.01.1).
 
 ## Credits and license
 
