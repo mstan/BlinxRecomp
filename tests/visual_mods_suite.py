@@ -19,7 +19,7 @@ def run(binary, framework):
         path = Path(d) / 'resolved.plan'
         profiles = [dict(height=h) for h in (1080, 1440, 1800, 2160)] + [
             dict(height=1080, supersample=2, antialiasing='fxaa', anisotropy=8),
-            dict(height=1080, supersample=3), dict(frame_mode='interpolated', frame_rate=60),
+            dict(height=1080, supersample=3), dict(supersample=4), dict(frame_mode='interpolated', frame_rate=60),
             dict(frame_mode='interpolated', frame_rate=120), dict(frame_mode='actual', frame_rate=60)]
         for options in profiles:
             mods.resolve_visual(path, framework=framework, aspect='21:9', **options)

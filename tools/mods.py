@@ -61,7 +61,7 @@ def resolve_visual(output, *, aspect=None, height=0, supersample=1,
     """
     framework = Path(framework) if framework is not None else ROOT / 'xboxlle'
     if (any(type(value) is not int for value in (height, supersample, anisotropy, frame_rate))
-        or height not in (0, 1080, 1440, 1800, 2160) or supersample not in (1, 2, 3)
+        or height not in (0, 1080, 1440, 1800, 2160) or supersample not in (1, 2, 3, 4)
         or antialiasing not in ('original', 'fxaa') or anisotropy not in (1, 2, 4, 8, 16)
         or frame_mode not in ('original', 'interpolated', 'actual') or frame_rate not in (60, 120)):
         raise ValueError('Invalid visual mod option')

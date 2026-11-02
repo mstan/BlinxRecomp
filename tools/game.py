@@ -301,7 +301,7 @@ def main():
     parser.add_argument('--internal-resolution', type=int, choices=[0, 1080, 1440, 1800, 2160], default=0,
                         help='Internal height; 0 preserves original rendering. Independent of the window size.')
     parser.add_argument('--antialiasing', choices=['original', 'fxaa'], default='original')
-    parser.add_argument('--supersampling', type=int, choices=[1, 2, 3], default=1, help='Per-axis multiplier relative to internal resolution')
+    parser.add_argument('--supersampling', type=int, choices=[1, 2, 3, 4], default=1, help='Per-axis multiplier relative to internal resolution')
     parser.add_argument('--anisotropy', type=int, choices=[1, 2, 4, 8, 16], default=1)
     parser.add_argument('--frame-mode', choices=['original'] + PROFILE['launcher']['frame_modes'], default='original',
                         help='One mutually exclusive frame-rate mod; unsupported title/profile choices are rejected')
