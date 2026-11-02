@@ -167,7 +167,8 @@ def launch(local, args):
         manifests += switches.manifests(ROOT / 'game.toml', PROFILE)
         catalog = ui.Catalog(manifests, ROOT / 'local/mod-selection.json',
                              visibility=[FRAMEWORK / 'mods/ui-visibility.json', ROOT / 'mods/ui-visibility.json'],
-                             frame_modes=PROFILE['launcher']['frame_modes'])
+                             frame_modes=PROFILE['launcher']['frame_modes'],
+                             defaults=PROFILE['launcher'].get('defaults', {}))
         result, image = (0, str(local['xbe']))
         if args.launcher or not catalog.skip_launcher:
             result, image = catalog.run(launcher_binary, output, title=PROFILE['game']['name'], region=PROFILE['game']['region'],
