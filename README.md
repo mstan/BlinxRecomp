@@ -7,7 +7,7 @@ controller support and optional gameplay mods through an Xbox-themed launcher.
 Built on [XboxLLR](https://github.com/mstan/xboxllr), the early low-level Xbox
 recompiler ecosystem.
 
-**[Download the playable Windows x64 alpha](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.11.01.1)**
+**[Download the playable Windows x64 alpha](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.11.02.1)**
 — no compiler needed. Supply your own supported **NTSC-U** game files.
 
 ![Blinx exploring a street in adaptive ultrawide, with the HUD at the edges](docs/screenshots/adaptive-gameplay.jpg)
@@ -22,15 +22,17 @@ recompiler ecosystem.
 | --- | --- |
 | Adaptive widescreen | **Fit to screen**, or fixed aspects from 4:3 through 32:9. The camera expands and gameplay HUD elements follow the appropriate edges. Menus and the Results overlay retain their centered 4:3 layout. |
 | Higher resolution | Internal heights up to 2160p, independent of window size. |
-| Image quality | Optional FXAA, 2×2 or 3×3 supersampling and anisotropic filtering. Higher settings cost GPU time. |
+| Image quality | Optional FXAA, supersampling from 1x through 8x and anisotropic filtering. Higher settings cost GPU time. |
 | Smoother presentation | Optional blended 60/120 Hz presentation at original simulation speed. It can add double edges and one source frame of latency; actual faster simulation is unavailable. |
 | Input | Remembered Player 1 controller selection, keyboard input and independent horizontal/vertical camera-invert toggles. |
 | Native saves | Persistent in-game progress and loading across process restarts. Keep your console identity with your saves. |
 | RAM-backed game cache | Disposable utility-cache contents stay in process memory, allocated on demand within a 750 MiB volume. Native saves remain on disk. |
 | Original time controls | PAUSE, SLOW, FAST FORWARD, REWIND and RECORD use the original game logic. Alpha coverage is bounded; report failures. |
 
-Fresh launchers default to adaptive Fit to screen, 1080p internal rendering,
-2×2 supersampling, FXAA, 8× filtering and blended 60 FPS presentation.
+Fresh launchers default to adaptive Fit to screen, Original internal resolution,
+3x supersampling, FXAA, 8x filtering and blended 60 FPS presentation.
+Supersampling choices run from 1x through 8x; higher settings are optional and
+are not a full-speed guarantee.
 Change these individually under **Mods**. See [graphics options and costs](docs/GRAPHICS-MODS.md).
 
 ### Crystal and time-control modes
@@ -86,7 +88,7 @@ report where useful, after reviewing it for private information. Do not attach
 original game files, console keys or EEPROMs.
 
 Developers: [build instructions](docs/DEVELOPMENT.md),
-[current technical status](docs/STATUS.md), [alpha release notes](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.11.01.1).
+[current technical status](docs/STATUS.md), [alpha release notes](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.11.02.1).
 
 ## Credits and license
 
