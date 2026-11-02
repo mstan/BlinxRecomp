@@ -1,4 +1,4 @@
-> **Playable public alpha:** Tested through **World 2**. End-to-end completion is **not guaranteed**. Expect bugs and please [file GitHub issues](https://github.com/mstan/BlinxRecomp/issues) with the release version, mods and steps to reproduce.
+> **Playable public beta:** Tested through **World 2**. End-to-end completion is **not guaranteed**. Expect bugs and please [file GitHub issues](https://github.com/mstan/BlinxRecomp/issues) with the release version, mods and steps to reproduce.
 
 # Blinx: The Time Sweeper Recompiled
 
@@ -7,7 +7,7 @@ controller support and optional gameplay mods through an Xbox-themed launcher.
 Built on [XboxLLR](https://github.com/mstan/xboxllr), the early low-level Xbox
 recompiler ecosystem.
 
-**[Download the playable Windows x64 alpha](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.11.02.1)**
+**[Download the playable Windows x64 beta](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.11.02.1)**
 — no compiler needed. Supply your own supported **NTSC-U** game files.
 
 ![Blinx exploring a street in adaptive ultrawide, with the HUD at the edges](docs/screenshots/adaptive-gameplay.jpg)
@@ -18,16 +18,16 @@ recompiler ecosystem.
 
 ## Features
 
-| Feature | Public alpha |
+| Feature | Public beta |
 | --- | --- |
 | Adaptive widescreen | **Fit to screen**, or fixed aspects from 4:3 through 32:9. The camera expands and gameplay HUD elements follow the appropriate edges. Menus and the Results overlay retain their centered 4:3 layout. |
-| Higher resolution | Internal heights up to 2160p, independent of window size. |
+| Higher resolution | Original internal resolution or height overrides up to 2160p, independent of window size. |
 | Image quality | Optional FXAA, supersampling from 1x through 8x and anisotropic filtering. Higher settings cost GPU time. |
 | Smoother presentation | Optional blended 60/120 Hz presentation at original simulation speed. It can add double edges and one source frame of latency; actual faster simulation is unavailable. |
 | Input | Remembered Player 1 controller selection, keyboard input and independent horizontal/vertical camera-invert toggles. |
 | Native saves | Persistent in-game progress and loading across process restarts. Keep your console identity with your saves. |
 | RAM-backed game cache | Disposable utility-cache contents stay in process memory, allocated on demand within a 750 MiB volume. Native saves remain on disk. |
-| Original time controls | PAUSE, SLOW, FAST FORWARD, REWIND and RECORD use the original game logic. Alpha coverage is bounded; report failures. |
+| Original time controls | PAUSE, SLOW, FAST FORWARD, REWIND and RECORD use the original game logic. Beta coverage is bounded; report failures. |
 
 Fresh launchers default to adaptive Fit to screen, Original internal resolution,
 3x supersampling, FXAA, 8x filtering and blended 60 FPS presentation.
@@ -51,7 +51,7 @@ changes hearts. [Detailed behavior and validation](docs/CHEATS.md).
 
 ## Getting started
 
-1. Extract the entire Windows alpha ZIP into a writable folder and open
+1. Extract the entire Windows beta ZIP into a writable folder and open
    **Start Game.exe**. The launcher, Python and runtime DLLs are included.
 2. Choose **Skip** in the optional console-files setup for a new local console
    identity and automatic private save folders. No BIOS, kernel dump, EEPROM
@@ -64,7 +64,10 @@ changes hearts. [Detailed behavior and validation](docs/CHEATS.md).
 The supported original `default.xbe` SHA-256 is
 `e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249`.
 Other revisions are unsupported. Original game data is not included.
-Linux playable releases remain deferred.
+Native Linux AppImages are undergoing release qualification. The existing
+Linux test packages predate the Windows optimization release linked above;
+matching Linux downloads will be linked after their build and runtime checks.
+
 
 Keep the complete `data` folder, imported-disc cache, selected external save
 storage and any `<image>.xboxllr` profile when updating. A virtual identity
@@ -74,12 +77,12 @@ An explicitly selected raw/QCOW2 FATX HDD image takes priority over folder
 storage; close xemu or other writers before sharing it. Xbox Live is unavailable.
 See [console and save setup](https://github.com/mstan/xboxllr/blob/master/docs/SETUP.md).
 
-## Alpha coverage and bug reports
+## Beta coverage and bug reports
 
 **The public playtest scope is through World 2. The game is not guaranteed to
 work from beginning to end.** Internal assisted routes, time-control checks and
 save/reload tests do not establish every natural puzzle, encounter or later level.
-Unreached paths may still stop with diagnostics. This is an early playable alpha.
+Unreached paths may still stop with diagnostics. This is an early playable beta.
 
 Please [open a GitHub issue](https://github.com/mstan/BlinxRecomp/issues/new)
 with the release version, world/stage, selected mods, Windows/GPU/controller
@@ -88,7 +91,27 @@ report where useful, after reviewing it for private information. Do not attach
 original game files, console keys or EEPROMs.
 
 Developers: [build instructions](docs/DEVELOPMENT.md),
-[current technical status](docs/STATUS.md), [alpha release notes](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.11.02.1).
+[current technical status](docs/STATUS.md), [beta release notes](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.11.02.1).
+
+## Linux configuration and updates
+
+The native Linux package keeps the AppImage immutable. Writable settings,
+console identity, imported discs and native saves are stored outside it in
+`${XDG_DATA_HOME:-~/.local/share}/xboxllr/xbox-4d530013/data/`.
+For a custom location, launch with an absolute `XDG_DATA_HOME` path and
+keep using that same path after replacing or moving the AppImage:
+
+```sh
+XDG_DATA_HOME="$HOME/Games/xboxllr-data" ./BlinxRecomp-linux-x86_64.AppImage
+```
+
+`setup.json` remembers the selected game; `mod-selection.json` stores
+enhancement and controller choices. Preserve the complete `data/` folder,
+including console identities, rather than copying settings alone. Selected
+external save folders and HDD images stay in their chosen locations.
+A FUSE-less host can use `--appimage-extract-and-run`. Ubuntu 24.04/glibc
+and Vulkan 1.3 are the current build baseline; older distributions and
+full-speed WSL gameplay are not qualified by the package check.
 
 ## Credits and license
 
