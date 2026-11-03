@@ -1,7 +1,11 @@
 # BlinxRecomp
 
-This is the private original NTSC Blinx game repository in the Xbox ecosystem.
+This is the public original NTSC Blinx game repository in the Xbox ecosystem.
 Read README.md and game.toml first. Global owner instructions still apply.
+
+- Publish releases on GitHub; do not deliver Blinx builds to Nextcloud.
+- Use SemVer starting at 0.5.0: `v0.5.0` tags and matching release/asset labels.
+  Keep the early beta notice and preserve explicit saved player settings.
 
 - Game identity, revision metadata, seeds, input replays and build/launch glue
   belong here. Shared CPU, kernel, hardware, renderer, audio and service code
@@ -15,5 +19,5 @@ Read README.md and game.toml first. Global owner instructions still apply.
   fabricated completions, live switching or duplicate production execution.
   Bundle related checks and perform actual title validation per coherent batch.
 - Keep owned game/kernel/media/EEPROM/capture data and generated original code
-  in ignored local/build paths. Private visibility does not change license scope.
+  in ignored local/build paths.
 - Work solo unless the owner authorizes agents for the current task.
