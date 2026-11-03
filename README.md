@@ -2,12 +2,12 @@
 
 # Blinx: The Time Sweeper Recompiled
 
-Play Blinx on Windows with adaptive widescreen, higher internal resolution,
+Play Blinx on Windows or Linux with adaptive widescreen, higher internal resolution,
 controller support and optional gameplay mods through an Xbox-themed launcher.
 Built on [XboxLLR](https://github.com/mstan/xboxllr), the early low-level Xbox
 recompiler ecosystem.
 
-**[Download the playable Windows x64 beta](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.11.02.1)**
+**[Download the Windows or Linux beta](https://github.com/mstan/BlinxRecomp/releases/latest)**
 — no compiler needed. Supply your own supported **NTSC-U** game files.
 
 ![Blinx exploring a street in adaptive ultrawide, with the HUD at the edges](docs/screenshots/adaptive-gameplay.jpg)
@@ -35,6 +35,10 @@ Supersampling choices run from 1x through 8x; higher settings are optional and
 are not a full-speed guarantee.
 Change these individually under **Mods**. See [graphics options and costs](docs/GRAPHICS-MODS.md).
 
+The November 3 beta fixes the supersampling overhead behind slow stage entrances.
+Original resolution with 3x supersampling runs at the original approximately
+30 updates per second in the tested Windows stage openings, including 21:9.
+
 ### Crystal and time-control modes
 
 These optional **Gameplay** mods are independent and **off by default**:
@@ -53,6 +57,7 @@ changes hearts. [Detailed behavior and validation](docs/CHEATS.md).
 
 1. Extract the entire Windows beta ZIP into a writable folder and open
    **Start Game.exe**. The launcher, Python and runtime DLLs are included.
+   On Linux, make the AppImage executable and run it.
 2. Choose **Skip** in the optional console-files setup for a new local console
    identity and automatic private save folders. No BIOS, kernel dump, EEPROM
    or large HDD image is needed for new local play.
@@ -64,9 +69,9 @@ changes hearts. [Detailed behavior and validation](docs/CHEATS.md).
 The supported original `default.xbe` SHA-256 is
 `e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249`.
 Other revisions are unsupported. Original game data is not included.
-Native Linux AppImages are undergoing release qualification. The existing
-Linux test packages predate the Windows optimization release linked above;
-matching Linux downloads will be linked after their build and runtime checks.
+The native Linux AppImage includes the November 2 rendering changes. It targets
+x86_64, Ubuntu 24.04 or newer and Vulkan 1.3. Settings and saves stay outside
+the AppImage; see [Linux configuration](#linux-configuration-and-updates).
 
 
 Keep the complete `data` folder, imported-disc cache, selected external save
