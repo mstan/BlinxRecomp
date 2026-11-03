@@ -113,9 +113,15 @@ def configure(local, mode):
     check_generated(GENERATED)
     options = dict(PROFILE['build'], **PROFILE['modes'][mode])
     mapping = {'PILOT_D3D_SOURCE': 'd3d_source', 'PILOT_DSP_SOURCE': 'dsp_source',
-               'PILOT_DSP_LIBRARY': 'dsp_library', 'PILOT_ADPCM_SOURCE': 'adpcm_source',
-               'PILOT_CALENDAR_KERNEL': 'calendar_kernel', 'PILOT_CALENDAR_UNICORN': 'unicorn',
-               'PILOT_CALENDAR_UNICORN_NOTICES': 'unicorn_notices', 'PILOT_IO_DEVICE_SNAPSHOT': 'io_snapshot'}
+               'PILOT_DSP_LIBRARY': 'dsp_library'}
+    if os.name == 'nt':
+        mapping.update(PILOT_ADPCM_SOURCE='adpcm_source', PILOT_CALENDAR_KERNEL='calendar_kernel',
+                       PILOT_CALENDAR_UNICORN='unicorn', PILOT_CALENDAR_UNICORN_NOTICES='unicorn_notices',
+                       PILOT_IO_DEVICE_SNAPSHOT='io_snapshot')
+    else:
+        if mode != 'play':
+            raise ValueError('Native Linux currently supports --mode play')
+        mapping.update(PILOT_DXVK_NATIVE='dxvk_native', PILOT_VKD3D='vkd3d', PILOT_FAUDIO='faudio')
     if options.get('PILOT_DISPLAY') == 'LLE':
         mapping.update(PILOT_DISPLAY_LIBRARY='display_library',
                        PILOT_DISPLAY_DEPENDENCIES='display_dependencies')
@@ -127,16 +133,17 @@ def configure(local, mode):
         if not local[value].exists():
             raise ValueError(f'Missing local {value}: {local[value]}')
         options[key] = str(local[value])
-    if local.get('launcher_sdl_sdk'):
+    if os.name == 'nt' and local.get('launcher_sdl_sdk'):
         options['PILOT_SDL2_DIR'] = str(local['launcher_sdl_sdk'] / 'cmake')
+    generator = ['-G', 'Visual Studio 17 2022', '-A', 'x64'] if os.name == 'nt' else ['-G', 'Ninja', '-DCMAKE_BUILD_TYPE=Release']
     run([executable('cmake'), '-S', ROOT, '-B', ROOT / 'build' / mode,
-         '-G', 'Visual Studio 17 2022', '-A', 'x64', *[f'-D{key}={value}' for key, value in options.items()]])
+         *generator, *[f'-D{key}={value}' for key, value in options.items()]])
 
 
 def launch(local, args):
     if args.replay and not args.replay.is_file():
         raise ValueError(f'Input replay does not exist: {args.replay}')
-    binary = ROOT / 'build' / args.mode / 'framework/Release/BlinxRecomp.exe'
+    binary = ROOT / 'build' / args.mode / ('framework/Release/BlinxRecomp.exe' if os.name == 'nt' else 'framework/BlinxRecomp')
     if not binary.is_file():
         raise ValueError('Build this mode before launching it')
     check_generated(GENERATED)
@@ -151,7 +158,7 @@ def launch(local, args):
     output.mkdir(parents=True, exist_ok=False)
     env = {key: value for key, value in os.environ.items() if not key.startswith(('XLLE_PILOT_', 'BLINX_MOD_'))}
     env.update(PROFILE['runtime'])
-    launcher_binary = ROOT / 'build/launcher/Release/xlle_launcher.exe'
+    launcher_binary = ROOT / ('build/launcher/Release/xlle_launcher.exe' if os.name == 'nt' else 'build/launcher/xlle_launcher')
     use_preferences = args.launcher or (not args.no_launcher and not args.headless and not args.replay and launcher_binary.is_file())
     if use_preferences:
         if args.headless or args.replay:
@@ -277,8 +284,9 @@ def build_launcher(local):
     prepared = ROOT / 'local/dependencies/recomp-ui-native'
     run([sys.executable, FRAMEWORK / 'tools/native_launcher_ui.py', '--source', source,
          '--output', prepared, '--git', executable('git')])
+    platform = ['-DSDL2_DIR=' + str(local['launcher_sdl_sdk'] / 'cmake')] if os.name == 'nt' else ['-G', 'Ninja', '-DCMAKE_BUILD_TYPE=Release']
     run([executable('cmake'), '-S', FRAMEWORK / 'pilots/native-launcher', '-B', ROOT / 'build/launcher',
-         '-DXLLE_UI_SOURCE=' + str(prepared), '-DSDL2_DIR=' + str(local['launcher_sdl_sdk'] / 'cmake'),
+         '-DXLLE_UI_SOURCE=' + str(prepared), *platform,
          '-DXLLE_LAUNCHER_BOXART=' + str(ROOT / 'assets/launcher/boxart.png'),
          '-DXLLE_LAUNCHER_ARTWORK_NOTICE=' + str(ROOT / 'assets/launcher/NOTICE.md')])
     run([executable('cmake'), '--build', ROOT / 'build/launcher', '--config', 'Release', '--parallel', '4'])
