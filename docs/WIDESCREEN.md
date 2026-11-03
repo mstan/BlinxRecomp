@@ -77,14 +77,15 @@ their original placement. The contract suite includes both target paths;
 in-game enemy/door fringe visibility and circle appearance remain an owner
 acceptance gate rather than being inferred from those contracts alone.
 
-The 2026-11-03 visibility candidate also corrects the original model-sphere
+The 0.5.1 visibility correction also fixes the original model-sphere
 test's fixed `1.2` projected-radius margin, which becomes too small at ultrawide
 aspects. Rejected spheres are checked against the actual camera planes; the
 original model setup, accepted results, native-aspect behavior and light
 selection remain intact. Authored edge/rotation/rejection tests pass on Windows
 and Linux, and native gameplay reaches the corrected model-submission path.
-The owner's exact later-canal staircase view and broader camera report still
-need visual confirmation; nearby assisted sweeps alone do not close that check.
+The owner confirmed that the later-canal staircase and reported camera culling
+are fixed in the Windows candidate. This remains bounded beta coverage rather
+than an exhaustive campaign playtest.
 
 An isolated 1080p/21:9 follow-up (`cull-followup-002`) places the three actual
 Stage 1 green enemies at left, center and right using explicit position cheats.

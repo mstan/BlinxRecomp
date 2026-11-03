@@ -35,7 +35,9 @@ Supersampling choices run from 1x through 8x; higher settings are optional and
 are not a full-speed guarantee.
 Change these individually under **Mods**. See [graphics options and costs](docs/GRAPHICS-MODS.md).
 
-The 0.5.0 beta fixes the supersampling overhead behind slow stage entrances.
+The 0.5.1 beta fixes a widescreen culling bug that could make buildings and other
+scenery disappear when rotating the camera. It also includes the supersampling
+overhead fix from 0.5.0 for slow stage entrances.
 Original resolution with 3x supersampling runs at the original approximately
 30 updates per second in the tested Windows stage openings, including 21:9.
 
