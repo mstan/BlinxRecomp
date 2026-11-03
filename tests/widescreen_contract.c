@@ -75,12 +75,14 @@ static unsigned quality_calls;
 static int visual_mods(const struct PilotVisualMods *options)
 {++quality_calls;frames=options->frame_mode;return pilot_visual_mods_validate(options);}
 static void frame_scope(unsigned key){scope=key;}
+static int invoke(unsigned id,unsigned object,const unsigned *args,unsigned count,unsigned *result)
+{(void)id;(void)object;(void)args;(void)count;(void)result;return 0;}
 static int close_to(float a,float b){return fabsf(a-b)<.001f;}
 int main(int argc,char **argv)
 {
     struct PilotTitleModHost host={PILOT_TITLE_MOD_ABI,
         "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249",
-        read_data,write_data,presentation,client_size,frame_shape,visual_mods,frame_scope};
+        read_data,write_data,presentation,client_size,frame_shape,visual_mods,frame_scope,invoke};
 #ifdef _WIN32
     _putenv_s("BLINX_MOD_PLAN","");
     _putenv_s("XLLE_PILOT_MOD_PLAN","");

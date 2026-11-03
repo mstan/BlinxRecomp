@@ -350,16 +350,23 @@ static const struct PilotTitleMod *visual_open(const struct PilotTitleModHost *a
     static const struct PilotTitleMod result={PILOT_TITLE_MOD_ABI,transform,draw,present};return &result;
 }
 #include "cheats.inc"
+#include "visibility.inc"
+static int title_function(struct PilotTitleModCall *call)
+{
+    if(call->id==VISIBILITY_SPHERE)return visibility_function(call);
+    return (no_time_limit || more_stock || infinite_controls)?cheat_function(call):0;
+}
 const struct PilotTitleMod *pilot_title_mod_open(const struct PilotTitleModHost *api)
 {
     const struct PilotTitleMod *visual=visual_open(api);
     cheats_configure();
-    if(!no_time_limit && !more_stock && !infinite_controls)return visual;
+    int visibility=visual && visual->transform;
+    if(!visibility && !no_time_limit && !more_stock && !infinite_controls)return visual;
     if(!api || api->abi!=PILOT_TITLE_MOD_ABI || strcmp(api->xbe_sha256,BLINX_SHA) || !api->invoke)
         fail("cheat title identity mismatch");
     host=api;
     static struct PilotTitleMod combined;
     combined=visual?*visual:(struct PilotTitleMod){PILOT_TITLE_MOD_ABI};
-    combined.function=cheat_function;
+    combined.function=title_function;
     return &combined;
 }

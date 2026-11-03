@@ -24,6 +24,12 @@ add_executable(blinx_widescreen_contract tests/widescreen_contract.c src/mods/wi
   "${XBOXLLE_ROOT}/pilots/native-title/visual_mod_plan.c")
 target_include_directories(blinx_widescreen_contract PRIVATE "${XBOXLLE_ROOT}/pilots/native-title")
 add_test(NAME blinx_widescreen_disabled COMMAND blinx_widescreen_contract)
+add_executable(blinx_visibility_contract tests/visibility_contract.c)
+target_include_directories(blinx_visibility_contract PRIVATE "${XBOXLLE_ROOT}/pilots/native-title")
+if(NOT WIN32)
+  target_link_libraries(blinx_visibility_contract PRIVATE m)
+endif()
+add_test(NAME blinx_visibility_frustum COMMAND blinx_visibility_contract)
 add_executable(blinx_cheats_contract tests/cheats_contract.c src/mods/widescreen.c
   "${XBOXLLE_ROOT}/pilots/native-title/visual_mods.c"
   "${XBOXLLE_ROOT}/pilots/native-title/visual_mod_plan.c")
