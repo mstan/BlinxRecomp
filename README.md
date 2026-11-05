@@ -2,6 +2,11 @@
 
 # Blinx: The Time Sweeper Recompiled
 
+This branch is the **0.5.2-xbe.1 experimental Windows prerelease** for testing
+USA disc rips rejected by 0.5.1. It attempts other Blinx XBEs with separate test
+saves and automatically prepares shareable diagnostics. Compatibility remains
+unverified. See [test instructions](docs/RELEASE-NOTES-0.5.2-xbe.1.md).
+
 Play Blinx on Windows or Linux with adaptive widescreen, higher internal resolution,
 controller support and optional gameplay mods through an Xbox-themed launcher.
 Built on [XboxLLR](https://github.com/mstan/xboxllr), the early low-level Xbox

@@ -6,7 +6,7 @@ xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
 
 [framework]
 repository = "https://github.com/mstan/xboxllr"
-revision = "253d5361571a3521f748043cff4aecbe8e9829fb"
+revision = "0d07837a8f690efbc37adfdda15855dba727ed02"
 directory = "xboxlle"
 
 [launcher]
@@ -56,6 +56,7 @@ bindings = ["media", "cache", "d3d", "jump", "cpu", "input", "audio", "title"]
 poll_waits = "poll-waits.json"
 
 [build]
+PILOT_EXPERIMENTAL_XBE_TITLE_ID = "4D530013"
 PILOT_NATIVE_OPTIMIZATION = "OPTIMIZED"
 PILOT_MEDIA = "INSTALLED"
 PILOT_CACHE = "NATIVE"
@@ -132,3 +133,8 @@ XLLE_PILOT_TEXTURE_EXPOSURE_CACHE = "1"
 XLLE_PILOT_GPU_EVENTS = "1"
 XLLE_PILOT_EVENT_TRACE = "0"
 XLLE_PILOT_TRACE = "0"
+
+[experimental_xbe]
+mode = "same-title-attempt-v1"
+version = "0.5.2-xbe.1"
+reference = "config/revisions/ntsc-u/experimental-reference.json"
