@@ -158,6 +158,10 @@ def launch(local, args):
     output.mkdir(parents=True, exist_ok=False)
     env = {key: value for key, value in os.environ.items() if not key.startswith(('XLLE_PILOT_', 'BLINX_MOD_'))}
     env.update(PROFILE['runtime'])
+    for key, setting in [('save_keys', 'XLLE_PILOT_SAVE_KEYS_FILE'),
+                         ('console_settings', 'XLLE_PILOT_CONSOLE_SETTINGS_FILE')]:
+        if key in local:
+            env[setting] = str(local[key])
     launcher_binary = ROOT / ('build/launcher/Release/xlle_launcher.exe' if os.name == 'nt' else 'build/launcher/xlle_launcher')
     use_preferences = args.launcher or (not args.no_launcher and not args.headless and not args.replay and launcher_binary.is_file())
     if use_preferences:

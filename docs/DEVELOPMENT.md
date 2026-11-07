@@ -80,6 +80,11 @@ py -3 tools/game.py test
 py -3 tools/game.py run
 ```
 
+Direct developer launches read the configured `save_keys` and `console_settings`
+paths. Prepare these private inputs with the framework's `native_save_keys.py`
+and `native_console_settings.py` using the selected game and matching EEPROM.
+Keep an existing console identity with its saves; use an isolated profile for QA.
+
 The default `attract` mode uses native renderer/audio/input and the qualified
 calendar/device reference implementations. `--mode input-lle` selects original
 XAPI input plus the shared OHCI/DMA floor, including original interrupt/report
