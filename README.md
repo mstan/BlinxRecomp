@@ -97,6 +97,19 @@ details and steps to reproduce. Attach a screenshot and the launcher's crash
 report where useful, after reviewing it for private information. Do not attach
 original game files, console keys or EEPROMs.
 
+### Diagnostic recording
+
+In **Mods**, enable **Crash and input logs** before starting the game. Fresh
+installations enable it by default; an existing saved choice is preserved.
+Play normally and reproduce the problem. If the game crashes, Linux 0.5.2 and
+newer automatically prepare a shareable diagnostic ZIP and show its exact path.
+On Windows, choose **Copy diagnostic ZIP** in the crash dialog.
+Attach that ZIP to the issue with the stage and steps you took. It includes
+selected runtime diagnostics, graphics options and recorded controller inputs.
+Console keys, EEPROM and native saves remain private; never upload the
+**PRIVATE-DO-NOT-SHARE** folder. Input recordings can help repeat a route, but
+host timing and thread scheduling can still produce a different outcome.
+
 Developers: [build instructions](docs/DEVELOPMENT.md),
 [current technical status](docs/STATUS.md), [beta release notes](https://github.com/mstan/BlinxRecomp/releases/tag/alpha-2026.11.02.1).
 
