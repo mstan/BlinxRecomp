@@ -1,6 +1,8 @@
 {
   "xbe": "local/owned/default.xbe",
   "eeprom": "local/owned/eeprom.bin",
+  "save_keys": "local/owned/save-keys.bin",
+  "console_settings": "local/owned/console-settings.bin",
   "media_root": "local/owned/media",
   "state_dir": "local/state",
   "cpu_donor": "../refs/xboxrecomp-phobos665-review-20261006",

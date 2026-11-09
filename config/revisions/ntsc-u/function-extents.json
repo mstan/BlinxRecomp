@@ -136,7 +136,8 @@
       "original_end": 263104,
       "end": 263349,
       "sha256": "67ef5d743070bd461839ce9ae0dae51a3f1852d1a0db7b8bf90dfb5f02bf1c4a",
-      "reason": "Owner stage1-2 projectile hit reaches the original JG target000403C0 from000403A4. Recover the original effect-creation continuation through its restoring RET000404B4, retaining independently compiled overlapping continuation entries; no replacement or fallback.",
+      "reason": "Original JG at 000403B0 in the discovered 000403A4 context targets 000403C0. Preserve the complete effect-creation continuation through restoring RET 000404B4 and its eight source-verified overlapping discovered instruction contexts, each with its exact original extent hash. No game logic is replaced.",
+      "new_entry": true,
       "contained_entries": [
         {
           "start": 263149,
@@ -178,8 +179,7 @@
           "end": 263349,
           "sha256": "c813827904e212c92a91010e4a76de6661d2b3b6a1820d1139f9bbd7d59a99c5"
         }
-      ],
-      "new_entry": true
+      ]
     }
   ]
 }
