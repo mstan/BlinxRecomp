@@ -6,7 +6,7 @@ xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
 
 [framework]
 repository = "https://github.com/mstan/xboxllr"
-revision = "855a3a0c1895e6d61644398f7d074e3493b24cd8"
+revision = "14536d32677df5f82e7a5a039209403aabb45cb0"
 directory = "xboxlle"
 
 [launcher]
