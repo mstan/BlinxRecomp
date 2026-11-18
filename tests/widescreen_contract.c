@@ -84,11 +84,13 @@ int main(int argc,char **argv)
         "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249",
         read_data,write_data,presentation,client_size,frame_shape,visual_mods,frame_scope,invoke};
 #ifdef _WIN32
+    _putenv_s("XLLE_PILOT_TITLE_MOD_BLUR_REMOVAL","0");
     _putenv_s("BLINX_MOD_PLAN","");
     _putenv_s("XLLE_PILOT_MOD_PLAN","");
     if(argc>=2)_putenv_s(argc==3 && !strcmp(argv[2],"--legacy-plan")?"BLINX_MOD_PLAN":"XLLE_PILOT_MOD_PLAN",argv[1]);
     if(argc==3 && !strcmp(argv[2],"--common-priority"))_putenv_s("BLINX_MOD_PLAN","missing-legacy-plan");
 #else
+    setenv("XLLE_PILOT_TITLE_MOD_BLUR_REMOVAL","0",1);
     unsetenv("BLINX_MOD_PLAN");
     unsetenv("XLLE_PILOT_MOD_PLAN");
     if(argc>=2)setenv(argc==3 && !strcmp(argv[2],"--legacy-plan")?"BLINX_MOD_PLAN":"XLLE_PILOT_MOD_PLAN",argv[1],1);

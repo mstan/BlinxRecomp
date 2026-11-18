@@ -41,9 +41,13 @@ options = { mode = "interpolated", rate = "60" }
 [launcher.defaults."xboxllr.diagnostics/session-replay"]
 enabled = true
 
+[launcher.defaults."blinx.enhancement.blur-removal/blur-removal"]
+enabled = true
+
 [mods]
-# Trusted gameplay cheats compiled into src/mods/widescreen.c (docs/CHEATS.md).
+# Trusted title mods compiled into src/mods/widescreen.c.
 switches = [
+  { manifest = "mods/preloaded/packages/blinx.enhancement.blur-removal/1.0.0/manifest.toml", package = "blinx.enhancement.blur-removal", feature = "blur-removal", key = "BLUR_REMOVAL" },
   { manifest = "mods/preloaded/packages/blinx.enhancement.cheats/1.0.0/manifest.toml", package = "blinx.enhancement.cheats", feature = "no-time-limit", key = "NO_TIME_LIMIT" },
   { manifest = "mods/preloaded/packages/blinx.enhancement.cheats/1.0.0/manifest.toml", package = "blinx.enhancement.cheats", feature = "more-stock", key = "MORE_STOCK" },
   { manifest = "mods/preloaded/packages/blinx.enhancement.cheats/1.0.0/manifest.toml", package = "blinx.enhancement.cheats", feature = "infinite-time-controls", key = "INFINITE_TIME_CONTROLS" },

@@ -44,6 +44,12 @@ add_test(NAME blinx_cheats_rejects_locked COMMAND blinx_cheats_contract locked)
 set_tests_properties(blinx_cheats_rejects_locked PROPERTIES
   PASS_REGULAR_EXPRESSION "TITLE MOD STOP\\] Blinx time-limit constants are not writable")
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
+add_executable(blinx_blur_removal_contract tests/blur_removal_contract.c src/mods/widescreen.c
+  "${XBOXLLE_ROOT}/pilots/native-title/visual_mods.c"
+  "${XBOXLLE_ROOT}/pilots/native-title/visual_mod_plan.c")
+target_include_directories(blinx_blur_removal_contract PRIVATE "${XBOXLLE_ROOT}/pilots/native-title")
+add_test(NAME blinx_blur_removal COMMAND "${Python3_EXECUTABLE}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/tests/blur_removal_suite.py" --contract "$<TARGET_FILE:blinx_blur_removal_contract>")
 add_test(NAME blinx_widescreen_profiles COMMAND "${Python3_EXECUTABLE}"
   "${CMAKE_CURRENT_SOURCE_DIR}/tests/widescreen_suite.py" --contract "$<TARGET_FILE:blinx_widescreen_contract>")
 add_test(NAME blinx_visual_profiles COMMAND "${Python3_EXECUTABLE}"

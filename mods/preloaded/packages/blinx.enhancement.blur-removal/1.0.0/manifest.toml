@@ -1,0 +1,19 @@
+format_version = 1
+id = "blinx.enhancement.blur-removal"
+version = "1.0.0"
+name = "Blinx Blur Removal"
+category = "Visual enhancements"
+description = "Aligns the game's full-screen image samples for a sharper picture. Applies when the game starts."
+save_compatibility = "shared"
+
+[[target]]
+game_id = "4D530013"
+xbe_sha256 = "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249"
+
+[[feature]]
+id = "blur-removal"
+name = "Remove image blur"
+description = "Removes the horizontal offset between the game's full-screen image samples. Enabled by default for Blinx; turn off to restore the original picture. Restart the game after changing this setting."
+# Shared catalogs use conservative base defaults; game.toml enables this for
+# Blinx. The launcher preserves an explicitly saved off choice.
+default_enabled = false

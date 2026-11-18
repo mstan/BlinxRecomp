@@ -76,6 +76,7 @@ static void base(void)
 }
 int main(int argc,char **argv)
 {
+    setenv_value("XLLE_PILOT_TITLE_MOD_BLUR_REMOVAL","0");
     struct PilotTitleModHost host={PILOT_TITLE_MOD_ABI,
         "e6b7cd8a5527dd001e05bb3e881d9b24ffc58824ff67def394215ddbc8009249",read_data,write_data};
     host.invoke=invoke;host.write_image=write_image;

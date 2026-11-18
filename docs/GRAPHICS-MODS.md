@@ -1,9 +1,19 @@
 # Visual quality and frame-rate mods
 
+**Remove image blur** is a separate Blinx mod under **Visual enhancements**,
+enabled by default for fresh and existing profiles without a saved choice.
+It aligns the two horizontal texture samples in the game's full-screen scene
+copy, removing their original one-pixel offset. Turn it off and restart to
+restore the original sampling. Saved choices are preserved. It works with
+original resolution, higher internal resolution and widescreen independently;
+FXAA and blended presentation can still soften the picture. The original game
+file stays unchanged and pre-patched images remain unsupported.
+
 The native renderer can render at 1080p, 1440p, 1800p or 2160p, with optional
 fast approximate AA, 2×2/3×3 supersampling and anisotropic filtering. These are
 independent mods with default-off base manifests. The current title launcher
-defaults enable adaptive Fit to screen, 1080p, 2×2 supersampling, FXAA, 8×
+defaults enable adaptive Fit to screen, Original internal resolution,
+3×3 supersampling, FXAA, 8×
 filtering and blended 60 FPS presentation. Saved user choices take precedence;
 each enhancement can be disabled. The existing widescreen mod retains proportional
 HUD anchors and supports adaptive/fixed aspect through 32:9.

@@ -349,6 +349,7 @@ static const struct PilotTitleMod *visual_open(const struct PilotTitleModHost *a
         package,version,plugin,numerator,denominator,adaptive);
     static const struct PilotTitleMod result={PILOT_TITLE_MOD_ABI,transform,draw,present};return &result;
 }
+#include "blur_removal.inc"
 #include "cheats.inc"
 #include "visibility.inc"
 static int title_function(struct PilotTitleModCall *call)
@@ -358,6 +359,7 @@ static int title_function(struct PilotTitleModCall *call)
 }
 const struct PilotTitleMod *pilot_title_mod_open(const struct PilotTitleModHost *api)
 {
+    blur_removal_configure(api);
     const struct PilotTitleMod *visual=visual_open(api);
     cheats_configure();
     int visibility=visual && visual->transform;
