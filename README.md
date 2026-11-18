@@ -42,6 +42,10 @@ exact reference path remain available. Visibility counts and CPU image readbacks
 may be approximate above 1x. Tested Windows gameplay reaches approximately
 30 updates per second at 3x; performance varies with the scene and hardware.
 
+The 0.5.7 beta adds a guest CPU interpreter fallback: game code that was not
+translated ahead of time now runs interpreted instead of stopping the game.
+Diagnostic reports list any interpreted code so it can be translated natively.
+
 ### Crystal and time-control modes
 
 These optional **Gameplay** mods are independent and **off by default**:
